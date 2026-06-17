@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga — Comprehensive User Guide</title>
+<style>
+:root{
+  --bg:#0c0c14;--card:#13131e;--card2:#191926;--border:rgba(255,255,255,0.07);
+  --saffron:#FF9500;--saffron-l:#FFB347;--teal:#00C9A7;--rose:#FF6B9D;
+  --violet:#9B59B6;--blue:#4A90E2;--green:#2ECC71;
+  --text:#EDE8D8;--text2:#8A8A9A;--text3:#4A4A5E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;max-width:860px;margin:0 auto;padding:24px}
+h1{font-family:Georgia,serif;font-size:2rem;background:linear-gradient(135deg,var(--saffron-l),var(--saffron));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+h2{font-family:Georgia,serif;font-size:1.3rem;color:var(--saffron-l);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;font-weight:700;color:var(--teal);margin:20px 0 8px}
+h4{font-size:0.9rem;font-weight:700;color:var(--text);margin:14px 0 6px}
+p{color:var(--text2);font-size:0.95rem;margin-bottom:12px}
+.hero{background:var(--card);border:1px solid rgba(255,149,0,0.2);border-radius:16px;padding:28px;margin-bottom:32px}
+.hero p{margin-bottom:0;font-size:1rem}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:32px}
+.toc h3{color:var(--saffron);margin-top:0}
+.toc ol{padding-left:20px;color:var(--text2);font-size:0.9rem}
+.toc li{margin:5px 0}
+.toc a{color:var(--teal);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.section{margin-bottom:40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0}
+.card h3{margin-top:0;color:var(--saffron)}
+.tip{background:rgba(0,201,167,0.07);border:1px solid rgba(0,201,167,0.2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:0.88rem;color:var(--teal)}
+.warn{background:rgba(255,149,0,0.07);border:1px solid rgba(255,149,0,0.2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:0.88rem;color:var(--saffron)}
+.note{background:rgba(155,89,182,0.07);border:1px solid rgba(155,89,182,0.2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:0.88rem;color:var(--violet)}
+table{width:100%;border-collapse:collapse;font-size:0.88rem;margin:12px 0}
+th{background:var(--card2);color:var(--saffron);text-align:left;padding:8px 12px;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;border:1px solid var(--border)}
+td{padding:8px 12px;border:1px solid var(--border);color:var(--text2)}
+tr:hover td{background:rgba(255,255,255,0.02)}
+td strong{color:var(--text)}
+.key{display:inline-block;background:var(--card2);border:1px solid rgba(255,255,255,0.15);border-bottom:2px solid rgba(255,255,255,0.1);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:0.85rem;color:var(--saffron)}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:700;vertical-align:middle}
+.badge-green{background:rgba(0,201,167,0.15);color:var(--teal);border:1px solid rgba(0,201,167,0.3)}
+.badge-violet{background:rgba(155,89,182,0.15);color:var(--violet);border:1px solid rgba(155,89,182,0.3)}
+.badge-ai{background:rgba(138,43,226,0.15);color:#b06dff;border:1px solid rgba(138,43,226,0.3)}
+.step{display:flex;gap:14px;margin:10px 0;align-items:flex-start}
+.step-num{background:var(--saffron);color:#000;font-weight:700;font-size:0.8rem;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-content{flex:1}
+.step-content strong{color:var(--text);display:block;margin-bottom:2px}
+.step-content p{margin-bottom:0;font-size:0.88rem}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.feature-card{background:var(--card2);border:1px solid rgba(138,43,226,0.2);border-radius:10px;padding:14px}
+.feature-card .icon{font-size:1.4rem;margin-bottom:6px}
+.feature-card h4{color:var(--text);margin:0 0 4px}
+.feature-card p{font-size:0.82rem;margin:0;color:var(--text2)}
+.kbd-layout{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:12px 0}
+.kbd-cell{background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:6px 4px;text-align:center}
+.kbd-cell .k{font-family:monospace;font-size:0.85rem;color:var(--saffron);font-weight:700}
+.kbd-cell .s{font-size:0.7rem;color:var(--text2);margin-top:2px}
+.kbd-label{font-size:0.75rem;color:var(--text3);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+ul{padding-left:20px;margin:8px 0}
+ul li{color:var(--text2);font-size:0.9rem;margin:4px 0}
+ul li strong{color:var(--text)}
+ol{padding-left:20px;margin:8px 0}
+ol li{color:var(--text2);font-size:0.9rem;margin:6px 0}
+ol li strong{color:var(--text)}
+@media(max-width:600px){.feature-grid{grid-template-columns:1fr}.kbd-layout{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Raaga</h1>
+  <p style="font-size:1.1rem;color:var(--saffron-l);margin-bottom:8px">Indian Classical Music Studio — Comprehensive User Guide</p>
+  <p>Version 5 · 18 Real Instruments · 11 AI Features · 65+ Songs · 3-Octave Keyboard</p>
+  <p style="margin-top:10px;font-size:0.85rem">🌐 <strong style="color:var(--teal)">rags1816.github.io/Raaga</strong> &nbsp;·&nbsp; github.com/rags1816/Raaga</p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h3>📋 Contents</h3>
+  <ol>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#keyboard">The Keyboard — 3 Octaves</a></li>
+    <li><a href="#instruments">18 Instruments</a></li>
+    <li><a href="#practise">Practise Tab</a></li>
+    <li><a href="#playalong">Play-Along Tab</a></li>
+    <li><a href="#raagas">Raagas Reference</a></li>
+    <li><a href="#songs">Songs Library</a></li>
+    <li><a href="#rhythm">Rhythm — Tabla & Taals</a></li>
+    <li><a href="#ai">AI Hub — 11 Features</a></li>
+    <li><a href="#admin">Admin Panel</a></li>
+    <li><a href="#xp">XP & Rank System</a></li>
+    <li><a href="#theory">Music Theory</a></li>
+    <li><a href="#tips">Tips & Best Practices</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+  </ol>
+</div>
+
+<!-- 1. GETTING STARTED -->
+<div class="section" id="getting-started">
+<h2>1. Getting Started</h2>
+
+<h3>Opening the App</h3>
+<p>Raaga runs entirely in your browser — no installation needed. Open it at <strong style="color:var(--teal)">rags1816.github.io/Raaga</strong> or by opening <code>index.html</code> from your Music folder.</p>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content"><strong>See the welcome screen</strong><p>The app opens with a startup screen showing instrument icons and version info.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content"><strong>Click "▶ Start Playing"</strong><p>This is required — browsers block audio until the user interacts with the page first. The app won't make sound without this step.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content"><strong>You're in the Instruments tab</strong><p>Press any key on your laptop keyboard or click a key on screen. You'll hear Harmonium by default.</p></div>
+</div>
+
+<div class="tip">💡 Use Chrome or Edge for best results. Safari has limited Web Audio support. Firefox works but may have slight audio delays.</div>
+
+<h3>Navigation</h3>
+<p>The tab bar at the top gives access to all sections. On smaller screens, tabs scroll horizontally. The <strong>AI Hub</strong> and <strong>⚙ Admin</strong> buttons sit at the right end of the tab bar.</p>
+</div>
+
+<!-- 2. KEYBOARD -->
+<div class="section" id="keyboard">
+<h2>2. The Keyboard — 3 Octaves</h2>
+
+<p>Raaga features a full piano keyboard spanning <strong>Mandra Saptak</strong> (lower octave), <strong>Madhya Saptak</strong> (middle octave), and <strong>Taar Saptak</strong> (upper octave). All white keys across all three octaves have laptop keyboard hotkeys.</p>
+
+<h3>Mandra Saptak (Lower Octave)</h3>
+<div class="kbd-label">Bottom row of keyboard</div>
+<div class="kbd-layout">
+  <div class="kbd-cell"><div class="k">Z</div><div class="s">Sa</div></div>
+  <div class="kbd-cell"><div class="k">X</div><div class="s">Re</div></div>
+  <div class="kbd-cell"><div class="k">C</div><div class="s">Ga</div></div>
+  <div class="kbd-cell"><div class="k">V</div><div class="s">Ma</div></div>
+  <div class="kbd-cell"><div class="k">B</div><div class="s">Pa</div></div>
+  <div class="kbd-cell"><div class="k">N</div><div class="s">Dha</div></div>
+  <div class="kbd-cell"><div class="k">M</div><div class="s">Ni</div></div>
+  <div class="kbd-cell"><div class="k">,</div><div class="s">Ṡ</div></div>
+</div>
+
+<h3>Madhya Saptak (Middle Octave) — Main Playing Octave</h3>
+<div class="kbd-label">Home row + number row for black keys</div>
+<div class="kbd-layout">
+  <div class="kbd-cell"><div class="k">A</div><div class="s">Sa</div></div>
+  <div class="kbd-cell"><div class="k">S</div><div class="s">Re</div></div>
+  <div class="kbd-cell"><div class="k">D</div><div class="s">Ga</div></div>
+  <div class="kbd-cell"><div class="k">F</div><div class="s">Ma</div></div>
+  <div class="kbd-cell"><div class="k">G</div><div class="s">Pa</div></div>
+  <div class="kbd-cell"><div class="k">H</div><div class="s">Dha</div></div>
+  <div class="kbd-cell"><div class="k">J</div><div class="s">Ni</div></div>
+  <div class="kbd-cell"><div class="k">K</div><div class="s">Ṡ</div></div>
+</div>
+<p style="font-size:0.85rem">Black keys (Komal/Tivra): <span class="key">W</span>=r &nbsp;<span class="key">E</span>=g &nbsp;<span class="key">T</span>=m &nbsp;<span class="key">Y</span>=d &nbsp;<span class="key">U</span>=n</p>
+
+<h3>Taar Saptak (Upper Octave)</h3>
+<div class="kbd-label">Right side keys + number row</div>
+<div class="kbd-layout">
+  <div class="kbd-cell"><div class="k">I</div><div class="s">Ṡ</div></div>
+  <div class="kbd-cell"><div class="k">O</div><div class="s">Ṙ</div></div>
+  <div class="kbd-cell"><div class="k">L</div><div class="s">Ġ</div></div>
+  <div class="kbd-cell"><div class="k">9</div><div class="s">Ṁ</div></div>
+  <div class="kbd-cell"><div class="k">0</div><div class="s">Ṗ</div></div>
+  <div class="kbd-cell"><div class="k">-</div><div class="s">Ḋ</div></div>
+  <div class="kbd-cell"><div class="k">=</div><div class="s">Ṅ</div></div>
+  <div class="kbd-cell"><div class="k">]</div><div class="s">Ṡ'</div></div>
+</div>
+
+<h3>Percussion Keys</h3>
+<table>
+  <tr><th>Key</th><th>Function</th></tr>
+  <tr><td><span class="key">Q</span></td><td>Tabla Baya (Ge — bass stroke)</td></tr>
+  <tr><td><span class="key">P</span></td><td>Tabla Dayan (Na — treble stroke)</td></tr>
+  <tr><td><span class="key">1</span>–<span class="key">8</span></td><td>Octopad pads 1–8</td></tr>
+</table>
+
+<div class="tip">💡 Black keys (komal/tivra) for Mandra and Taar Saptak are click-only on screen — no laptop hotkeys for those.</div>
+</div>
+
+<!-- 3. INSTRUMENTS -->
+<div class="section" id="instruments">
+<h2>3. 18 Instruments</h2>
+
+<p>All instruments with ★ use real recorded WAV samples from the sounds/ folder. The app falls back to synthesised sound if a file is missing.</p>
+
+<h3>Changing Instrument</h3>
+<p>Go to <strong>Instruments tab</strong> → click the instrument dropdown at the top of the panel → select any instrument. The keyboard immediately switches to the new instrument.</p>
+
+<h3>Controls</h3>
+<table>
+  <tr><th>Control</th><th>What it does</th></tr>
+  <tr><td><strong>Reverb slider</strong></td><td>Adds room echo to synth instruments (0% default — real samples have own room sound)</td></tr>
+  <tr><td><strong>Volume slider</strong></td><td>Master output volume (80% default)</td></tr>
+  <tr><td><strong>Raaga Highlight</strong></td><td>Highlights correct notes for the selected raaga on the keyboard in green</td></tr>
+</table>
+
+<h3>Indian Classical Instruments</h3>
+<table>
+  <tr><th>Instrument</th><th>Character</th><th>Best for</th></tr>
+  <tr><td>🪗 <strong>Harmonium</strong></td><td>Reed organ, warm sustained tone</td><td>Bhajans, practice, accompaniment</td></tr>
+  <tr><td>🪕 <strong>Sitar</strong></td><td>Plucked string, bright with resonance</td><td>Hindustani classical, raagas</td></tr>
+  <tr><td>🪈 <strong>Veena</strong></td><td>Plucked string, deeper than sitar</td><td>Carnatic classical</td></tr>
+  <tr><td>🎵 <strong>Sarod</strong></td><td>Metal string, rich dark tone</td><td>Hindustani classical</td></tr>
+  <tr><td>📯 <strong>Shehnai</strong></td><td>Double reed, nasal auspicious tone</td><td>Ceremonial, classical</td></tr>
+  <tr><td>🎷 <strong>Bansuri</strong></td><td>Bamboo flute, breathy and lyrical</td><td>Raaga exploration, meditation</td></tr>
+</table>
+
+<div class="note">🎵 The Tanpura Drone is in the <strong>Practise tab</strong> — turn it on to hear the continuous Sa drone that helps train your ear to the tonic while practising.</div>
+</div>
+
+<!-- 4. PRACTISE -->
+<div class="section" id="practise">
+<h2>4. Practise Tab</h2>
+
+<p>The Practise tab is your daily training space. It combines free play with guided exercises and instant feedback.</p>
+
+<h3>Features</h3>
+<ul>
+  <li><strong>Tanpura Drone</strong> — continuous Sa drone to practise against. Turn on before starting any practice session.</li>
+  <li><strong>Raaga Scale Display</strong> — shows which notes are correct (green) and which are forbidden (dimmed) for the selected raaga.</li>
+  <li><strong>Note Feedback</strong> — each note you play lights up on the keyboard with its name shown in the status bar.</li>
+  <li><strong>Raaga Quiz</strong> — tests your knowledge of raaga notes. +20 XP for correct answers.</li>
+  <li><strong>Notation View</strong> — shows notes as Indian sargam notation as you play.</li>
+</ul>
+
+<h3>Good Practice Routine</h3>
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content"><strong>Turn on Tanpura</strong><p>Click "🪕 Tanpura Drone" — listen to the Sa and let your ear settle on it.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content"><strong>Select your raaga</strong><p>Choose from the Raaga dropdown — the keyboard highlights valid notes in green.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content"><strong>Play the scale slowly</strong><p>Go up: Sa Re Ga Ma Pa Dha Ni Sa' — then back down. Repeat until smooth.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content"><strong>Play alankars (patterns)</strong><p>Try Sa Re Ga, Re Ga Ma, Ga Ma Pa... up and down the scale.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content"><strong>Improvise freely</strong><p>Use only the highlighted green notes. Notice the mood of the raaga emerge.</p></div>
+</div>
+</div>
+
+<!-- 5. PLAY-ALONG -->
+<div class="section" id="playalong">
+<h2>5. Play-Along Tab</h2>
+
+<p>Karaoke-style learning — a backing melody plays and you play along on the keyboard. 65+ songs including Bollywood, devotional, classical, and folk.</p>
+
+<h3>How to use Play-Along</h3>
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content"><strong>Select a song</strong><p>Browse or search the song list. Songs show raaga, taal, and difficulty.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content"><strong>Choose instruments</strong><p>Select backing instrument (what plays the melody for you to follow) and your instrument (what you play).</p></div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content"><strong>Set tempo</strong><p>Start slower than normal — you can increase as you get comfortable.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content"><strong>Press Start</strong><p>The highway shows notes coming — hit them as they reach the line. The backing rhythm and melody play automatically.</p></div>
+</div>
+
+<h3>Play-Along Modes</h3>
+<table>
+  <tr><th>Mode</th><th>Description</th></tr>
+  <tr><td><strong>Listen Mode</strong></td><td>Hear the full song 3 times before playing — absorb the melody first</td></tr>
+  <tr><td><strong>Follow Mode</strong></td><td>Backing melody plays, you try to match it note for note</td></tr>
+  <tr><td><strong>Free Mode</strong></td><td>Rhythm plays, you improvise in the raaga</td></tr>
+</table>
+
+<div class="tip">💡 Start with Listen Mode — Indian melodies are learned by ear first. Play-Along is designed to mimic the traditional guru-shishya approach where you hear before you play.</div>
+</div>
+
+<!-- 6. RAAGAS -->
+<div class="section" id="raagas">
+<h2>6. Raagas Reference Tab</h2>
+
+<p>A complete reference for all raagas in the app including scales, vadi/samvadi, time of day, season, and mood.</p>
+
+<h3>Understanding Raagas</h3>
+<p>A raaga is not just a scale — it is a complete musical personality with specific rules about which notes to use, which to emphasise, and how to move between them.</p>
+
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td><strong>Thaat</strong></td><td>Parent scale the raaga belongs to (one of 10)</td></tr>
+  <tr><td><strong>Vadi</strong></td><td>The most important note — the "king" of the raaga</td></tr>
+  <tr><td><strong>Samvadi</strong></td><td>Second most important note — the "minister"</td></tr>
+  <tr><td><strong>Aaroh</strong></td><td>Ascending scale — notes used going up</td></tr>
+  <tr><td><strong>Avaroh</strong></td><td>Descending scale — notes used going down (often different from aaroh)</td></tr>
+  <tr><td><strong>Pakad</strong></td><td>Characteristic phrase that identifies the raaga</td></tr>
+  <tr><td><strong>Rasa</strong></td><td>Emotional quality — Shringar (love), Karuna (pathos), Shanta (peace) etc.</td></tr>
+</table>
+
+<h3>Raagas by Time of Day</h3>
+<table>
+  <tr><th>Time</th><th>Raagas</th></tr>
+  <tr><td>Early Morning (4–7am)</td><td>Bhairav, Lalit, Todi, Ramkali</td></tr>
+  <tr><td>Morning (7am–12pm)</td><td>Bhairavi, Bilawal, Ahir Bhairav, Alhaiya Bilawal</td></tr>
+  <tr><td>Afternoon (12–4pm)</td><td>Sarang, Bhimpalasi, Multani</td></tr>
+  <tr><td>Evening (4–7pm)</td><td>Yaman, Puriya, Shree, Marwa</td></tr>
+  <tr><td>Night (7pm–midnight)</td><td>Khamaj, Bihag, Darbari, Bageshri, Kedar</td></tr>
+  <tr><td>Midnight (12–4am)</td><td>Malkauns, Darbari Kanada, Kafi</td></tr>
+  <tr><td>All times</td><td>Bhairavi, Shivaranjani, Hamsadhwani, Pilu</td></tr>
+</table>
+</div>
+
+<!-- 7. SONGS -->
+<div class="section" id="songs">
+<h2>7. Songs Library</h2>
+
+<p>65+ songs spanning Bollywood classics, Indian devotional music, folk songs, and classical compositions. Each song is mapped to its correct raaga and taal.</p>
+
+<h3>Song Categories</h3>
+<ul>
+  <li><strong>Bollywood Classics</strong> — popular film songs in their original raagas</li>
+  <li><strong>Bhajans</strong> — devotional compositions (Tulsidas, Meera, Kabir)</li>
+  <li><strong>Abhangs</strong> — Marathi devotional poetry (Tukaram, Namdev)</li>
+  <li><strong>Folk Songs</strong> — regional folk melodies</li>
+  <li><strong>Classical Compositions</strong> — bandish in various raagas</li>
+</ul>
+
+<h3>Using the Song Browser</h3>
+<p>Songs can be filtered by raaga, taal, or searched by name. Each song card shows the film/album name, year, raaga, and taal. Click a song to load it into Play-Along.</p>
+</div>
+
+<!-- 8. RHYTHM -->
+<div class="section" id="rhythm">
+<h2>8. Rhythm — Tabla & Taals</h2>
+
+<h3>Automatic Rhythm</h3>
+<p>Select a taal in the Instruments tab and click Start Rhythm. The tabla plays automatically with correct bols (syllables) for that taal cycle.</p>
+
+<h3>Manual Playing</h3>
+<p><span class="key">Q</span> = Tabla Baya (Ge) &nbsp; <span class="key">P</span> = Tabla Dayan (Na) &nbsp; <span class="key">1</span>–<span class="key">8</span> = Octopad</p>
+
+<h3>Taals Available</h3>
+<table>
+  <tr><th>Taal</th><th>Beats</th><th>Pattern</th><th>Best For</th></tr>
+  <tr><td><strong>Keherwa</strong></td><td>8</td><td>4+4</td><td>Most popular — Bollywood, folk</td></tr>
+  <tr><td><strong>Teental</strong></td><td>16</td><td>4+4+4+4</td><td>Khyal, classical</td></tr>
+  <tr><td><strong>Dadra</strong></td><td>6</td><td>3+3</td><td>Thumri, light classical</td></tr>
+  <tr><td><strong>Rupak</strong></td><td>7</td><td>3+2+2</td><td>Sam on wave — unique feel</td></tr>
+  <tr><td><strong>Jhaptal</strong></td><td>10</td><td>2+3+2+3</td><td>Classical compositions</td></tr>
+  <tr><td><strong>Ektaal</strong></td><td>12</td><td>2+2+2+2+2+2</td><td>Vilambit (slow) khyal</td></tr>
+  <tr><td><strong>Adi Talam</strong></td><td>8</td><td>4+2+2</td><td>Carnatic, Tamil film</td></tr>
+  <tr><td><strong>Western 4/4</strong></td><td>8</td><td>4+4</td><td>Western songs</td></tr>
+  <tr><td><strong>Bossa Nova</strong></td><td>8</td><td>Syncopated</td><td>World music</td></tr>
+</table>
+
+<div class="tip">💡 Start with Keherwa at slow tempo (60 BPM). Clap along to feel the 8-beat cycle before playing notes over it.</div>
+</div>
+
+<!-- 9. AI HUB -->
+<div class="section" id="ai">
+<h2>9. AI Hub — 11 Features</h2>
+
+<p>The AI Hub connects the app to Claude (Anthropic) or Gemini (Google) to provide intelligent music teaching, composition, and analysis features.</p>
+
+<div class="warn">⚠ AI features require an API key. Add yours in ⚙ Admin → enable features there → then click AI Hub tab to use them.</div>
+
+<h3>Setup</h3>
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content"><strong>Get an API key</strong><p>Claude: console.anthropic.com &nbsp;|&nbsp; Gemini: aistudio.google.com (free tier available)</p></div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content"><strong>Open Admin Panel</strong><p>Click ⚙ Admin → paste key → Save. Key stored in browser only — never in the app file.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content"><strong>Enable features</strong><p>Toggle on the AI features you want to use.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content"><strong>Click AI Hub tab</strong><p>Feature buttons appear. Click one to open its panel.</p></div>
+</div>
+
+<h3>The 11 AI Features</h3>
+
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="icon">🧘</div>
+    <h4>AI Guru Chat</h4>
+    <p>Conversational music teacher — ask anything about raagas, theory, history, technique. Remembers conversation context.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🔍</div>
+    <h4>Raaga Identifier</h4>
+    <p>Type a note sequence (S R G M P D N) — AI identifies the raaga with explanation of why those notes match.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🕰</div>
+    <h4>Raaga Historian</h4>
+    <p>Enter any raaga name — get full history, scale, vadi/samvadi, famous musicians, and recordings.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">📜</div>
+    <h4>Lyrics Explainer</h4>
+    <p>Paste bandish, bhajan, or thumri lyrics — AI translates and explains poetic and devotional meaning line by line.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🎵</div>
+    <h4>Bandish Composer</h4>
+    <p>Choose raaga + taal + tempo + theme — AI writes an original composition with swaras and Hindi lyrics.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">📋</div>
+    <h4>Lesson Plan</h4>
+    <p>AI reads your XP level and available time, generates a structured personalised practice plan for today.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">📊</div>
+    <h4>Session Feedback</h4>
+    <p>Practice in any tab — app tracks your notes. Then get AI scoring and improvement tips for your session.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🎓</div>
+    <h4>Raaga Tutor</h4>
+    <p>Play notes while in Tutor mode — each note lights green (correct) or red (forbidden) for the chosen raaga in real time.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🏛</div>
+    <h4>Gharana Analyser</h4>
+    <p>Describe your playing style — AI identifies which gharana (Jaipur, Kirana, Agra, Gwalior etc.) it resembles.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🎤</div>
+    <h4>Pitch Detector</h4>
+    <p>Uses your microphone — detects which swara you're singing in real time, shows cents deviation from perfect pitch. No API key needed.</p>
+  </div>
+  <div class="feature-card">
+    <div class="icon">🎙</div>
+    <h4>Sing-Along Judge</h4>
+    <p>Random target note shown — sing it into the mic and get a live accuracy score. No API key needed.</p>
+  </div>
+</div>
+
+<div class="tip">💡 Start with Guru Chat — ask "create a 30-minute practice plan for a beginner learning Yaman raaga" to get a personalised start.</div>
+</div>
+
+<!-- 10. ADMIN -->
+<div class="section" id="admin">
+<h2>10. Admin Panel</h2>
+
+<p>The Admin Panel manages all configuration. Click ⚙ Admin button in the top-right of the nav bar.</p>
+
+<h3>Sections</h3>
+<table>
+  <tr><th>Section</th><th>Purpose</th></tr>
+  <tr><td><strong>🔑 AI API Keys</strong></td><td>Add/clear Claude and Gemini API keys. Keys stored in browser localStorage only — zero security risk.</td></tr>
+  <tr><td><strong>🧠 Active AI Model</strong></td><td>Choose whether Claude or Gemini powers the AI features.</td></tr>
+  <tr><td><strong>🤖 AI Features</strong></td><td>Toggle each of the 11 AI features on or off individually.</td></tr>
+</table>
+
+<h3>API Key Security</h3>
+<p>Keys are stored <strong>only in your browser's localStorage</strong>. They never appear in the app's source code. The app file (index.html) is completely safe to share publicly — it contains zero secrets. Keys are only ever sent directly to the AI provider (Anthropic or Google) when you use an AI feature.</p>
+
+<div class="warn">⚠ If you clear your browser data or use a different browser/device, you'll need to re-enter your API keys.</div>
+</div>
+
+<!-- 11. XP -->
+<div class="section" id="xp">
+<h2>11. XP & Rank System</h2>
+
+<p>Every action in the app earns XP. Watch your rank grow as you practise.</p>
+
+<table>
+  <tr><th>Rank</th><th>XP Required</th><th>Meaning</th></tr>
+  <tr><td>🌱 Novice Shishya</td><td>0–49</td><td>Beginning student</td></tr>
+  <tr><td>📚 Shagird</td><td>50–129</td><td>Committed learner</td></tr>
+  <tr><td>🎵 Abhyasi</td><td>130–249</td><td>Daily practitioner</td></tr>
+  <tr><td>⭐ Tayyar</td><td>250–399</td><td>Ready for performance</td></tr>
+  <tr><td>🎓 Ustadji</td><td>400–599</td><td>Deep knowledge, master level</td></tr>
+  <tr><td>🌟 Sangeet Ratna</td><td>600+</td><td>Jewel of Music — highest honour</td></tr>
+</table>
+
+<h3>How to Earn XP</h3>
+<table>
+  <tr><th>Action</th><th>XP</th></tr>
+  <tr><td>Correct note in Practise tab</td><td>+5 XP</td></tr>
+  <tr><td>Raaga Quiz — correct answer</td><td>+20 XP</td></tr>
+  <tr><td>Play-Along note hit</td><td>+3 XP</td></tr>
+  <tr><td>Play-Along song completed</td><td>+accuracy÷3 XP</td></tr>
+  <tr><td>Song completed (full)</td><td>+30 XP</td></tr>
+</table>
+
+<div class="tip">💡 XP is saved in your browser. It persists across sessions as long as you use the same browser and don't clear browsing data.</div>
+</div>
+
+<!-- 12. THEORY -->
+<div class="section" id="theory">
+<h2>12. Music Theory Tab</h2>
+
+<p>The Theory tab contains reference material on Indian classical music fundamentals — swaras, saptaks, thaats, raagas, taals, ornaments, and the relationship between Hindustani and Carnatic traditions.</p>
+
+<h3>Key Theory Concepts</h3>
+
+<h4>The 7 Swaras</h4>
+<table>
+  <tr><th>Swara</th><th>Full Name</th><th>Western</th><th>Notes</th></tr>
+  <tr><td><strong>Sa</strong></td><td>Shadja</td><td>C</td><td>Never changes — always natural</td></tr>
+  <tr><td><strong>Re</strong></td><td>Rishabh</td><td>D</td><td>Komal (C#) or Shuddh (D)</td></tr>
+  <tr><td><strong>Ga</strong></td><td>Gandhar</td><td>E</td><td>Komal (D#) or Shuddh (E)</td></tr>
+  <tr><td><strong>Ma</strong></td><td>Madhyam</td><td>F</td><td>Shuddh (F) or Tivra (F#)</td></tr>
+  <tr><td><strong>Pa</strong></td><td>Pancham</td><td>G</td><td>Never changes — always natural</td></tr>
+  <tr><td><strong>Dha</strong></td><td>Dhaivat</td><td>A</td><td>Komal (G#) or Shuddh (A)</td></tr>
+  <tr><td><strong>Ni</strong></td><td>Nishad</td><td>B</td><td>Komal (A#) or Shuddh (B)</td></tr>
+</table>
+
+<h4>The 3 Saptaks (Octaves)</h4>
+<ul>
+  <li><strong>Mandra Saptak</strong> — lower octave, denoted with a dot below (Ṣ)</li>
+  <li><strong>Madhya Saptak</strong> — middle octave, written normally (S)</li>
+  <li><strong>Taar Saptak</strong> — upper octave, denoted with a dot above (Ṡ)</li>
+</ul>
+</div>
+
+<!-- 13. TIPS -->
+<div class="section" id="tips">
+<h2>13. Tips & Best Practices</h2>
+
+<h3>For Beginners</h3>
+<ul>
+  <li>Start with <strong>Yaman raaga</strong> — it uses Tivra Ma (F#) only, which makes it easy to identify. All other notes are natural.</li>
+  <li>Practice <strong>Sa Re Ga Ma Pa Dha Ni Sa</strong> slowly every day before anything else — this is your foundation.</li>
+  <li>Turn on the <strong>Tanpura drone</strong> every time you practice — training your ear to Sa is as important as knowing the notes.</li>
+  <li>Use <strong>Listen Mode</strong> in Play-Along before trying to play — Indian music is learned by ear first.</li>
+  <li>Start with <strong>Keherwa taal</strong> at 60–80 BPM. Add rhythm from the beginning — don't practice without it.</li>
+</ul>
+
+<h3>For Intermediate Players</h3>
+<ul>
+  <li>Use the <strong>Raaga Tutor</strong> AI feature — it gives instant feedback if you accidentally use a forbidden note.</li>
+  <li>Explore the <strong>Gharana Analyser</strong> — describe your playing style and find out which tradition it resembles.</li>
+  <li>Try <strong>Bandish Composer</strong> — ask for a composition in your current raaga and learn it phrase by phrase.</li>
+  <li>Use <strong>Session Feedback</strong> after every practice — the AI tracks which notes you played most and gives targeted advice.</li>
+</ul>
+
+<h3>Using AI Effectively</h3>
+<ul>
+  <li>The <strong>Guru Chat</strong> works best with specific questions — "What is the difference between Yaman and Kedar?" gives better answers than "tell me about raagas".</li>
+  <li>For <strong>Raaga Identifier</strong>, describe ornaments too — "S G M P with a meend from G to M" helps the AI distinguish between similar raagas.</li>
+  <li>Generate a <strong>Lesson Plan</strong> at the start of each week — tell it your current rank and what you want to focus on.</li>
+</ul>
+
+<h3>Performance Tips</h3>
+<ul>
+  <li>Use <strong>Chrome</strong> for best audio performance — lowest latency, best WAV file support.</li>
+  <li>If audio feels delayed, <strong>reduce browser tabs</strong> — audio processing is CPU-intensive.</li>
+  <li>For mobile, use <strong>landscape orientation</strong> — more keyboard keys visible.</li>
+  <li>The app works <strong>offline</strong> once loaded (if opened from local file) — sounds are cached after first play.</li>
+</ul>
+</div>
+
+<!-- 14. TROUBLESHOOTING -->
+<div class="section" id="troubleshooting">
+<h2>14. Troubleshooting</h2>
+
+<table>
+  <tr><th>Problem</th><th>Cause</th><th>Fix</th></tr>
+  <tr><td><strong>No sound at all</strong></td><td>Didn't click "Start Playing"</td><td>Click the Start Playing button first — browser requires user interaction before audio plays</td></tr>
+  <tr><td><strong>Synth sound instead of real instrument</strong></td><td>sounds/ folder not found</td><td>If running locally, make sure index.html and sounds/ folder are in the same directory. On GitHub Pages, this works automatically.</td></tr>
+  <tr><td><strong>Tabs not switching</strong></td><td>Old cached version</td><td>Press Ctrl+Shift+R (hard refresh) to force reload the latest version</td></tr>
+  <tr><td><strong>AI features not working</strong></td><td>No API key or feature not enabled</td><td>Go to ⚙ Admin → add API key → Save → enable features → try AI Hub again</td></tr>
+  <tr><td><strong>AI error: "403 Forbidden"</strong></td><td>Wrong API key</td><td>Check the key is correct and has billing enabled (Claude) or quota available (Gemini)</td></tr>
+  <tr><td><strong>Pitch Detector not working</strong></td><td>Mic permission denied</td><td>Click the lock icon in browser address bar → allow microphone → refresh page</td></tr>
+  <tr><td><strong>Play-Along out of sync</strong></td><td>Browser performance</td><td>Close other tabs, reduce tempo, use Chrome</td></tr>
+  <tr><td><strong>XP not saving</strong></td><td>Browser localStorage blocked</td><td>Check browser isn't in incognito/private mode — localStorage doesn't persist there</td></tr>
+  <tr><td><strong>App shows old version on GitHub Pages</strong></td><td>CDN cache</td><td>Wait 5 minutes after pushing, then Ctrl+Shift+R to force refresh</td></tr>
+</table>
+
+<h3>Browser Console Errors (F12)</h3>
+<p>If something isn't working, press <strong>F12</strong> → click <strong>Console</strong> tab. Red errors there will pinpoint exactly what's failing. Common ones:</p>
+<ul>
+  <li><code>404 sounds/...</code> — sounds folder not found relative to index.html</li>
+  <li><code>Failed to fetch</code> — network issue or CORS block</li>
+  <li><code>AudioContext was not allowed</code> — click Start Playing first</li>
+  <li><code>API key invalid</code> — check key in Admin panel</li>
+</ul>
+</div>
+
+<div style="text-align:center;padding:32px 0 16px;border-top:1px solid var(--border);margin-top:40px">
+  <div style="font-family:Georgia,serif;font-size:1.3rem;color:var(--saffron);margin-bottom:8px">🎵 Raaga</div>
+  <div style="color:var(--text2);font-size:0.85rem">Indian Classical Music Studio · Version 5</div>
+  <div style="margin-top:8px">
+    <a href="https://rags1816.github.io/Raaga/" style="color:var(--teal);text-decoration:none;font-family:monospace;font-size:0.85rem">rags1816.github.io/Raaga</a>
+    <span style="color:var(--text3);margin:0 12px">·</span>
+    <a href="https://github.com/rags1816/Raaga" style="color:var(--teal);text-decoration:none;font-family:monospace;font-size:0.85rem">github.com/rags1816/Raaga</a>
+  </div>
+</div>
+
+</body>
+</html>

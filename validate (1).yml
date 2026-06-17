@@ -1,0 +1,133 @@
+name: Validate Raaga Studio Pro
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-check:
+    name: Security — No API keys in source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Claude API keys
+        run: |
+          if grep -r "sk-ant-api[0-9A-Za-z\-]\{20,\}" . --include="*.html" --include="*.js" --include="*.json"; then
+            echo "❌ FAIL: Claude API key found in source!"
+            exit 1
+          else
+            echo "✅ No Claude API keys found"
+          fi
+
+      - name: Check for Gemini API keys
+        run: |
+          if grep -r "AIzaSy[A-Za-z0-9_\-]\{33\}" . --include="*.html" --include="*.js" --include="*.json"; then
+            echo "❌ FAIL: Gemini API key found in source!"
+            exit 1
+          else
+            echo "✅ No Gemini API keys found"
+          fi
+
+      - name: Check for generic secrets
+        run: |
+          if grep -rE "(api_key|apikey|secret|password)\s*=\s*['\"][A-Za-z0-9]{20,}" . --include="*.html" --include="*.js"; then
+            echo "⚠️  WARNING: Possible hardcoded secret found — review manually"
+          else
+            echo "✅ No obvious hardcoded secrets"
+          fi
+
+  html-check:
+    name: HTML — Basic structure validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check HTML file exists
+        run: |
+          if [ -f "raaga_studio_v5.html" ]; then
+            echo "✅ raaga_studio_v5.html exists"
+            wc -l raaga_studio_v5.html
+          else
+            echo "❌ raaga_studio_v5.html not found"
+            exit 1
+          fi
+
+      - name: Check required functions exist
+        run: |
+          CHECKS=(
+            "function playNote"
+            "function playHTML5Sample"
+            "function getSamplePath"
+            "function callAI"
+            "function showAdminPanel"
+            "function refreshAIHub"
+            "function buildGuruPanel"
+            "function startPitchDetection"
+            "SAMPLE_INSTRUMENTS"
+            "AI_FEATURES"
+            "RAAGA_RULES"
+          )
+          FAILED=0
+          for check in "${CHECKS[@]}"; do
+            if grep -q "$check" raaga_studio_v5.html; then
+              echo "✅ Found: $check"
+            else
+              echo "❌ Missing: $check"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then exit 1; fi
+
+      - name: Check no diagnostic code leaked
+        run: |
+          BANNED=("Sample Test:" "runSampleDiag" "diag-path" "diag-result")
+          for term in "${BANNED[@]}"; do
+            if grep -q "$term" raaga_studio_v5.html; then
+              echo "⚠️  WARNING: Diagnostic code found: $term"
+            fi
+          done
+          echo "✅ Diagnostic check complete"
+
+      - name: File size check
+        run: |
+          SIZE=$(wc -c < raaga_studio_v5.html)
+          echo "File size: $SIZE bytes"
+          if [ $SIZE -lt 100000 ]; then
+            echo "❌ File seems too small — possible truncation"
+            exit 1
+          else
+            echo "✅ File size looks correct"
+          fi
+
+  docs-check:
+    name: Docs — Required files present
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required docs
+        run: |
+          FILES=(
+            "README.md"
+            "CHANGELOG.md"
+            "CONTRIBUTING.md"
+            "LICENSE"
+            "SOUNDS_MANIFEST.md"
+            ".gitignore"
+            "docs/keyboard_layout.md"
+            "docs/ai_features.md"
+            "docs/raagas_reference.md"
+          )
+          FAILED=0
+          for f in "${FILES[@]}"; do
+            if [ -f "$f" ]; then
+              echo "✅ $f"
+            else
+              echo "❌ Missing: $f"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then exit 1; fi

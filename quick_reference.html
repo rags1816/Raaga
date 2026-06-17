@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga — Quick Reference Card</title>
+<style>
+:root{
+  --bg:#0c0c14;--card:#13131e;--card2:#191926;--border:rgba(255,255,255,0.08);
+  --saffron:#FF9500;--teal:#00C9A7;--rose:#FF6B9D;--violet:#9B59B6;--blue:#4A90E2;
+  --text:#EDE8D8;--text2:#8A8A9A;--text3:#4A4A5E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:16px;font-size:13px;line-height:1.5}
+h1{font-family:Georgia,serif;font-size:22px;background:linear-gradient(135deg,#FFB347,#FF9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.subtitle{color:var(--text2);font-size:11px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;max-width:1100px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.card h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--saffron);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.04)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--text2);width:38%}
+td:last-child{color:var(--text);font-weight:500}
+.key{display:inline-block;background:var(--card2);border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:11px;color:var(--saffron);margin:1px}
+.badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700}
+.badge-green{background:rgba(0,201,167,0.15);color:var(--teal);border:1px solid rgba(0,201,167,0.3)}
+.badge-violet{background:rgba(155,89,182,0.15);color:var(--violet);border:1px solid rgba(155,89,182,0.3)}
+.badge-saffron{background:rgba(255,149,0,0.15);color:var(--saffron);border:1px solid rgba(255,149,0,0.3)}
+.row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.row:last-child{border-bottom:none}
+.row-label{color:var(--text2);font-size:12px}
+.row-val{color:var(--text);font-size:12px;font-weight:500;text-align:right}
+.saptak{margin-bottom:8px}
+.saptak-title{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
+.keys-row{display:flex;flex-wrap:wrap;gap:3px}
+.kp{display:flex;flex-direction:column;align-items:center;gap:1px}
+.kp .k{background:var(--card2);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 5px;font-family:monospace;font-size:11px;color:var(--saffron);min-width:22px;text-align:center}
+.kp .s{font-size:9px;color:var(--text2)}
+.ai-row{display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ai-row:last-child{border-bottom:none}
+.ai-icon{font-size:14px;width:20px;flex-shrink:0}
+.ai-info{flex:1}
+.ai-name{font-size:12px;font-weight:600;color:var(--text)}
+.ai-desc{font-size:10px;color:var(--text2)}
+.url{color:var(--teal);font-size:11px;text-decoration:none;font-family:monospace}
+.tip{background:rgba(0,201,167,0.06);border:1px solid rgba(0,201,167,0.2);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--teal);margin-top:8px}
+.warn{background:rgba(255,149,0,0.06);border:1px solid rgba(255,149,0,0.2);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--saffron);margin-top:8px}
+@media print{body{background:#fff;color:#000;padding:10px}.card{border:1px solid #ddd;break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>🎵 Raaga — Quick Reference</h1>
+<div class="subtitle">Indian Classical Music Studio · v5 · rags1816.github.io/Raaga</div>
+
+<div class="grid">
+
+<!-- KEYBOARD LAYOUT -->
+<div class="card">
+  <h2>⌨ Laptop Keyboard — 3 Octaves</h2>
+  <div class="saptak">
+    <div class="saptak-title">Mandra Saptak (lower)</div>
+    <div class="keys-row">
+      <div class="kp"><div class="k">Z</div><div class="s">Sa</div></div>
+      <div class="kp"><div class="k">X</div><div class="s">Re</div></div>
+      <div class="kp"><div class="k">C</div><div class="s">Ga</div></div>
+      <div class="kp"><div class="k">V</div><div class="s">Ma</div></div>
+      <div class="kp"><div class="k">B</div><div class="s">Pa</div></div>
+      <div class="kp"><div class="k">N</div><div class="s">Dha</div></div>
+      <div class="kp"><div class="k">M</div><div class="s">Ni</div></div>
+      <div class="kp"><div class="k">,</div><div class="s">Ṡ</div></div>
+    </div>
+  </div>
+  <div class="saptak">
+    <div class="saptak-title">Madhya Saptak (middle) — main</div>
+    <div class="keys-row">
+      <div class="kp"><div class="k">A</div><div class="s">Sa</div></div>
+      <div class="kp"><div class="k">S</div><div class="s">Re</div></div>
+      <div class="kp"><div class="k">D</div><div class="s">Ga</div></div>
+      <div class="kp"><div class="k">F</div><div class="s">Ma</div></div>
+      <div class="kp"><div class="k">G</div><div class="s">Pa</div></div>
+      <div class="kp"><div class="k">H</div><div class="s">Dha</div></div>
+      <div class="kp"><div class="k">J</div><div class="s">Ni</div></div>
+      <div class="kp"><div class="k">K</div><div class="s">Ṡ</div></div>
+    </div>
+  </div>
+  <div class="saptak">
+    <div class="saptak-title">Komal / Tivra (black keys)</div>
+    <div class="keys-row">
+      <div class="kp"><div class="k">W</div><div class="s">r</div></div>
+      <div class="kp"><div class="k">E</div><div class="s">g</div></div>
+      <div class="kp"><div class="k">T</div><div class="s">m</div></div>
+      <div class="kp"><div class="k">Y</div><div class="s">d</div></div>
+      <div class="kp"><div class="k">U</div><div class="s">n</div></div>
+    </div>
+  </div>
+  <div class="saptak">
+    <div class="saptak-title">Taar Saptak (upper)</div>
+    <div class="keys-row">
+      <div class="kp"><div class="k">I</div><div class="s">Sa</div></div>
+      <div class="kp"><div class="k">O</div><div class="s">Re</div></div>
+      <div class="kp"><div class="k">L</div><div class="s">Ga</div></div>
+      <div class="kp"><div class="k">9</div><div class="s">Ma</div></div>
+      <div class="kp"><div class="k">0</div><div class="s">Pa</div></div>
+      <div class="kp"><div class="k">-</div><div class="s">Dha</div></div>
+      <div class="kp"><div class="k">=</div><div class="s">Ni</div></div>
+      <div class="kp"><div class="k">]</div><div class="s">Ṡ</div></div>
+    </div>
+  </div>
+  <div class="saptak">
+    <div class="saptak-title">Percussion</div>
+    <div class="keys-row">
+      <div class="kp"><div class="k">Q</div><div class="s">Baya</div></div>
+      <div class="kp"><div class="k">P</div><div class="s">Dayan</div></div>
+      <div class="kp"><div class="k">1-8</div><div class="s">Octopad</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 18 INSTRUMENTS -->
+<div class="card">
+  <h2>🎵 18 Instruments</h2>
+  <div style="margin-bottom:8px">
+    <div style="font-size:10px;color:var(--violet);font-weight:700;margin-bottom:4px">INDIAN CLASSICAL ★ Real Samples</div>
+    <table>
+      <tr><td>🪗 Harmonium</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🪕 Sitar</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🪈 Veena</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎵 Sarod</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>📯 Shehnai</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎷 Bansuri</td><td><span class="badge badge-green">★ Real</span></td></tr>
+    </table>
+  </div>
+  <div style="margin-bottom:8px">
+    <div style="font-size:10px;color:var(--blue);font-weight:700;margin-bottom:4px">WESTERN ★ Real Samples</div>
+    <table>
+      <tr><td>🎻 Violin</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎷 Saxophone</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎺 Trumpet</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎹 Grand Piano</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎹 Church Organ</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎸 Acoustic Guitar</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>⚡ Electric Guitar</td><td><span class="badge badge-green">★ Real</span></td></tr>
+    </table>
+  </div>
+  <div>
+    <div style="font-size:10px;color:var(--violet);font-weight:700;margin-bottom:4px">PERCUSSION ★ Real Samples</div>
+    <table>
+      <tr><td>🥁 Tabla</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🥁 Dholak</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🥁 Conga</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🥁 Bongos</td><td><span class="badge badge-green">★ Real</span></td></tr>
+      <tr><td>🎛 Octopad</td><td><span class="badge badge-green">★ Real</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="card">
+  <h2>📑 App Tabs</h2>
+  <table>
+    <tr><td>🎹 Instruments</td><td>Play keyboard, adjust sound</td></tr>
+    <tr><td>🎵 Practise</td><td>Guided note practice + quiz</td></tr>
+    <tr><td>🎮 Play-Along</td><td>65+ songs karaoke-style</td></tr>
+    <tr><td>🎼 Raagas</td><td>Raaga reference & scales</td></tr>
+    <tr><td>🎬 Songs</td><td>Full song library browser</td></tr>
+    <tr><td>🎤 Sur & Shruti</td><td>Shruti box & tuning</td></tr>
+    <tr><td>🎓 Academy</td><td>Learning lessons</td></tr>
+    <tr><td>📖 Theory</td><td>Music theory reference</td></tr>
+    <tr><td>🤖 AI Hub</td><td>All 11 AI features</td></tr>
+    <tr><td>⚙ Admin</td><td>API keys & AI settings</td></tr>
+  </table>
+  <div class="tip">Click Start Playing first — required to unlock audio in browser.</div>
+</div>
+
+<!-- AI FEATURES -->
+<div class="card">
+  <h2>🤖 11 AI Features</h2>
+  <div class="ai-row"><div class="ai-icon">🧘</div><div class="ai-info"><div class="ai-name">Guru Chat</div><div class="ai-desc">Ask anything about Indian classical music</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🔍</div><div class="ai-info"><div class="ai-name">Raaga Identifier</div><div class="ai-desc">Type note sequence → AI names the raaga</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🕰</div><div class="ai-info"><div class="ai-name">Raaga Historian</div><div class="ai-desc">Full history, scale, vadi, recordings</div></div></div>
+  <div class="ai-row"><div class="ai-icon">📜</div><div class="ai-info"><div class="ai-name">Lyrics Explainer</div><div class="ai-desc">Translate & explain bandish lyrics</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🎵</div><div class="ai-info"><div class="ai-name">Bandish Composer</div><div class="ai-desc">AI writes original compositions</div></div></div>
+  <div class="ai-row"><div class="ai-icon">📋</div><div class="ai-info"><div class="ai-name">Lesson Plan</div><div class="ai-desc">Personalised practice plan from your XP</div></div></div>
+  <div class="ai-row"><div class="ai-icon">📊</div><div class="ai-info"><div class="ai-name">Session Feedback</div><div class="ai-desc">AI scores your practice session</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🎓</div><div class="ai-info"><div class="ai-name">Raaga Tutor</div><div class="ai-desc">Live colour feedback — right/wrong notes</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🏛</div><div class="ai-info"><div class="ai-name">Gharana Analyser</div><div class="ai-desc">Identifies your playing style/gharana</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🎤</div><div class="ai-info"><div class="ai-name">Pitch Detector</div><div class="ai-desc">Mic-based swara detection in real time</div></div></div>
+  <div class="ai-row"><div class="ai-icon">🎙</div><div class="ai-info"><div class="ai-name">Sing-Along Judge</div><div class="ai-desc">Scores your singing accuracy live</div></div></div>
+  <div class="warn">Setup: ⚙ Admin → add Claude or Gemini key → enable features → 🤖 AI Hub</div>
+</div>
+
+<!-- RAAGAS -->
+<div class="card">
+  <h2>🎼 Raagas Quick Reference</h2>
+  <table>
+    <tr><td><strong>Yaman</strong></td><td>Evening · Tivra Ma only · Romantic</td></tr>
+    <tr><td><strong>Bhairav</strong></td><td>Dawn · Komal Re & Dha · Solemn</td></tr>
+    <tr><td><strong>Bhairavi</strong></td><td>Morning · All komal · Pathos</td></tr>
+    <tr><td><strong>Khamaj</strong></td><td>Night · Komal Ni · Romantic</td></tr>
+    <tr><td><strong>Malkauns</strong></td><td>Midnight · S g M d n · Mystical</td></tr>
+    <tr><td><strong>Hamsadhwani</strong></td><td>Anytime · S R G P N · Bright</td></tr>
+    <tr><td><strong>Bhairavi</strong></td><td>Morning · All komal · Pathos</td></tr>
+    <tr><td><strong>Shivaranjani</strong></td><td>Anytime · S R g P D · Yearning</td></tr>
+    <tr><td><strong>Bilawal</strong></td><td>Morning · All shuddh · Pure</td></tr>
+    <tr><td><strong>Bageshri</strong></td><td>Midnight · Komal Ga Ni · Longing</td></tr>
+    <tr><td><strong>Desh</strong></td><td>Monsoon · Patriotic · Nostalgic</td></tr>
+    <tr><td><strong>Bihag</strong></td><td>Night · Both Ma · Dreamy</td></tr>
+  </table>
+</div>
+
+<!-- TAALS -->
+<div class="card">
+  <h2>🥁 Taals (Rhythmic Cycles)</h2>
+  <table>
+    <tr><td><strong>Keherwa</strong></td><td>8 beats · Most Bollywood songs</td></tr>
+    <tr><td><strong>Teental</strong></td><td>16 beats · Classical khyal</td></tr>
+    <tr><td><strong>Dadra</strong></td><td>6 beats · Thumri, light</td></tr>
+    <tr><td><strong>Rupak</strong></td><td>7 beats · Sam on khali</td></tr>
+    <tr><td><strong>Jhaptal</strong></td><td>10 beats · Classical</td></tr>
+    <tr><td><strong>Ektaal</strong></td><td>12 beats · Vilambit khyal</td></tr>
+    <tr><td><strong>Adi Talam</strong></td><td>8 beats · Carnatic</td></tr>
+    <tr><td><strong>Western 4/4</strong></td><td>8 beats · Rock / Pop</td></tr>
+    <tr><td><strong>Bossa Nova</strong></td><td>8 beats · Brazilian</td></tr>
+  </table>
+</div>
+
+<!-- XP RANKS -->
+<div class="card">
+  <h2>🏆 XP Ranks</h2>
+  <table>
+    <tr><td>0–49 XP</td><td>Novice Shishya</td></tr>
+    <tr><td>50–129 XP</td><td>Shagird (Student)</td></tr>
+    <tr><td>130–249 XP</td><td>Abhyasi (Practitioner)</td></tr>
+    <tr><td>250–399 XP</td><td>Tayyar (Prepared)</td></tr>
+    <tr><td>400–599 XP</td><td>Ustadji (Master)</td></tr>
+    <tr><td>600+ XP</td><td>🌟 Sangeet Ratna</td></tr>
+  </table>
+  <div style="margin-top:10px;font-size:11px;color:var(--text2)">
+    <div class="row"><div class="row-label">Correct note (Practise)</div><div class="row-val">+5 XP</div></div>
+    <div class="row"><div class="row-label">Song completed</div><div class="row-val">+30 XP</div></div>
+    <div class="row"><div class="row-label">Play-Along note hit</div><div class="row-val">+3 XP</div></div>
+    <div class="row"><div class="row-label">Raaga Quiz correct</div><div class="row-val">+20 XP</div></div>
+  </div>
+</div>
+
+<!-- SWARA TABLE -->
+<div class="card">
+  <h2>🎵 Swara Reference</h2>
+  <table>
+    <tr><td><strong style="color:var(--teal)">Sa</strong></td><td>C · Shadja · Always shuddh</td></tr>
+    <tr><td><strong>r / R</strong></td><td>C# / D · Komal/Shuddh Rishabh</td></tr>
+    <tr><td><strong>g / G</strong></td><td>D# / E · Komal/Shuddh Gandhar</td></tr>
+    <tr><td><strong>M / m</strong></td><td>F / F# · Shuddh/Tivra Madhyam</td></tr>
+    <tr><td><strong style="color:var(--teal)">Pa</strong></td><td>G · Pancham · Always shuddh</td></tr>
+    <tr><td><strong>d / D</strong></td><td>G# / A · Komal/Shuddh Dhaivat</td></tr>
+    <tr><td><strong>n / N</strong></td><td>A# / B · Komal/Shuddh Nishad</td></tr>
+    <tr><td><strong>Ṡ</strong></td><td>C (upper) · Sa of next saptak</td></tr>
+  </table>
+  <div class="tip">Sa and Pa are never komal — they are always shuddh (natural).</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:16px;color:var(--text3);font-size:11px;margin-top:8px">
+  Raaga v5 · <a href="https://rags1816.github.io/Raaga/" class="url">rags1816.github.io/Raaga</a> · github.com/rags1816/Raaga
+</div>
+
+</body>
+</html>
