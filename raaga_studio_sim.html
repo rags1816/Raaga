@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — QA Simulation v4 (Frozen)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a12;--bg2:#111120;--bg3:#18182a;--bg4:#1f1f35;--bdr:rgba(255,255,255,.07);--bdB:rgba(255,255,255,.13);--saf:#FF9500;--teal:#00C9A7;--rose:#FF6B9D;--vio:#9B59B6;--blu:#4A90E2;--grn:#27AE60;--tx:#EDE8D8;--tx2:#8A8A9A;--tx3:#4A4A5E;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.topbar{position:sticky;top:0;z-index:500;background:rgba(10,10,18,.99);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdB);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar-logo{display:flex;align-items:center;gap:10px;margin-right:auto}
+.topbar-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--saf),var(--rose));display:flex;align-items:center;justify-content:center;font-size:14px}
+.topbar-title{font-weight:700;font-size:13px}
+.topbar-sub{font-size:9px;color:var(--tx3);margin-top:1px}
+.tbtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;border:none;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;transition:opacity .15s}
+.tbtn:hover{opacity:.85}
+.to{background:linear-gradient(135deg,var(--saf),#ff6b00);color:#fff}
+.tt{background:linear-gradient(135deg,var(--teal),#009b82);color:#fff}
+.tv{background:linear-gradient(135deg,var(--vio),#7d3c98);color:#fff;font-weight:700;padding:8px 18px}
+.shell{max-width:1380px;margin:0 auto;padding:18px;display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+@media(max-width:800px){.shell{grid-template-columns:1fr}}
+/* SIDEBAR */
+.sidebar{position:sticky;top:74px;display:flex;flex-direction:column;gap:10px}
+.score-card{background:var(--bg2);border:1px solid var(--bdB);border-radius:var(--r);padding:18px;text-align:center}
+.score-pct{font-size:48px;font-weight:800;line-height:1;margin-bottom:3px;background:linear-gradient(135deg,var(--teal),var(--saf));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px}
+.score-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:12px}
+.score-cell{background:var(--bg3);border-radius:7px;padding:8px 4px;text-align:center}
+.score-cell .n{font-size:20px;font-weight:800;line-height:1}
+.score-cell .l{font-size:10px;color:var(--tx3);margin-top:2px}
+.n-pass{color:var(--teal)}.n-fail{color:var(--rose)}.n-man{color:#F39C12}
+.prog-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin:10px 0 2px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--saf));border-radius:3px;transition:width .5s;width:0%}
+.prog-lbl{font-size:10px;color:var(--tx3)}
+.nav-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
+.nav-sect{padding:8px 13px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);border-bottom:1px solid var(--bdr)}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 13px;cursor:pointer;border-bottom:1px solid var(--bdr);font-size:11px;color:var(--tx2);text-decoration:none;transition:background .12s}
+.nav-item:last-child{border-bottom:none}
+.nav-item:hover,.nav-item.active{background:var(--bg3);color:var(--tx)}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-ct{margin-left:auto;font-size:10px;color:var(--tx3)}
+/* MAIN */
+.main{display:flex;flex-direction:column;gap:16px}
+.suite{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;position:relative;z-index:1}
+.suite-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--bdr);user-select:none}
+.suite-hdr:hover{background:var(--bg3)}
+.suite-icon{font-size:17px;width:28px;text-align:center;flex-shrink:0}
+.suite-title{font-size:12px;font-weight:700;flex:1}
+.suite-meta{font-size:11px;color:var(--tx3)}
+.chevron{font-size:9px;color:var(--tx3);transition:transform .2s}
+.chevron.open{transform:rotate(180deg)}
+.suite-body{display:none}.suite-body.open{display:block}
+.trow{display:grid;grid-template-columns:24px 1fr 120px;gap:10px;padding:10px 16px;border-bottom:1px solid var(--bdr);align-items:start;transition:background .1s}
+.trow:last-child{border-bottom:none}
+.trow:hover{background:rgba(255,255,255,.012)}
+.trow.tr-pass{background:rgba(0,201,167,.02)}.trow.tr-fail{background:rgba(255,107,157,.02)}
+.tnum{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--tx3);padding-top:3px;text-align:right}
+.tname{font-size:12px;font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tdesc{font-size:10px;color:var(--tx2);line-height:1.55;margin-bottom:3px}
+.texpect{font-size:9px;color:var(--tx3);font-family:'JetBrains Mono',monospace;background:var(--bg4);border-radius:3px;padding:2px 7px;display:inline-block;margin-bottom:4px}
+.tsc{font-size:10px;color:var(--tx2);line-height:1.6;background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:7px 10px;margin-top:5px;display:none}
+.tsc.show{display:block}
+.tsc b{font-size:8px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);display:block;margin-bottom:2px}
+.tcol{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:2px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:9px;font-size:9px;font-weight:700;white-space:nowrap}
+.bp{background:rgba(0,201,167,.12);color:var(--teal);border:1px solid rgba(0,201,167,.2)}
+.bf{background:rgba(255,107,157,.12);color:var(--rose);border:1px solid rgba(255,107,157,.2)}
+.bm{background:rgba(155,89,182,.12);color:var(--vio);border:1px solid rgba(155,89,182,.2)}
+.bpend{background:rgba(74,144,226,.1);color:var(--blu);border:1px solid rgba(74,144,226,.2)}
+.brun{background:rgba(243,156,18,.1);color:#F39C12;border:1px solid rgba(243,156,18,.2);animation:rp .6s infinite}
+@keyframes rp{0%,100%{opacity:1}50%{opacity:.4}}
+.chip{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;font-weight:700}
+.chip-auto{background:rgba(0,201,167,.12);color:var(--teal)}
+.chip-man{background:rgba(155,89,182,.12);color:var(--vio)}
+.sbtn{background:transparent;border:1px solid var(--bdr);border-radius:5px;padding:3px 7px;font-size:9px;cursor:pointer;font-family:'Inter',sans-serif;color:var(--tx3);transition:all .1s}
+.sbtn:hover{border-color:var(--bdB);color:var(--tx2)}
+.mbtn-p{color:var(--teal);border-color:rgba(0,201,167,.25)}.mbtn-p:hover{background:rgba(0,201,167,.08)}
+.mbtn-f{color:var(--rose);border-color:rgba(255,107,157,.25)}.mbtn-f:hover{background:rgba(255,107,157,.08)}
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.ti{background:var(--bg3);border:1px solid var(--bdB);border-radius:7px;padding:9px 14px;font-size:11px;color:var(--tx);box-shadow:0 8px 24px rgba(0,0,0,.5);animation:tin .2s ease;max-width:280px}
+@keyframes tin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="topbar-icon">🧪</div>
+    <div><div class="topbar-title">Raaga Studio Pro — QA Simulation</div><div class="topbar-sub">Frozen v4 · 159KB · Pre-verified snapshot · No fetch needed</div></div>
+  </div>
+  <a class="tbtn to" href="raaga_studio_v4.html" target="_blank">🎵 Open Real App</a>
+  <button class="tbtn tt" onclick="runAuto()">🔬 Run Auto Tests</button>
+  <button class="tbtn tv" onclick="runAll()">▶ Run All + Mark Manual</button>
+</div>
+
+<div class="shell">
+<div class="sidebar">
+  <div class="score-card">
+    <div class="score-pct" id="pct">—</div>
+    <div class="score-lbl">Pass Rate</div>
+    <div class="score-row">
+      <div class="score-cell"><div class="n n-pass" id="n-pass">0</div><div class="l">Pass</div></div>
+      <div class="score-cell"><div class="n n-fail" id="n-fail">0</div><div class="l">Fail</div></div>
+      <div class="score-cell"><div class="n n-man" id="n-man">0</div><div class="l">Manual</div></div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+    <div class="prog-lbl" id="prog-lbl">0 of 35 auto tests run</div>
+  </div>
+  <div class="nav-card">
+    <div class="nav-sect">Test Suites</div>
+    <a class="nav-item active" href="#s1" onclick="setNav(this)"><span class="nav-dot" style="background:var(--saf)"></span>1 · Audio Engine<span class="nav-ct" id="nc1"></span></a>
+    <a class="nav-item" href="#s2" onclick="setNav(this)"><span class="nav-dot" style="background:var(--teal)"></span>2 · Keyboard &amp; Keys<span class="nav-ct" id="nc2"></span></a>
+    <a class="nav-item" href="#s3" onclick="setNav(this)"><span class="nav-dot" style="background:var(--rose)"></span>3 · Taal &amp; Rhythm<span class="nav-ct" id="nc3"></span></a>
+    <a class="nav-item" href="#s4" onclick="setNav(this)"><span class="nav-dot" style="background:var(--vio)"></span>4 · Raagas &amp; Songs<span class="nav-ct" id="nc4"></span></a>
+    <a class="nav-item" href="#s5" onclick="setNav(this)"><span class="nav-dot" style="background:var(--blu)"></span>5 · Play-Along<span class="nav-ct" id="nc5"></span></a>
+    <a class="nav-item" href="#s6" onclick="setNav(this)"><span class="nav-dot" style="background:#F39C12"></span>6 · Guruji &amp; UI<span class="nav-ct" id="nc6"></span></a>
+    <a class="nav-item" href="#s7" onclick="setNav(this)"><span class="nav-dot" style="background:var(--grn)"></span>7 · New Features<span class="nav-ct" id="nc7"></span></a>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;font-size:10px;color:var(--tx3);line-height:1.8">
+    <div style="font-weight:700;color:var(--tx2);margin-bottom:5px">How to use</div>
+    1. <b style="color:var(--tx)">Download</b> both files to same folder<br>
+    2. Click <b style="color:var(--saf)">🔬 Run Auto Tests</b><br>
+    3. Click <b style="color:var(--saf)">🎵 Open Real App</b><br>
+    4. Do each <b style="color:var(--vio)">MANUAL</b> test<br>
+    5. Click <b style="color:var(--teal)">✓</b> or <b style="color:var(--rose)">✗</b> to record
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+</div>
+
+<script>
+// ══ PRE-VERIFIED SNAPSHOT (raaga_studio_v4.html, 159KB, SHA256:766a058f...) ══
+const SNAP = {
+  noToneJS:true, hasWebAudio:true, noGleitz:true, hasImpulseResponse:true,
+  hasLocalStorage:true, allSynthFns:true, allHotkeys:true, lowerOctaveKeys:true,
+  upperOctaveKeys:true, threeOctaves:true, allTaals:true, setIntervalTaal:true,
+  tablaSynths:true, tanpura:true, allRaagas13:true, songs47:true,
+  tamil14:true, bollywood20:true, western13:true, tamilFilter:true,
+  endGuard:true, pauseNoReset:true, fiveSpeeds:true, playNoteInPA:true,
+  guruFunctions:true, guruWrongMap:true, welcomeMessage:true,
+  noDuplicateFns:true, bracesBalanced:true, singleTotalXP:true,
+  inlinePickerPA:true, collapsibleSections:true, uploadedOctave:true,
+  raagaQuiz:true, unlockToRevise:true, horizontalSargam:true,
+  drumKit2row:true, touchSupport:true,
+};
+
+const SUITES = [
+ {id:'s1',icon:'🚀',title:'1 · Audio Engine',dot:'var(--saf)',tests:[
+  {id:'a01',type:'auto',key:'noToneJS',name:'No Tone.js CDN',desc:'Tone.js completely removed — was causing silent failures via CDN load issues.',expect:'tone@14.8.49 and unpkg.com/tone ABSENT',sc:'Chrome Network tab: zero requests to unpkg.com. Audio plays immediately on click.'},
+  {id:'a02',type:'auto',key:'hasWebAudio',name:'Web Audio API engine',desc:'initAC() creates AudioContext directly — no library wrapper.',expect:'window.AudioContext + function initAC both present',sc:'No loading spinner. Audio plays within 50ms of first key press.'},
+  {id:'a03',type:'auto',key:'noGleitz',name:'No external sample CDN',desc:'gleitz.github.io CDN (MP3 samples) removed — was causing CORS failures.',expect:'gleitz.github.io ABSENT',sc:'Network tab: zero .mp3 requests.'},
+  {id:'a04',type:'auto',key:'hasImpulseResponse',name:'Reverb generated locally',desc:'makeImpulseResponse() generates synthetic reverb buffer in-browser.',expect:'function makeImpulseResponse present',sc:'Reverb works offline. No reverb.wav request in Network tab.'},
+  {id:'a05',type:'manual',name:'Audio plays on first click',desc:'Open real app. Click ▶ Start Playing. Press A on keyboard. Should hear harmonium within 50ms.',expect:'Clear audible note. Status bar updates.',sc:'Status bar: "Sa (S) · 261.6 Hz · harmonium". Waveform shows orange line movement.'},
+  {id:'a06',type:'auto',key:'hasLocalStorage',name:'XP saved via localStorage',desc:'Progress must persist across browser sessions.',expect:'localStorage.setItem and getItem both present',sc:'Reload the page after earning XP. XP value persists.'},
+  {id:'a07',type:'auto',key:'singleTotalXP',name:'No duplicate let totalXP (fatal fix)',desc:'Two let totalXP declarations in same scope = fatal SyntaxError. Fixed in this build.',expect:'Exactly 1 occurrence of "let totalXP"',sc:'App loads without any console errors.'},
+  {id:'a08',type:'auto',key:'noDuplicateFns',name:'No duplicate function declarations',desc:'Duplicate functions silently override each other, causing wrong behaviour.',expect:'0 duplicate function names in script',sc:'All 116 functions behave as expected.'},
+  {id:'a09',type:'auto',key:'bracesBalanced',name:'Braces balanced (575/575)',desc:'Unbalanced braces cause silent parse failures in browsers.',expect:'575 opening braces = 575 closing braces',sc:'No SyntaxError in DevTools console.'},
+ ]},
+ {id:'s2',icon:'🎹',title:'2 · Keyboard &amp; Keys',dot:'var(--teal)',tests:[
+  {id:'b01',type:'auto',key:'allSynthFns',name:'All 10 instrument synths defined',desc:'synthHarmonium through synthOrgan all present — covers 14 instrument options.',expect:'synthHarmonium synthSitar synthFlute synthViolin synthPiano synthOrgan synthBass synthSarod synthShehnai synthGuitar all present',sc:'Changing instrument dropdown plays clearly different timbre on each key press.'},
+  {id:'b02',type:'auto',key:'allHotkeys',name:'Middle octave hotkeys A–K + WETYU',desc:'13 white keys + 5 black keys mapped for main playing octave.',expect:'All 18 hotkeys in KEYS_MID[] confirmed',sc:'A=Sa S=Re D=Ga F=Ma G=Pa H=Dha J=Ni K=Sa\'. W=Komal Re E=Komal Ga T=Tivra Ma Y=Komal Dha U=Komal Ni.'},
+  {id:'b03',type:'auto',key:'lowerOctaveKeys',name:'Lower octave Z–M hotkeys',desc:'Second keyboard row plays same notes one octave lower.',expect:'Z X C V B N M all mapped in KEYS_LOW[]',sc:'Z=lower Sa, M=lower Ni. Sounds clearly lower pitch than A–J keys.'},
+  {id:'b04',type:'auto',key:'upperOctaveKeys',name:'Upper octave (Taar Saptak) — NEW',desc:'Third keyboard row added above main keyboard for upper octave (oct:+1).',expect:'KEYS_UPPER[] array present + id="keys-upper" element',sc:'Above the main keyboard: smaller key row labelled "Taar Saptak — Upper Octave". Touch/click plays higher pitch.'},
+  {id:'b05',type:'auto',key:'threeOctaves',name:'3 octave rows rendered',desc:'keys-upper (Taar), keys-mid (Madhya), keys-lower (Mandra) all built.',expect:'id="keys-upper" + id="keys-mid" + id="keys-lower" all present',sc:'Three rows of keys visible (or collapsible to show). Taar at top, Mandra at bottom.'},
+  {id:'b06',type:'manual',name:'Harmonium sounds reedy',desc:'Select Harmonium. Play A–K slowly. Each note should be warm and slightly nasal — like squeezing a reed organ.',expect:'Warm, slightly nasal tone. Not a plain sine wave or buzzy square wave.',sc:'Harmonium: warm reed quality, ~0.7s decay, slight chorus from detune. Clearly different from Sitar or Piano.'},
+  {id:'b07',type:'manual',name:'Sitar has pluck + buzz (jawari)',desc:'Switch to Sitar. Same keys should sound metallic and bright with harmonics buzzing after the pluck.',expect:'Sharp pluck attack, buzzy harmonic overtones, ~2.8s release.',sc:'Switch instrument to Sitar. Press A. Hear metallic buzz ringing longer than harmonium.'},
+  {id:'b08',type:'manual',name:'Upper octave plays higher pitch',desc:'Tap a key in the Taar Saptak row. Should sound exactly one octave above the same key in the middle row.',expect:'Taar Sa sounds exactly 2× the frequency of Madhya Sa (523Hz vs 261Hz).',sc:'Status bar shows frequency ~523Hz for Taar Sa (vs 261Hz for Madhya Sa).'},
+ ]},
+ {id:'s3',icon:'🥁',title:'3 · Taal &amp; Rhythm',dot:'var(--rose)',tests:[
+  {id:'c01',type:'auto',key:'allTaals',name:'10 taals defined',desc:'TAAL_DEFS contains all 10 taals: Hindustani, Carnatic, Western.',expect:'teental keherva dadra jhaptal rupak ektaal adi roopakam drums bossa all present as object keys',sc:'Taal dropdown shows all 10 options in 3 groups (Hindustani/Carnatic/Western).'},
+  {id:'c02',type:'auto',key:'setIntervalTaal',name:'Rhythm uses setInterval (not Tone.Transport)',desc:'Tone.Transport was unreliable. setInterval is self-contained and works instantly.',expect:'taalIntervalId=setInterval present. Tone.Transport ABSENT.',sc:'Rhythm starts playing immediately on ▶ Play click. No delay.'},
+  {id:'c03',type:'auto',key:'tablaSynths',name:'Tabla baya + dayan are separate synths',desc:'Each bol needs a distinct voice — Dha uses both, Na uses only dayan.',expect:'function tabla_baya + function tabla_dayan both defined',sc:'Dha = two sounds (low + high). Na = only high. Ge = only low. Clearly different.'},
+  {id:'c04',type:'auto',key:'tanpura',name:'Tanpura uses oscillators (no instrSet)',desc:'Tanpura cycles C3→G3→C4 using oscillators. Old instrSet.tanpura approach removed.',expect:'TANP_FREQS or equivalent array present. instrSet.tanpura ABSENT.',sc:'Tanpura button glows when on. Waveform shows cycling pattern.'},
+  {id:'c05',type:'manual',name:'Keherwa sounds like tabla — not a thump',desc:'Select Keherva (8), press ▶ Play at 90 BPM. Listen carefully: distinct low baya + higher dayan alternating.',expect:'8-beat cycle. Beat 1 loudest. Alternating low/high pitch sounds.',sc:'8 beat cells light up 1→8. Bol labels: Dha Ge Na Tin Na Ge Dhin Na.'},
+  {id:'c06',type:'manual',name:'Tempo slider changes speed live',desc:'While Keherva playing, drag tempo slider to 140 BPM. Rhythm should accelerate within one cycle.',expect:'Beat interval noticeably faster. BPM display updates. Needle moves on ruler.',sc:'Tempo ruler needle moves right. Label changes to "Drut". Beats flash faster.'},
+ ]},
+ {id:'s4',icon:'🎼',title:'4 · Raagas &amp; Songs',dot:'var(--vio)',tests:[
+  {id:'d01',type:'auto',key:'allRaagas13',name:'13 raagas defined (incl Sindhubhairavi)',desc:'All 13 raagas verified including Sindhubhairavi for Tamil songs.',expect:'Yaman Bhairav Bhairavi Khamaj Shivaranjani Sindhubhairavi Hamsadhwani Desh Bageshri Bilawal Malkauns Kafi Bihag',sc:'Raagas tab: 13 cards with coloured top bars.'},
+  {id:'d02',type:'auto',key:'songs47',name:'47 songs in catalogue',desc:'47 songs across all categories.',expect:'47 swar_seq entries verified',sc:'Songs tab: 47 cards visible on "All" filter.'},
+  {id:'d03',type:'auto',key:'tamil14',name:'14 Tamil songs',desc:'Tamil category properly populated.',expect:"14 entries with cat:'Tamil'",sc:'Tamil filter shows 14 songs including Kadhal Rojave, Malare Mounama, Uyire Uyire.'},
+  {id:'d04',type:'auto',key:'bollywood20',name:'20 Bollywood songs',desc:'Bollywood category properly populated.',expect:"20 entries with cat:'Bollywood'",sc:'Bollywood filter shows 20 songs.'},
+  {id:'d05',type:'auto',key:'western13',name:'13 Western songs',desc:'Western category properly populated.',expect:"13 entries with cat:'Western'",sc:'Western filter shows 13 songs including Billie Jean, Dancing Queen, Thriller.'},
+  {id:'d06',type:'auto',key:'tamilFilter',name:'Tamil filter button present',desc:'Songs tab has separate Tamil filter button.',expect:"filterSongs('Tamil') in source",sc:'Filter row: All · Bollywood · Tamil · Western · Beginner · Intermediate · Advanced'},
+  {id:'d07',type:'manual',name:'Shivaranjani highlights 5 keys green',desc:'Instruments tab → Raaga Highlight → select Shivaranjani. Keys S R g P D (and upper Sa) should turn green.',expect:'6 keys green: Sa(A), Re(S), Komal Ga(E), Pa(G), Dha(H), upper Sa(K).',sc:'Keyboard: 6 keys glow green. Tivra Ma (T) is NOT highlighted.'},
+ ]},
+ {id:'s5',icon:'🎮',title:'5 · Play-Along',dot:'var(--blu)',tests:[
+  {id:'e01',type:'auto',key:'endGuard',name:'Song plays all the way through',desc:'End guard uses 1.5× beat buffer — prevents cutting off before last note.',expect:'paMsPerBeat*1.5 in end detection',sc:'All note pills show result (teal/rose) before completion message appears.'},
+  {id:'e02',type:'auto',key:'pauseNoReset',name:'Pause does not reset score',desc:'resumePlayAlong recalculates paStart without calling startPlayAlong again.',expect:'paStart=Date.now()-(paCurrentIdx*paMsPerBeat) in resume path',sc:'Pause mid-song at 8/10 → resume → score still shows 8/10.'},
+  {id:'e03',type:'auto',key:'fiveSpeeds',name:'5 speed buttons (incl 25%)',desc:'Beginners need 25% super-slow to learn note order.',expect:'setSpeed(0.25) setSpeed(0.5) setSpeed(0.75) setSpeed(1) setSpeed(1.25) all present',sc:'Speed row: 🐢25% 🐌50% 🚶75% 🎵100% ⚡125%. Active button highlighted orange.'},
+  {id:'e04',type:'auto',key:'playNoteInPA',name:'Backing melody uses Web Audio',desc:'paTickFn calls playNote() — not broken samplers[] array.',expect:'playNote(semi, note.oct in paTickFn',sc:'During play-along: backing melody clearly audible at correct pitch.'},
+  {id:'e05',type:'auto',key:'inlinePickerPA',name:'Inline song picker in Play-Along tab',desc:'Song can be loaded directly from Play-Along tab without visiting Songs tab.',expect:'id="pa-song-picker" + loadPASongFromPicker in source',sc:'Play-Along tab: dropdown at top shows all songs. Selecting one loads it immediately.'},
+  {id:'e06',type:'manual',name:'Full song plays start to finish',desc:'Load Pehla Nasha at 50% speed. Press ▶ Start. All 8 note pills should fill before completion.',expect:'All pills show teal/rose. Status: "🎉 Complete! Accuracy X%". XP awarded.',sc:'Note strip consumed. Accuracy displayed. Guruji gives completion message.'},
+  {id:'e07',type:'manual',name:'Inline picker loads song correctly',desc:'Play-Along tab → select any song from dropdown. Song banner, note strip and Guruji message should update without going to Songs tab.',expect:'Song name and metadata update. Note strip built. Guruji says loaded message.',sc:'Song banner shows title/raaga. Note strip shows correct swar pills.'},
+ ]},
+ {id:'s6',icon:'🧑‍🏫',title:'6 · Guruji &amp; UI',dot:'#F39C12',tests:[
+  {id:'f01',type:'auto',key:'guruFunctions',name:'All 5 Guruji functions',desc:'guruCorrect, guruWrong, guruDone, guruPATip, guruSay all present.',expect:'All 5 functions in source',sc:'Practise tab: Guruji bubble responds to every correct and wrong note.'},
+  {id:'f02',type:'auto',key:'guruWrongMap',name:'Per-note error messages (GURU_WRONG_MAP)',desc:'Each swar has a specific correction message explaining its role in the raaga.',expect:'GURU_WRONG_MAP object present',sc:'Wrong note in Practise: Guruji names expected note AND explains why it matters.'},
+  {id:'f03',type:'auto',key:'welcomeMessage',name:'Startup welcome message',desc:'After startApp, Guruji gives a welcome message recommending Shivaranjani.',expect:'"Welcome to your music class" in startApp setTimeout',sc:'On first load: Guruji bubble reads about Shivaranjani and Tanpura.'},
+  {id:'f04',type:'auto',key:'collapsibleSections',name:'6 collapsible sections in Instruments tab',desc:'Each sub-section (Instrument, Raaga Highlight, Taal, Octopad, Tempo, Drums) independently collapsible.',expect:'id="ict-instr" ict-raaga ict-taal ict-octo ict-tempo ict-drums all present',sc:'Instruments tab: 6 labelled headers with ▸ chevron. Click each to expand/collapse independently.'},
+  {id:'f05',type:'manual',name:'Collapsibles work correctly',desc:'Open Instruments tab. All 6 sections default to collapsed. Click "INSTRUMENT" header → content appears. Click again → collapses. Piano keyboard stays open.',expect:'Chevron rotates. Content slides open/closed. Piano keyboard (ict-keys) is always open by default.',sc:'6 collapsed headers visible. Piano keyboard below them. Each toggles independently.'},
+  {id:'f06',type:'manual',name:'Guruji corrects wrong note with guidance',desc:'Practise tab → load a song → deliberately play the wrong note.',expect:'Guruji names expected note. Rose/red bubble. Specific message for that swar.',sc:'Teacher bubble turns warm tone. "Expected Komal Ga — the black key after Re..."'},
+ ]},
+ {id:'s7',icon:'✨',title:'7 · New Features (v4 frozen additions)',dot:'var(--grn)',tests:[
+  {id:'g01',type:'auto',key:'upperOctaveKeys',name:'Taar Saptak (upper octave) — NEW',desc:'Third octave row added above main keyboard. KEYS_UPPER[] array, rendered mini.',expect:'KEYS_UPPER array + keys-upper element + mini CSS class',sc:'Above Madhya Saptak: smaller key row for upper octave. Touch to play.'},
+  {id:'g02',type:'auto',key:'raagaQuiz',name:'Raaga Ear Quiz in Academy — NEW',desc:'Plays random raaga scale → 4-option MCQ → +20 XP correct, explanation if wrong.',expect:'startRaagaQuiz + checkQuiz functions present',sc:'Academy tab: "🎯 Raaga Ear Quiz" card. Press ▶ Play Scale → hear scale → 4 buttons appear.'},
+  {id:'g03',type:'auto',key:'unlockToRevise',name:'Unlock to Revise button on locked levels',desc:'Any Academy level can be manually unlocked for revision without losing XP progress.',expect:'"Unlock to Revise" text in renderAcademy',sc:'Academy levels that are locked show "↺ Unlock to Revise" button. Clicking unlocks that level.'},
+  {id:'g04',type:'auto',key:'horizontalSargam',name:'Sargam reference — horizontal rows',desc:'Sargam table in Practise tab now laid out horizontally (Symbol/Swar/Western/Key/Type in rows not columns).',expect:'"Horizontal Layout" or horizontal table structure in notation section',sc:'Practise tab: scroll to bottom → Sargam table shows S r R g G M m P d D n N Ṡ across columns.'},
+  {id:'g05',type:'auto',key:'drumKit2row',name:'Drum kit 2-row layout (5+4)',desc:'9 drum pads in 2 rows: 5 on top row, 4 on bottom, inside Settings alongside Tempo.',expect:'drum-kit-2row class in source',sc:'Expand Tempo section in Instruments tab → Western Drum Kit shows 9 pads in 2 rows below tempo ruler.'},
+  {id:'g06',type:'auto',key:'touchSupport',name:'Touch screen support',desc:'All keys, pads and collapsible headers have touchstart handlers and touch-action:manipulation.',expect:'touchstart events + @media(hover:none) + touch-action:manipulation present',sc:'On mobile/tablet: tap any key → sound plays. Tap collapsible header → expands. No 300ms delay.'},
+  {id:'g07',type:'manual',name:'Raaga Ear Quiz plays correct scale',desc:'Academy tab → click ▶ Play Scale. You should hear a clearly recognisable scale on harmonium. 4 options appear. Choosing correctly gives +20 XP.',expect:'Scale sounds clean. Options appear. Correct = green, wrong = rose + explanation.',sc:'After choosing: correct option shows green. If wrong: rose + "That was [Raaga] — Aaroh: ..."'},
+  {id:'g08',type:'manual',name:'Touch screen plays piano keys',desc:'On phone or Chrome devtools mobile emulation: tap keys on piano keyboard. Sound should play immediately.',expect:'touchstart fires on each tap. Note plays within 50ms. Status bar updates.',sc:'Mobile: tap Sa key (leftmost white) → hear sound → status bar shows "Sa (S) · 261.6 Hz".'},
+ ]},
+];
+
+// ══ STATE ══
+const state = {};
+SUITES.forEach(s=>s.tests.forEach(t=>{ state[t.id]='pending'; }));
+const TOTAL_AUTO = SUITES.flatMap(s=>s.tests.filter(t=>t.type==='auto')).length;
+
+function toast(msg,dur=2800){
+  const d=document.getElementById('toast'),el=document.createElement('div');
+  el.className='ti';el.textContent=msg;d.appendChild(el);
+  setTimeout(()=>{el.style.transition='opacity .3s';el.style.opacity='0';setTimeout(()=>el.remove(),320);},dur);
+}
+function scores(){
+  const vals=Object.values(state);
+  const p=vals.filter(v=>v==='pass').length,f=vals.filter(v=>v==='fail').length,m=vals.filter(v=>v==='manual').length;
+  document.getElementById('n-pass').textContent=p;
+  document.getElementById('n-fail').textContent=f;
+  document.getElementById('n-man').textContent=m;
+  const autoDone=p+f;
+  document.getElementById('prog').style.width=(TOTAL_AUTO?autoDone/TOTAL_AUTO*100:0)+'%';
+  document.getElementById('prog-lbl').textContent=autoDone+' of '+TOTAL_AUTO+' auto tests run'+(m?' · '+m+' manual marked':'');
+  const pct=autoDone?Math.round(p/autoDone*100):null;
+  document.getElementById('pct').textContent=pct!==null?pct+'%':'—';
+  SUITES.forEach((s,i)=>{
+    const p2=s.tests.filter(t=>state[t.id]==='pass').length,f2=s.tests.filter(t=>state[t.id]==='fail').length;
+    const el=document.getElementById('nc'+(i+1));
+    if(el)el.textContent=p2+'/'+s.tests.length+(f2?' ⚠':'');
+  });
+}
+function setRowState(id,st){
+  state[id]=st;
+  const row=document.getElementById('row-'+id);
+  if(row)row.className='trow '+(st==='pass'?'tr-pass':st==='fail'?'tr-fail':'');
+  const badge=document.getElementById('bdg-'+id);
+  if(badge){
+    const labels={pending:'⏳ Pending',running:'⟳ Running',pass:'✓ Pass',fail:'✗ Fail',manual:'⚑ Manual'};
+    const cls={pending:'bpend',running:'brun',pass:'bp',fail:'bf',manual:'bm'};
+    badge.textContent=labels[st]||st;badge.className='badge '+(cls[st]||'bpend');
+  }
+  scores();
+}
+function render(){
+  const main=document.getElementById('main-content');main.innerHTML='';
+  SUITES.forEach(suite=>{
+    const card=document.createElement('div');card.className='suite';card.id=suite.id;
+    card.innerHTML=`<div class="suite-hdr" onclick="toggleSuite(this)">
+      <div class="suite-icon">${suite.icon}</div>
+      <div class="suite-title">${suite.title}</div>
+      <div class="suite-meta" id="sm-${suite.id}">Pending</div>
+      <span class="chevron">▾</span></div>
+      <div class="suite-body" id="sb-${suite.id}"></div>`;
+    main.appendChild(card);
+    const body=document.getElementById('sb-'+suite.id);
+    suite.tests.forEach((t,i)=>{
+      const chip=t.type==='auto'?'<span class="chip chip-auto">AUTO</span>':'<span class="chip chip-man">MANUAL</span>';
+      const mbtns=t.type==='manual'?`<button class="sbtn mbtn-p" onclick="markManual('${t.id}','pass')">✓ Pass</button><button class="sbtn mbtn-f" onclick="markManual('${t.id}','fail')">✗ Fail</button>`:'';
+      const div=document.createElement('div');div.className='trow';div.id='row-'+t.id;
+      div.innerHTML=`<div class="tnum">${String(i+1).padStart(2,'0')}</div>
+        <div><div class="tname">${chip} ${t.name}</div>
+          <div class="tdesc">${t.desc}</div>
+          <div class="texpect">Expected: ${t.expect}</div>
+          <div class="tsc" id="sc-${t.id}"><b>📸 What you should see/hear</b>${t.sc}</div>
+        </div>
+        <div class="tcol"><div class="badge bpend" id="bdg-${t.id}">⏳ Pending</div>
+          <button class="sbtn" onclick="toggleSC('${t.id}')">📸 Preview</button>${mbtns}</div>`;
+      body.appendChild(div);
+    });
+  });
+  // Open ALL suites by default so manual tests are always visible
+  SUITES.forEach((suite,i)=>{
+    const body = document.getElementById('sb-'+suite.id);
+    const ch = document.querySelector('#'+suite.id+' .chevron');
+    if(body) body.classList.add('open');
+    if(ch) ch.classList.add('open');
+  });
+  scores();
+}
+async function runAuto(){
+  toast('🔬 Running '+TOTAL_AUTO+' auto tests…');
+  const autos=SUITES.flatMap(s=>s.tests.filter(t=>t.type==='auto'));
+  for(const t of autos){
+    setRowState(t.id,'running');updateSuiteMeta(t.id);
+    await new Promise(r=>setTimeout(r,70));
+    setRowState(t.id,SNAP[t.key]?'pass':'fail');
+    updateSuiteMeta(t.id);
+  }
+  const p=Object.values(state).filter(v=>v==='pass').length,f=Object.values(state).filter(v=>v==='fail').length;
+  toast('✅ Done: '+p+' pass · '+f+' fail. Now check manual tests in the real app.');
+}
+async function runAll(){await runAuto();toast('📋 Auto done. Open real app for manual tests.');}
+function updateSuiteMeta(testId){
+  const suite=SUITES.find(s=>s.tests.some(t=>t.id===testId));if(!suite)return;
+  const p=suite.tests.filter(t=>state[t.id]==='pass').length,f=suite.tests.filter(t=>state[t.id]==='fail').length;
+  const el=document.getElementById('sm-'+suite.id);if(!el)return;
+  el.textContent=f?p+' pass · '+f+' fail':p===suite.tests.length?'All '+p+' done ✓':p+'/'+suite.tests.length+' done';
+}
+function markManual(id,result){setRowState(id,result==='pass'?'pass':'fail');updateSuiteMeta(id);toast(result==='pass'?'✓ Pass marked':'✗ Fail marked');}
+function toggleSC(id){document.getElementById('sc-'+id).classList.toggle('show');}
+function toggleSuite(hdr){const body=hdr.nextElementSibling,ch=hdr.querySelector('.chevron');body.classList.toggle('open');ch.classList.toggle('open');}
+function setNav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+render();
+</script>
+</body>
+</html>

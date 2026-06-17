@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — Play-Along · Indian &amp; World Music Academy</title>
+<meta name="description" content="Karaoke-style play-along for Indian and world music. Real samples: Sitar, Veena, Harmonium, Guitar, Bass, Tabla. Sur · Laya · Taan · Taal.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/tone@14.8.49/build/Tone.js"></script>
+<style>
+:root{
+  --bg:#0c0c14;--bg-card:#13131e;--bg-card2:#191926;--bg-el:#1e1e2e;
+  --border:rgba(255,255,255,0.07);--border-g:rgba(255,165,0,.3);
+  --saffron:#FF9500;--saffron-l:#FFB347;--saffron-d:rgba(255,149,0,.12);
+  --teal:#00C9A7;--teal-d:rgba(0,201,167,.1);
+  --rose:#FF6B9D;--blue:#4A90E2;--violet:#9B59B6;--green:#2ECC71;
+  --text:#EDE8D8;--text2:#8A8A9A;--text3:#4A4A5E;
+  --r:12px;--rsm:8px;--shadow:0 8px 32px rgba(0,0,0,.5)
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:
+  radial-gradient(ellipse 60% 40% at 15% 10%,rgba(255,149,0,.05),transparent 60%),
+  radial-gradient(ellipse 50% 40% at 85% 80%,rgba(0,201,167,.04),transparent 60%)}
+
+/* STARTUP */
+#startup-overlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#080810,#0e0e18);display:flex;align-items:center;justify-content:center}
+.su-card{text-align:center;max-width:500px;padding:44px 32px;background:rgba(255,255,255,.03);border:1px solid var(--border-g);border-radius:24px;backdrop-filter:blur(20px);box-shadow:0 0 80px rgba(255,149,0,.08)}
+.su-icon{width:80px;height:80px;margin:0 auto 20px;background:linear-gradient(135deg,var(--saffron),var(--rose));border-radius:22px;font-size:40px;display:flex;align-items:center;justify-content:center;animation:iconGlow 2s ease-in-out infinite alternate}
+@keyframes iconGlow{from{box-shadow:0 0 20px rgba(255,149,0,.3)}to{box-shadow:0 0 60px rgba(255,149,0,.7)}}
+.su-card h1{font-family:'Playfair Display',serif;font-size:26px;background:linear-gradient(135deg,var(--saffron-l),var(--saffron));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.su-card p{color:var(--text2);font-size:12.5px;line-height:1.7;margin-bottom:12px}
+.su-instrs{display:flex;justify-content:center;gap:12px;margin-bottom:12px;font-size:24px;flex-wrap:wrap}
+.su-progress{height:3px;background:var(--bg-el);border-radius:2px;margin-bottom:12px;overflow:hidden}
+.su-prog-fill{height:100%;background:linear-gradient(90deg,var(--saffron),var(--rose));border-radius:2px;width:0;transition:width .4s}
+.su-load-txt{font-size:11px;color:var(--text3);margin-bottom:14px;min-height:16px}
+.su-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:50px;background:linear-gradient(135deg,var(--saffron),#FF6B00);border:none;color:#fff;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 8px 28px rgba(255,149,0,.45);transition:all .2s;opacity:.5;pointer-events:none}
+.su-btn.ready{opacity:1;pointer-events:auto}.su-btn.ready:hover{transform:translateY(-2px)}
+.su-note{font-size:11px;color:var(--text3);margin-top:10px}
+#audio-err{display:none;background:rgba(255,107,157,.15);border:1px solid var(--rose);border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:var(--rose);line-height:1.7;text-align:left}
+
+/* HEADER */
+.app-header{position:sticky;top:0;z-index:100;background:rgba(12,12,20,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--saffron),var(--rose));display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text h1{font-family:'Playfair Display',serif;font-size:15px;background:linear-gradient(135deg,var(--saffron-l),var(--saffron));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-text span{font-size:10px;color:var(--text3)}
+.hud{display:flex;align-items:center;gap:10px}
+.xp-pill{display:flex;align-items:center;gap:6px;background:var(--bg-el);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px}
+.xp-pill .val{color:var(--saffron-l);font-weight:700}
+.xp-mini-bar{width:70px;height:4px;background:var(--bg-el);border-radius:2px;overflow:hidden}
+.xp-mini-fill{height:100%;background:linear-gradient(90deg,var(--saffron),var(--rose));border-radius:2px;transition:width .5s}
+.rank-txt{font-size:10px;color:var(--text2);max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* LAYOUT */
+.app-shell{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:13px}
+.tab-nav{display:flex;gap:2px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:14px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:60px;padding:7px 6px;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--text2);background:transparent;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.tab-btn:hover{color:var(--text);background:var(--bg-el)}
+.tab-btn.active{background:linear-gradient(135deg,var(--saffron),#FF6B00);color:#fff;box-shadow:0 3px 12px rgba(255,149,0,.3)}
+.tab-btn.play-along-tab.active{background:linear-gradient(135deg,#9B59B6,#6C3483)}
+.ti{font-size:13px}
+.section{display:none}.section.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:15px}
+.card-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--text2);margin-bottom:10px}
+
+/* CONTROLS */
+.ctrl-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.ctrl-group{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px}
+.ctrl-lbl{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.ctrl-sel{width:100%;background:var(--bg-el);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;outline:none;transition:border-color .2s}
+.ctrl-sel:focus{border-color:var(--saffron)}
+.ctrl-sel option,.ctrl-sel optgroup{background:#1a1a28}
+
+/* TRANSPORT */
+.transport-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.t-btn{display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;transition:all .18s;white-space:nowrap}
+.t-play{background:linear-gradient(135deg,#2ECC71,#27AE60);color:#fff}
+.t-pause{background:var(--bg-el);color:var(--saffron);border:1px solid var(--saffron)}
+.t-stop{background:var(--bg-el);color:var(--rose);border:1px solid rgba(255,107,157,.4)}
+.t-btn:disabled{opacity:.35;cursor:not-allowed}
+.transport-state{font-size:11px;color:var(--text3);padding:5px 10px;background:var(--bg-el);border-radius:7px;display:flex;align-items:center;gap:5px}
+.ts-dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
+.ts-dot.playing{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 1s infinite}
+.ts-dot.paused{background:var(--saffron)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TEMPO */
+.tempo-big{font-size:28px;font-weight:700;color:var(--saffron);line-height:1}
+.tempo-name{font-size:10px;color:var(--text2);margin-top:2px}
+.tempo-presets{display:flex;gap:4px;flex-wrap:wrap}
+.t-preset{padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-el);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s}
+.t-preset:hover,.t-preset.active{border-color:var(--saffron);color:var(--saffron);background:var(--saffron-d)}
+.tempo-ruler{position:relative;height:32px;margin:4px 0 2px}
+.tempo-track{position:absolute;top:50%;left:0;right:0;height:4px;background:var(--bg-el);border-radius:2px;transform:translateY(-50%)}
+.tempo-zone{position:absolute;top:50%;height:4px;transform:translateY(-50%);border-radius:2px}
+.tz-slow{left:0;width:25%;background:linear-gradient(90deg,rgba(0,201,167,.4),rgba(0,201,167,.15))}
+.tz-mid{left:25%;width:50%;background:linear-gradient(90deg,rgba(255,149,0,.3),rgba(255,149,0,.15))}
+.tz-fast{left:75%;right:0;background:linear-gradient(90deg,rgba(255,107,157,.15),rgba(255,107,157,.4))}
+.tempo-labels{display:flex;justify-content:space-between;position:absolute;top:0;left:0;right:0;font-size:7px;color:var(--text3);line-height:1.2;pointer-events:none}
+.tempo-needle{position:absolute;top:0;width:2px;background:var(--saffron);height:100%;border-radius:1px;transform:translateX(-1px);transition:left .12s;box-shadow:0 0 6px rgba(255,149,0,.6)}
+.styled-range{width:100%;-webkit-appearance:none;height:4px;background:var(--bg-el);border-radius:2px;outline:none;cursor:pointer;margin-top:2px}
+.styled-range::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--saffron);cursor:pointer;box-shadow:0 0 8px rgba(255,149,0,.5)}
+.styled-range::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--saffron);cursor:pointer;border:none}
+
+/* TAAL BEATS */
+.taal-labels{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px}
+.beat-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 5px;border-radius:5px;background:var(--bg-el);border:1px solid var(--border);min-width:26px}
+.beat-cell .bnum{font-size:8px;color:var(--text3)}.beat-cell .bname{font-size:9px;font-weight:600;color:var(--text2)}
+.beat-cell.active-beat{background:var(--saffron);border-color:var(--saffron-l);box-shadow:0 0 10px rgba(255,149,0,.5)}
+.beat-cell.active-beat .bnum,.beat-cell.active-beat .bname{color:#fff}
+.beat-cell.is-sam{border-color:var(--rose)}.beat-cell.is-sam .bname{color:var(--rose)}
+.beat-cell.is-khali{border-color:var(--blue)}.beat-cell.is-khali .bname{color:var(--blue)}
+
+/* STATUS */
+.status-bar{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:8px 13px;font-size:12px;color:var(--text2);margin-bottom:10px;min-height:36px;flex-wrap:wrap}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);animation:pulse 2s infinite;flex-shrink:0}
+.waveform-wrap{height:44px;background:var(--bg);border-radius:8px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border);position:relative}
+.waveform-lbl{position:absolute;top:4px;left:8px;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+#waveform-canvas{width:100%;height:100%;display:block}
+
+/* KEYBOARD */
+.kb-wrap{overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.oct-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;padding-left:4px}
+.keys{display:flex;gap:3px;padding:6px;background:linear-gradient(160deg,#2d1f0f,#1a1010);border-radius:10px;border:1px solid rgba(255,149,0,.12);box-shadow:inset 0 4px 14px rgba(0,0,0,.5);margin-bottom:10px;min-width:max-content}
+.key{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:9px;cursor:pointer;border-radius:0 0 8px 8px;user-select:none;touch-action:manipulation;transition:all .07s}
+.key.white{background:linear-gradient(180deg,#f6ead8,#e8d8b8 80%,#d4c4a0);height:128px;width:48px;min-width:42px;border:1px solid #b8a880;box-shadow:0 4px 8px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.7);color:#3a2c18}
+.key.black{background:linear-gradient(180deg,#1e1828,#120e1c 70%,#0a0814);height:80px;width:32px;min-width:27px;margin:0 -3px;z-index:2;border:1px solid #2e2640;box-shadow:0 6px 10px rgba(0,0,0,.6);color:#9080a0}
+.key.white:active,.key.white.pressed{background:linear-gradient(180deg,#FFD88A,#FFBF4D);transform:translateY(3px)}
+.key.black:active,.key.black.pressed{background:linear-gradient(180deg,#FF9500,#CC6600);transform:translateY(2px)}
+.key.raaga-hl{background:linear-gradient(180deg,rgba(0,201,167,.55),rgba(0,201,167,.3))!important;color:#003828!important}
+.key.black.raaga-hl{background:linear-gradient(180deg,rgba(0,201,167,.75),rgba(0,201,167,.45))!important;color:#fff!important}
+.key.target-prompt.white{background:linear-gradient(180deg,#FF6B9D,#CC3366)!important;color:#fff!important;animation:kPulse .6s infinite alternate}
+.key.target-prompt.black{background:linear-gradient(180deg,#FF6B9D,#AA2255)!important;animation:kPulse .6s infinite alternate}
+@keyframes kPulse{from{box-shadow:0 0 8px rgba(255,107,157,.3)}to{box-shadow:0 0 20px rgba(255,107,157,.9)}}
+.key.correct-flash{background:linear-gradient(180deg,var(--teal),#009977)!important;transition:none!important}
+.key .swar{font-size:11px;font-weight:700;line-height:1}.key .kname{font-size:7px;margin-top:2px;opacity:.6}.key .hotkey{font-size:7px;margin-top:1px;opacity:.4;font-family:monospace}
+
+/* MOBILE PADS */
+.mobile-kb{display:none;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.mob-key{flex:1;min-width:36px;padding:11px 4px;border-radius:7px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:700;text-align:center;cursor:pointer;touch-action:manipulation;user-select:none;transition:all .08s}
+.mob-key:active,.mob-key.pressed{background:var(--saffron);color:#fff;border-color:var(--saffron);transform:scale(.95)}
+@media(max-width:640px){.mobile-kb{display:flex}.desktop-kb{display:none}}
+
+/* OCTOPAD */
+.octopad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:9px}
+.oct-pad{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;border-radius:12px;cursor:pointer;user-select:none;touch-action:manipulation;border:2px solid var(--pad-color);background:rgba(var(--pad-rgb),.08);min-height:85px;text-align:center;position:relative}
+.oct-pad:active,.oct-pad.pad-hit{background:rgba(var(--pad-rgb),.32)!important;transform:scale(.93);box-shadow:0 0 20px rgba(var(--pad-rgb),.4)}
+.oct-pad .dev-bol{font-size:18px;font-weight:700;color:var(--pad-color);line-height:1;margin-bottom:4px}
+.oct-pad .lat-bol{font-size:12px;font-weight:700;color:var(--text)}
+.oct-pad .bol-desc{font-size:9px;color:var(--text3);margin-top:3px}
+.oct-pad .pad-key{position:absolute;top:5px;right:7px;font-size:9px;color:var(--text3);font-family:monospace}
+
+/* DRUM KIT */
+.drum-kit{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.drum-pad{padding:13px 6px;border-radius:12px;cursor:pointer;user-select:none;touch-action:manipulation;border:2px solid var(--dp-color);background:rgba(var(--dp-rgb),.08);text-align:center;transition:all .08s;position:relative}
+.drum-pad:active,.drum-pad.drum-hit{background:rgba(var(--dp-rgb),.38)!important;transform:scale(.92)}
+.drum-pad .dp-name{font-size:12px;font-weight:700;color:var(--dp-color);margin-bottom:3px}
+.drum-pad .dp-key{font-size:9px;color:var(--text3);font-family:monospace}
+
+/* PLAY-ALONG */
+.pa-setup{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pa-setup-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:var(--rsm);padding:12px}
+.highway-outer{background:#050510;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:10px 0;position:relative}
+#highway-canvas{width:100%;display:block}
+.hit-zone-label{position:absolute;left:18%;top:5px;font-size:9px;color:rgba(255,149,0,.7);text-transform:uppercase;letter-spacing:1px}
+.pa-score-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 14px;margin-bottom:10px}
+.pa-score-item{text-align:center}
+.pa-score-item .psi-val{font-size:22px;font-weight:700;line-height:1}
+.pa-score-item .psi-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.pa-feedback-flash{text-align:center;font-size:20px;font-weight:800;min-height:32px;transition:all .15s}
+.pa-feedback-flash.perfect{color:var(--teal);animation:popIn .2s ease}
+.pa-feedback-flash.good{color:var(--saffron)}
+.pa-feedback-flash.miss{color:var(--rose)}
+@keyframes popIn{0%{transform:scale(1.5)}100%{transform:scale(1)}}
+.pa-next-strip{display:flex;gap:6px;align-items:center;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow-x:auto;min-height:60px}
+.pa-note-pill{flex-shrink:0;padding:8px 14px;border-radius:20px;font-size:15px;font-weight:700;font-family:monospace;border:2px solid transparent;transition:all .2s;text-align:center;min-width:46px}
+.pa-note-pill.upcoming{background:var(--bg-el);color:var(--text2);border-color:var(--border)}
+.pa-note-pill.current{background:linear-gradient(135deg,var(--saffron),#FF6B00);color:#fff;border-color:var(--saffron-l);box-shadow:0 0 20px rgba(255,149,0,.5);transform:scale(1.2);font-size:18px}
+.pa-note-pill.hit{background:var(--teal-d);color:var(--teal);border-color:var(--teal)}
+.pa-note-pill.missed{background:rgba(255,107,157,.1);color:var(--rose);border-color:var(--rose)}
+.pa-beat-dots{display:flex;gap:5px;margin-bottom:8px}
+.pa-beat-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-el);border:1px solid var(--border);transition:all .1s}
+.pa-beat-dot.active{background:var(--saffron);box-shadow:0 0 8px rgba(255,149,0,.6);transform:scale(1.3)}
+.speed-btn{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-el);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s}
+.speed-btn:hover,.speed-btn.active{border-color:var(--saffron);color:var(--saffron);background:var(--saffron-d)}
+
+/* SONGS */
+.songs-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.sf-btn{padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--bg-el);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s;white-space:nowrap}
+.sf-btn:hover,.sf-btn.active{border-color:var(--saffron);color:var(--saffron);background:var(--saffron-d)}
+.songs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px}
+.song-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;transition:all .18s;position:relative;overflow:hidden}
+.song-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--saffron),var(--rose));transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.song-card:hover::after{transform:scaleX(1)}.song-card:hover{background:var(--bg-el)}
+.song-card h4{font-size:12px;font-weight:600;margin-bottom:1px;line-height:1.35}.song-card .film{font-size:9px;color:var(--text3);margin-bottom:6px}
+.tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px}
+.tag{padding:2px 7px;border-radius:9px;font-size:9px;font-weight:600}
+.t-bollywood{background:var(--saffron-d);color:var(--saffron)}.t-western{background:rgba(74,144,226,.15);color:var(--blue)}.t-tamil{background:rgba(46,204,113,.15);color:var(--green)}.t-raaga{background:rgba(155,89,182,.12);color:var(--violet)}
+.t-diff-Beginner{background:rgba(46,204,113,.12);color:var(--green)}.t-diff-Intermediate{background:rgba(255,149,0,.12);color:var(--saffron)}.t-diff-Advanced{background:rgba(255,107,157,.12);color:var(--rose)}
+.song-btns{display:flex;gap:5px}
+.s-btn{flex:1;padding:6px 4px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s;border:none;white-space:nowrap}
+.s-btn-p{background:var(--saffron-d);border:1px solid var(--saffron);color:var(--saffron)}
+.s-btn-p:hover,.s-btn-p:active{background:var(--saffron);color:#fff}
+.s-btn-d{background:var(--teal-d);border:1px solid var(--teal);color:var(--teal)}
+.s-btn-d:hover,.s-btn-d:active{background:var(--teal);color:#fff}
+.s-btn-pa{background:rgba(155,89,182,.12);border:1px solid var(--violet);color:var(--violet)}
+.s-btn-pa:hover,.s-btn-pa:active{background:var(--violet);color:#fff}
+
+/* NOTATION */
+.notation-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.notation-title{font-family:'Playfair Display',serif;font-size:17px}
+.btn-row{display:flex;gap:5px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:7px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;transition:all .18s}
+.btn-primary{background:linear-gradient(135deg,var(--saffron),#FF6B00);color:#fff}
+.btn-primary:hover{box-shadow:0 4px 12px rgba(255,149,0,.4);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg-el);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--saffron);color:var(--saffron)}
+.btn-teal{background:var(--teal-d);color:var(--teal);border:1px solid var(--teal)}
+.btn-violet{background:rgba(155,89,182,.12);color:var(--violet);border:1px solid var(--violet)}
+.btn-violet:hover{background:var(--violet);color:#fff}
+.song-banner{background:var(--bg-card2);border:1px solid var(--border-g);border-radius:var(--rsm);padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.song-banner-name{font-size:13px;font-weight:600;color:var(--saffron-l)}.song-banner-meta{font-size:10px;color:var(--text2)}.step-counter{font-size:13px;font-weight:600;color:var(--saffron)}
+.nprog-wrap{height:4px;background:var(--bg-el);border-radius:2px;margin-bottom:9px;overflow:hidden}
+.nprog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--saffron));border-radius:2px;transition:width .3s}
+.feedback-flash{text-align:center;font-size:13px;font-weight:600;min-height:22px;margin-bottom:7px;transition:all .2s}
+.feedback-flash.good{color:var(--teal)}.feedback-flash.bad{color:var(--rose)}.feedback-flash.done{color:var(--saffron);font-size:15px}
+.notation-display{background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);padding:15px;margin-bottom:10px;min-height:58px}
+.notation-row{font-family:monospace;font-size:18px;line-height:2.8;letter-spacing:4px;display:flex;flex-wrap:wrap;gap:1px;align-items:center}
+.nstep{display:inline-block;padding:2px 5px;border-radius:5px;transition:all .12s}
+.nstep.pending{color:var(--text3)}.nstep.current{background:rgba(255,149,0,.2);color:var(--saffron);border:1px solid var(--saffron);font-weight:700;animation:nblink .7s infinite alternate}
+@keyframes nblink{from{box-shadow:none}to{box-shadow:0 0 10px rgba(255,149,0,.5)}}
+.nstep.played{color:var(--teal);font-weight:600}.nstep.wrong{color:var(--rose)}
+.note-table{width:100%;border-collapse:collapse;font-size:11px;margin:7px 0}
+.note-table th{text-align:left;padding:5px 9px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;color:var(--text3);font-weight:600}
+.note-table td{padding:5px 9px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text2)}
+.note-table td:first-child{font-weight:600;color:var(--saffron)}
+
+/* SHRUTI BOX */
+.shruti-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:10px}
+.shr-key{padding:7px 3px;border-radius:7px;border:1px solid var(--border);background:var(--bg-el);color:var(--text2);font-size:9px;font-weight:600;text-align:center;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s;line-height:1.4}
+.shr-key:hover{border-color:var(--saffron);color:var(--saffron)}
+.shr-key.shr-active{background:var(--saffron);color:#fff;border-color:var(--saffron-l);box-shadow:0 0 12px rgba(255,149,0,.5)}
+.shr-key.male-range{border-color:rgba(74,144,226,.4);background:rgba(74,144,226,.08)}
+.shr-key.female-range{border-color:rgba(255,107,157,.4);background:rgba(255,107,157,.08)}
+.shr-key.both-range{border-color:rgba(155,89,182,.4);background:rgba(155,89,182,.08)}
+
+/* RAAGAS */
+.raaga-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:12px}
+.raaga-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:11px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.raaga-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--rc,var(--saffron))}
+.raaga-card:hover{border-color:rgba(255,255,255,.14);background:var(--bg-el);transform:translateY(-1px)}
+.raaga-card.active{border-color:var(--saffron);background:var(--saffron-d)}
+.raaga-card h4{font-size:13px;font-weight:600;margin-bottom:3px}.raaga-meta{font-size:10px;color:var(--text3)}.raaga-mood{font-size:11px;color:var(--text2);line-height:1.35;margin-top:2px}
+.swar-pill{padding:3px 9px;border-radius:14px;font-size:11px;font-weight:600;background:var(--bg-el);color:var(--text2);border:1px solid var(--border);display:inline-block}
+.swar-pill.vadi{background:rgba(255,149,0,.18);color:var(--saffron);border-color:var(--saffron)}.swar-pill.samvadi{background:rgba(0,201,167,.15);color:var(--teal);border-color:var(--teal)}
+.scale-line{font-family:monospace;font-size:13px;letter-spacing:3px;color:var(--text);background:var(--bg);padding:7px 12px;border-radius:7px;border:1px solid var(--border);margin:4px 0}
+
+/* ACADEMY + THEORY */
+.level-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px;position:relative;overflow:hidden}
+.level-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lc,var(--text3))}
+.level-card.locked{opacity:.38;pointer-events:none}
+.level-info h4{font-size:13px;font-weight:600;margin-bottom:3px}.level-info p{font-size:11px;color:var(--text2)}.level-info small{font-size:11px;color:var(--blue)}
+.level-badge{padding:3px 10px;border-radius:16px;font-size:10px;font-weight:600;white-space:nowrap}
+.b-locked{background:rgba(255,255,255,.05);color:var(--text3)}.b-unlock{background:var(--saffron-d);color:var(--saffron)}.b-done{background:var(--teal-d);color:var(--teal)}
+.theory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px}
+.theory-block{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rsm);padding:13px}
+.theory-block h3{font-family:'Playfair Display',serif;font-size:13px;color:var(--saffron-l);margin-bottom:7px}
+.theory-block p{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:5px}
+
+/* TOAST */
+.xp-toast{position:fixed;top:65px;right:18px;background:linear-gradient(135deg,var(--saffron),var(--rose));color:#fff;padding:9px 17px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 8px 24px rgba(255,149,0,.4);z-index:9990;pointer-events:none;animation:toastIn .3s ease,toastOut .3s ease 1.8s forwards}
+@keyframes toastIn{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-8px)}}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .app-header{padding:0 12px}.app-shell{padding:9px}
+  .tab-btn .tab-lbl{display:none}.ti{font-size:15px}.tab-btn{min-width:38px}
+  .hud .rank-txt,.hud .xp-mini-bar{display:none}
+  .ctrl-panel{grid-template-columns:1fr}
+  .octopad-grid{gap:5px}.drum-kit{grid-template-columns:repeat(3,1fr)}
+  .raaga-grid{grid-template-columns:1fr 1fr}
+  .songs-grid{grid-template-columns:1fr 1fr}
+  .pa-setup{grid-template-columns:1fr}
+  .shruti-grid{grid-template-columns:repeat(6,1fr)}
+}
+@media(max-width:420px){.songs-grid{grid-template-columns:1fr}.shruti-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* INSTRUMENT PLAYING INDICATOR */
+.instr-indicator{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:14px;border:1px solid var(--border);background:var(--bg-el);font-size:11px;color:var(--text3);transition:all .15s;margin-top:7px}
+.instr-indicator.active{border-color:var(--teal);color:var(--teal);background:var(--teal-d);box-shadow:0 0 8px rgba(0,201,167,.3)}
+.instr-indicator .idot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* TOOLTIPS */
+[data-tip]{position:relative;cursor:help}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:#12121e;color:#ddd8cc;font-size:11px;padding:6px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.13);white-space:pre-line;max-width:230px;text-align:center;z-index:9999;pointer-events:none;line-height:1.55;font-family:Inter,sans-serif;font-weight:400;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#12121e;z-index:9999;pointer-events:none}
+/* TEACHER PANEL */
+.teacher-panel{background:linear-gradient(135deg,rgba(155,89,182,.1),rgba(74,144,226,.07));border:1px solid rgba(155,89,182,.28);border-radius:var(--r);padding:13px;margin-bottom:12px}
+.teacher-avatar{display:flex;align-items:flex-start;gap:11px}
+.teacher-icon{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#9B59B6,#4A90E2);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;animation:guruPulse 3s ease-in-out infinite}
+@keyframes guruPulse{0%,100%{box-shadow:0 0 8px rgba(155,89,182,.3)}50%{box-shadow:0 0 18px rgba(155,89,182,.7)}}
+.teacher-bubble{background:rgba(255,255,255,.03);border-radius:0 10px 10px 10px;padding:9px 13px;flex:1;font-size:12.5px;color:var(--text);line-height:1.65;border:1px solid rgba(255,255,255,.06)}
+.teacher-bubble b{color:#c49fef}
+.teacher-bubble .grade{display:inline-block;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600;margin-left:6px}
+.grade-perfect{background:rgba(0,201,167,.2);color:var(--teal)}
+.grade-good{background:rgba(255,149,0,.2);color:var(--saffron)}
+.grade-wrong{background:rgba(255,107,157,.2);color:var(--rose)}
+.grade-tip{background:rgba(155,89,182,.2);color:var(--violet)}
+</style>
+</head>
+<body>
+
+<!-- STARTUP -->
+<div id="startup-overlay">
+  <div class="su-card">
+    <div class="su-icon">🎵</div>
+    <h1>Raaga Studio Pro</h1>
+    <p>Loading real instrument samples — Sitar, Veena, Harmonium, Guitars, Bass, Tabla, Drums. Karaoke-style Play-Along with background rhythm &amp; backing melody.</p>
+    <div class="su-instrs"><span>🪕</span><span>🪈</span><span>🪗</span><span>🎸</span><span>🥁</span><span>🎻</span><span>🎷</span></div>
+    <div class="su-progress"><div class="su-prog-fill" id="su-prog"></div></div>
+    <div class="su-load-txt" id="su-txt">Click start to initialise sound engine…</div>
+    <button class="su-btn ready" id="start-btn" onclick="startApp()">▶ Start Playing</button>
+    <div id="audio-err"></div>
+    <div class="su-note">🔊 Chrome recommended · Headphones highly recommended · Android supported</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-root" style="display:none">
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">🎵</div>
+    <div class="logo-text"><h1>Raaga Studio Pro</h1><span>Indian &amp; World Music Academy</span></div>
+  </div>
+  <div class="hud">
+    <div class="xp-pill"><span>🏆</span><span class="val" id="xp-display">0</span><span style="color:var(--text3)">XP</span></div>
+    <div><div class="rank-txt" id="rank-txt">Novice Shishya</div><div class="xp-mini-bar"><div class="xp-mini-fill" id="xp-mini-fill"></div></div></div>
+  </div>
+</header>
+
+<div class="app-shell">
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('keyboard')" id="tab-keyboard"><span class="ti">🎹</span><span class="tab-lbl">Instruments</span></button>
+  <button class="tab-btn" onclick="showTab('notation')" id="tab-notation"><span class="ti">🎵</span><span class="tab-lbl">Practise</span></button>
+  <button class="tab-btn play-along-tab" onclick="showTab('playalong')" id="tab-playalong"><span class="ti">🎮</span><span class="tab-lbl">Play-Along</span></button>
+  <button class="tab-btn" onclick="showTab('raagas')" id="tab-raagas"><span class="ti">🎼</span><span class="tab-lbl">Raagas</span></button>
+  <button class="tab-btn" onclick="showTab('songs')" id="tab-songs"><span class="ti">🎬</span><span class="tab-lbl">Songs</span></button>
+  <button class="tab-btn" onclick="showTab('shruti')" id="tab-shruti"><span class="ti">🎤</span><span class="tab-lbl">Sur & Shruti</span></button>
+  <button class="tab-btn" onclick="showTab('academy')" id="tab-academy"><span class="ti">🎓</span><span class="tab-lbl">Academy</span></button>
+  <button class="tab-btn" onclick="showTab('theory')" id="tab-theory"><span class="ti">📖</span><span class="tab-lbl">Theory</span></button>
+</nav>
+
+<!-- ====== INSTRUMENT LAB ====== -->
+<div class="section active" id="keyboard">
+  <div class="ctrl-panel">
+    <div class="ctrl-group">
+      <div class="ctrl-lbl" data-tip="Choose the instrument sound for your keyboard.
+Harmonium = best for Indian raaga practice.">🎛 Instrument</div>
+      <select class="ctrl-sel" id="instr-sel" onchange="changeInstrument(this.value)" data-tip="Your playing instrument sound">
+        <optgroup label="── Indian Classical ──">
+          <option value="harmonium">🪗 Indian Harmonium (Reed Organ)</option>
+          <option value="sitar">🪕 Sitar (Hindustani)</option>
+          <option value="veena">🪈 Veena (Carnatic)</option>
+          <option value="sarod">🎸 Sarod (Metal String)</option>
+          <option value="shehnai">📯 Shehnai (Double Reed)</option>
+          <option value="flute">🎷 Bansuri Flute</option>
+          <option value="violin">🎻 Violin (Bowed)</option>
+        </optgroup>
+        <optgroup label="── Guitars ──">
+          <option value="guitar_nylon">🎸 Acoustic Guitar (Nylon)</option>
+          <option value="guitar_steel">🎸 Acoustic Guitar (Steel)</option>
+          <option value="guitar_clean">⚡ Electric Guitar (Clean)</option>
+          <option value="guitar_dist">🔥 Electric Guitar (Overdriven)</option>
+          <option value="bass">🎸 Bass Guitar (Finger)</option>
+        </optgroup>
+        <optgroup label="── Keyboards ──">
+          <option value="piano">🎹 Grand Piano</option>
+          <option value="organ">🎹 Church Organ</option>
+        </optgroup>
+      </select>
+      <div id="instr-indicator" class="instr-indicator" style="display:none"><span class="idot"></span><span id="instr-playing-badge">harmonium</span> playing</div>
+      <div style="margin-top:9px">
+        <div class="ctrl-lbl" data-tip="Highlights only the notes of the chosen raaga on the keyboard. Play only green keys to stay in the raaga!">🎼 Raaga Highlight</div>
+        <select class="ctrl-sel" id="raaga-hl-sel" onchange="applyRaagaHighlight()"><option value="">— None —</option></select>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <div class="ctrl-lbl" data-tip="Taal = rhythmic cycle. Keherva (8 beats) is most common in Bollywood. Teental (16 beats) is classical standard. Try Keherva first!">🥁 Taal / Rhythm</div>
+      <select class="ctrl-sel" id="taal-sel" onchange="selectTaal(this.value)" data-tip="Select a rhythmic cycle. Keherva is easiest for Bollywood. Adi Talam for Tamil songs. Teental is the classical standard.">
+        <option value="none">No Rhythm</option>
+        <optgroup label="── Hindustani (North Indian) ──">
+          <option value="keherva">Tabla — Keherva (8) — Bollywood standard</option>
+          <option value="dadra">Tabla — Dadra (6) — Light & romantic</option>
+          <option value="teental">Tabla — Teental (16) — Classical standard</option>
+          <option value="jhaptal">Tabla — Jhaptal (10) — Slow compositions</option>
+          <option value="rupak">Tabla — Rupak (7) — Floating feel</option>
+          <option value="ektaal">Tabla — Ektaal (12) — Vilambit khyal</option>
+        </optgroup>
+        <optgroup label="── Carnatic (South Indian) ──">
+          <option value="adi">Mridangam — Adi Talam (8) — Tamil standard</option>
+          <option value="roopakam">Mridangam — Roopakam (6) — Devotional</option>
+        </optgroup>
+        <optgroup label="── Western ──">
+          <option value="drums">Western — 4/4 Rock Beat</option>
+          <option value="bossa">Western — Bossa Nova</option>
+        </optgroup>
+      </select>
+      <div class="transport-bar" style="margin-top:9px">
+        <button class="t-btn t-play" id="btn-play" onclick="transportPlay()" data-tip="Start the tabla/drum rhythm. Select a Taal first, then set your tempo, then press Play.">▶ Play</button>
+        <button class="t-btn t-pause" id="btn-pause" onclick="transportPause()" disabled data-tip="Pause rhythm without losing the beat count">⏸ Pause</button>
+        <button class="t-btn t-stop" id="btn-stop" onclick="transportStop()" disabled data-tip="Stop and reset the rhythm cycle to beat 1">⏹ Stop</button>
+        <div class="transport-state"><div class="ts-dot" id="ts-dot"></div><span id="ts-label">Stopped</span></div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;min-height:14px" id="taal-info"></div>
+      <div class="taal-labels" id="taal-labels"></div>
+    </div>
+
+    <div class="ctrl-group" style="grid-column:span 2">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:7px">
+        <div>
+          <div class="ctrl-lbl" style="margin-bottom:0">⏱ Tempo</div>
+          <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:3px">
+            <div><div class="tempo-big" id="bpm-big">90</div><div class="tempo-name" id="tempo-name">Madhya (Medium)</div></div>
+            <div class="tempo-presets">
+              <button class="t-preset" onclick="setTempo(48)" data-tip="Vilambit = very slow (48 BPM). Best for beginners and ornament practice.">🐌 Vilambit</button>
+              <button class="t-preset active" onclick="setTempo(90)" data-tip="Madhya = medium (90 BPM). Standard practice tempo for most songs.">🎵 Madhya</button>
+              <button class="t-preset" onclick="setTempo(140)" data-tip="Drut = fast (140 BPM). Only after mastering slow and medium tempos!">⚡ Drut</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;min-width:140px">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--text2);min-width:48px">Reverb</span><input class="styled-range" type="range" id="reverb-sl" min="0" max="40" value="5" oninput="updateReverb(+this.value)" style="flex:1;margin:0"><span style="font-size:11px;color:var(--saffron);font-weight:600;min-width:28px" id="reverb-val">5%</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--text2);min-width:48px">Volume</span><input class="styled-range" type="range" id="vol-sl" min="0" max="100" value="80" oninput="updateVol(+this.value)" style="flex:1;margin:0"><span style="font-size:11px;color:var(--saffron);font-weight:600;min-width:28px" id="vol-val">80%</span></div>
+          <button id="tanpura-btn" onclick="toggleTanpura()" data-tip="Tanpura = continuous drone giving you a Sa reference while you play. Always keep it on during practice — it trains your ear to stay in tune." style="display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-el);color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s;white-space:nowrap"><span id="tanpura-dot" style="width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block"></span> Tanpura Drone</button>
+        </div>
+      </div>
+      <input class="styled-range" type="range" id="tempo-sl" min="30" max="200" value="90" oninput="setTempo(+this.value)">
+      <div class="tempo-ruler">
+        <div class="tempo-track"></div>
+        <div class="tempo-zone tz-slow"></div><div class="tempo-zone tz-mid"></div><div class="tempo-zone tz-fast"></div>
+        <div class="tempo-labels"><span>30<br>Ati<br>Vilambit</span><span>60<br>Vilambit</span><span style="text-align:center">120<br>Madhya</span><span style="text-align:right">160<br>Drut</span><span style="text-align:right">200<br>Ati Drut</span></div>
+        <div class="tempo-needle" id="tempo-needle"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar"><div class="sdot"></div><span id="status-txt">Laptop: A–K = Sa→Sa' · W E T Y U = black keys · Q=Baya · P=Dayan · 1–8 = Tabla Octopad</span></div>
+  <div class="waveform-wrap"><div class="waveform-lbl">Live Waveform</div><canvas id="waveform-canvas"></canvas></div>
+  <div class="mobile-kb" id="mobile-kb"></div>
+
+  <div class="desktop-kb">
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:9px;font-size:10px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(0,201,167,.5);display:inline-block"></span>Raaga scale</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--rose);display:inline-block"></span>Target note</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block"></span>Correct!</span>
+      </div>
+      <div class="kb-wrap">
+        <div class="oct-label">Mandra Saptak — Lower Octave</div>
+        <div class="keys" id="keys-lower"></div>
+        <div class="oct-label">Madhya Saptak — Middle Octave</div>
+        <div class="keys" id="keys-mid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA OCTOPAD -->
+  <div class="card" style="margin-bottom:10px">
+    <div class="card-title">Tabla Octopad</div>
+    <div class="card-sub">8 classical tabla bols — click or press 1–8 on keyboard</div>
+    <div class="octopad-grid" id="octopad"></div>
+  </div>
+
+  <!-- DRUM KIT -->
+  <div class="card">
+    <div class="card-title">🥁 Western Drum Kit</div>
+    <div class="card-sub">Click pads to play. Full kit: crash, hi-hats, snare, toms, kick</div>
+    <div class="drum-kit" id="drum-kit"></div>
+  </div>
+</div>
+
+<!-- ====== GUIDED PRACTICE ====== -->
+<div class="section" id="notation">
+  <!-- AI MUSIC TEACHER PANEL -->
+  <div class="teacher-panel" id="teacher-panel">
+    <div class="teacher-avatar">
+      <div class="teacher-icon">🧑‍🏫</div>
+      <div class="teacher-bubble" id="teacher-msg">
+        <b>Guruji says:</b> Namaste! Load a song from the Songs tab and I will guide you note by note. 
+        Play each highlighted note — I will correct you immediately if you go wrong, just like a real class. 
+        Keep Tanpura on while you play to train your ear. 🙏
+      </div>
+    </div>
+  </div>
+  <div class="notation-hdr">
+    <div class="notation-title">Guided Notation Trainer</div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="resetGuided()">↺ Reset</button>
+      <button class="btn btn-secondary" onclick="showTab('songs')">🎬 Songs</button>
+      <button class="btn btn-teal" onclick="autoDemo()">▶ Next Note</button>
+      <button class="btn btn-primary" id="btn-play-all" onclick="autoDemoAll()">▶▶ Play Song</button>
+      <button class="btn btn-secondary" id="btn-stop-demo" onclick="stopDemo()" style="display:none">⏹ Stop</button>
+      <button class="btn btn-violet" onclick="goPlayAlong()">🎮 Play-Along</button>
+    </div>
+  </div>
+  <div class="song-banner">
+    <div><div class="song-banner-name" id="guide-title">No song loaded — go to Songs tab</div><div class="song-banner-meta" id="guide-meta">Select any song to begin</div></div>
+    <div><span style="font-size:11px;color:var(--text3)">Step: </span><span class="step-counter" id="step-ctr">0 / 0</span></div>
+  </div>
+  <div class="nprog-wrap"><div class="nprog-fill" id="nprog-fill" style="width:0%"></div></div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:7px;flex-wrap:wrap">
+    <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text2)"><input type="checkbox" id="hint-tog" checked style="width:14px;height:14px;accent-color:var(--teal)"> Show key hints</label>
+    <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text2)"><input type="checkbox" id="auto-adv" checked style="width:14px;height:14px;accent-color:var(--teal)"> Auto-advance</label>
+    <span style="font-size:11px;color:var(--text3)" id="demo-bpm-info"></span>
+  </div>
+  <div class="feedback-flash" id="feedback"></div>
+  <div class="notation-display"><div class="notation-row" id="notation-row"><span style="color:var(--text3);font-family:Inter;font-size:12px;letter-spacing:0">Select a song from the Songs tab →</span></div></div>
+  <div class="card" style="margin-top:10px">
+    <div class="oct-label" style="margin-bottom:5px">Play the highlighted key:</div>
+    <div class="kb-wrap"><div class="keys" id="keys-mid-n"></div></div>
+    <div class="mobile-kb" id="mobile-kb-n" style="margin-top:9px"></div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <div class="card-title">Sargam Reference</div>
+    <table class="note-table">
+      <tr><th>Symbol</th><th>Swar</th><th>Western</th><th>Key</th></tr>
+      <tr><td>S</td><td>Sa</td><td>C4</td><td>A</td></tr><tr><td>r</td><td>Komal Re</td><td>C#</td><td>W</td></tr>
+      <tr><td>R</td><td>Re</td><td>D</td><td>S</td></tr><tr><td>g</td><td>Komal Ga</td><td>Eb</td><td>E</td></tr>
+      <tr><td>G</td><td>Ga</td><td>E</td><td>D</td></tr><tr><td>M</td><td>Ma</td><td>F</td><td>F</td></tr>
+      <tr><td>m</td><td>Tivra Ma</td><td>F#</td><td>T</td></tr><tr><td>P</td><td>Pa</td><td>G</td><td>G</td></tr>
+      <tr><td>d</td><td>Komal Dha</td><td>Ab</td><td>Y</td></tr><tr><td>D</td><td>Dha</td><td>A</td><td>H</td></tr>
+      <tr><td>n</td><td>Komal Ni</td><td>Bb</td><td>U</td></tr><tr><td>N</td><td>Ni</td><td>B</td><td>J</td></tr>
+      <tr><td>Ṡ</td><td>Upper Sa</td><td>C5</td><td>K</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ====== PLAY-ALONG (KARAOKE) ====== -->
+<div class="section" id="playalong">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:20px">🎮 Play-Along Mode</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px">Karaoke-style — backing melody plays automatically, you play along on your instrument</div>
+    </div>
+    <button class="btn btn-secondary" onclick="showTab('songs')">🎬 Choose Song First</button>
+  </div>
+
+  <!-- AI TEACHER PANEL (play-along) -->
+  <div class="teacher-panel" id="pa-teacher-panel">
+    <div class="teacher-avatar">
+      <div class="teacher-icon">🧑‍🏫</div>
+      <div class="teacher-bubble" id="pa-teacher-msg">
+        <b>Guruji says:</b> Welcome to Play-Along class! Choose your song, set 50% speed to start, select Keherva taal for rhythm backing, then press ▶ Start. 
+        Hit the glowing notes in time — I will score your accuracy and guide you. <b>Sam</b> (beat 1) is sacred — always land on it! 🥁
+      </div>
+    </div>
+  </div>
+  <!-- Song info + controls -->
+  <div class="song-banner" style="margin-bottom:10px">
+    <div><div class="song-banner-name" id="pa-song-name">No song loaded</div><div class="song-banner-meta" id="pa-song-meta">Go to Songs tab and press Play-Along ▶</div></div>
+    <span style="font-size:12px;color:var(--text3)" id="pa-bpm-info"></span>
+  </div>
+
+  <!-- Setup -->
+  <div class="pa-setup">
+    <div class="pa-setup-card">
+      <div class="ctrl-lbl" data-tip="This instrument plays the melody automatically so you can hear it. Pick something soft like Harmonium or Flute so it does not drown out your playing.">🎵 Backing (auto-plays)</div>
+      <select class="ctrl-sel" id="pa-backing-sel" style="margin-bottom:9px">
+        <option value="harmonium">🪗 Indian Harmonium</option>
+        <option value="piano">🎹 Grand Piano</option>
+        <option value="flute">🎷 Bansuri Flute</option>
+        <option value="sitar">🪕 Sitar</option>
+        <option value="violin">🎻 Violin</option>
+      </select>
+      <div class="ctrl-lbl" data-tip="This is the instrument sound you hear when you press the keyboard keys. Choose what you want to practise on.">🎸 Your Instrument</div>
+      <select class="ctrl-sel" id="pa-your-sel">
+        <option value="sitar">🪕 Sitar</option>
+        <option value="veena">🪈 Veena</option>
+        <option value="harmonium">🪗 Harmonium</option>
+        <option value="violin">🎻 Violin</option>
+        <option value="flute">🎷 Bansuri Flute</option>
+        <option value="guitar_nylon">🎸 Acoustic Guitar</option>
+        <option value="guitar_clean">⚡ Electric Guitar</option>
+        <option value="piano">🎹 Piano</option>
+      </select>
+    </div>
+    <div class="pa-setup-card">
+      <div class="ctrl-lbl">🥁 Rhythm Background</div>
+      <select class="ctrl-sel" id="pa-taal-sel" style="margin-bottom:9px" data-tip="Add a rhythm backing while you play along. Try Keherva for Bollywood songs, Adi Talam for Tamil songs.">
+        <option value="keherva">Tabla — Keherva (8) ★ Recommended</option>
+        <option value="none">No Rhythm</option>
+        <option value="dadra">Tabla — Dadra (6)</option>
+        <option value="teental">Tabla — Teental (16)</option>
+        <option value="adi">Mridangam — Adi Talam (8)</option>
+        <option value="roopakam">Mridangam — Roopakam (6)</option>
+        <option value="drums">Western — 4/4</option>
+        <option value="bossa">Western — Bossa Nova</option>
+      </select>
+      <div class="ctrl-lbl">🏃 Practice Speed</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="speed-btn" onclick="setSpeed(0.25,this)" data-tip="Super slow — 25% of original tempo. Best for learning the note order for the first time.">🐢 25%</button>
+        <button class="speed-btn" onclick="setSpeed(0.5,this)" data-tip="Half speed — recommended starting point for all new songs. Master at 50% first!">🐌 50%</button>
+        <button class="speed-btn" onclick="setSpeed(0.75,this)" data-tip="75% speed — a good bridge between slow practice and full tempo.">🚶 75%</button>
+        <button class="speed-btn active" id="speed-100" onclick="setSpeed(1,this)" data-tip="Full original tempo. Only attempt this after you can play at 75% without errors.">🎵 100%</button>
+        <button class="speed-btn" onclick="setSpeed(1.25,this)" data-tip="125% — challenge mode! Faster than the original song.">⚡ 125%</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+    <button class="t-btn t-play" id="pa-btn-play" onclick="startPlayAlong()" data-tip="Start the song. The backing melody plays automatically. You play along on the highlighted notes at the right time.">▶ Start Play-Along</button>
+    <button class="t-btn t-pause" id="pa-btn-pause" onclick="pausePlayAlong()" disabled data-tip="Pause mid-song without losing your score. Press ▶ again to resume from where you stopped.">⏸ Pause</button>
+    <button class="t-btn t-stop" id="pa-btn-stop" onclick="stopPlayAlong()" disabled data-tip="Stop the song completely and reset.">⏹ Stop</button>
+    <button class="btn btn-secondary" onclick="resetPlayAlong()" data-tip="Restart the song from the beginning at the same speed.">↺ Restart</button>
+    <span style="font-size:11px;color:var(--text3)" id="pa-status-txt">Load a song to start</span>
+  </div>
+
+  <!-- SCORE BAR -->
+  <div class="pa-score-bar">
+    <div class="pa-score-item"><div class="psi-val" style="color:var(--teal)" id="pa-hits">0</div><div class="psi-lbl">Hits ✓</div></div>
+    <div class="pa-score-item"><div class="psi-val" style="color:var(--rose)" id="pa-misses">0</div><div class="psi-lbl">Misses ✗</div></div>
+    <div class="pa-score-item"><div class="psi-val" style="color:var(--saffron)" id="pa-acc">—</div><div class="psi-lbl">Accuracy</div></div>
+    <div class="pa-score-item"><div class="psi-val" style="color:var(--violet)" id="pa-score">0</div><div class="psi-lbl">Score</div></div>
+    <div style="flex:1;text-align:center"><div class="pa-feedback-flash" id="pa-feedback"></div></div>
+  </div>
+
+  <!-- BEAT PROGRESS DOTS -->
+  <div class="pa-beat-dots" id="pa-beat-dots"></div>
+
+  <!-- NOTE HIGHWAY -->
+  <div class="highway-outer">
+    <div class="hit-zone-label">◀ PLAY HERE</div>
+    <canvas id="highway-canvas" height="90"></canvas>
+  </div>
+
+  <!-- UPCOMING NOTES STRIP -->
+  <div class="ctrl-lbl" style="margin-bottom:5px">NEXT NOTES TO PLAY:</div>
+  <div class="pa-next-strip" id="pa-next-strip"><span style="color:var(--text3);font-size:11px">Load a song to see upcoming notes…</span></div>
+
+  <!-- PLAYALONG KEYBOARD -->
+  <div class="card" style="margin-top:10px">
+    <div class="oct-label" style="margin-bottom:5px">Your keyboard — hit the highlighted note!</div>
+    <div class="kb-wrap"><div class="keys" id="keys-mid-pa"></div></div>
+    <div class="mobile-kb" id="mobile-kb-pa" style="margin-top:9px"></div>
+  </div>
+</div>
+
+<!-- ====== RAAGAS ====== -->
+<div class="section" id="raagas">
+  <div class="card-title" style="margin-bottom:3px">Raaga Explorer</div>
+  <div class="card-sub" style="margin-bottom:10px">Click a raaga to explore its scale and linked practice songs</div>
+  <div class="raaga-grid" id="raaga-grid"></div>
+  <div id="raaga-detail" style="display:none"></div>
+</div>
+
+<!-- ====== SONGS ====== -->
+<div class="section" id="songs">
+  <div class="card-title" style="margin-bottom:3px">World Music Catalogue — 48 Songs</div>
+  <div class="card-sub" style="margin-bottom:9px"><strong>Practice</strong> = guided notation · <strong>Demo</strong> = auto-play melody · <strong>🎮 Play-Along</strong> = karaoke mode with rhythm backing</div>
+  <div class="songs-filter">
+    <button class="sf-btn active" onclick="filterSongs('all',this)">🌍 All</button>
+    <button class="sf-btn" onclick="filterSongs('Bollywood',this)">🎬 Bollywood</button>
+    <button class="sf-btn" onclick="filterSongs('Tamil',this)">🎵 Tamil</button>
+    <button class="sf-btn" onclick="filterSongs('Western',this)">🎸 Western</button>
+    <button class="sf-btn" onclick="filterSongs('Beginner',this)">🟢 Beginner</button>
+    <button class="sf-btn" onclick="filterSongs('Intermediate',this)">🟡 Intermediate</button>
+    <button class="sf-btn" onclick="filterSongs('Advanced',this)">🔴 Advanced</button>
+  </div>
+  <div class="songs-grid" id="songs-grid"></div>
+</div>
+
+<!-- ====== SUR & SHRUTI ====== -->
+<div class="section" id="shruti">
+  <div class="card-title" style="margin-bottom:3px">🎤 Singer's Shruti Box — Find Your Sa</div>
+  <div class="card-sub" style="margin-bottom:12px"><strong>Sur = Pitch · Laya = Rhythm · Taan = Melodic Speed · Taal = Meter.</strong> A singer must first find their natural Sa (root pitch) before beginning practice.</div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;margin-bottom:12px">
+    <div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-bottom:7px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(74,144,226,.6);display:inline-block"></span>Male range (G3–B3)</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(155,89,182,.6);display:inline-block"></span>Both voices (C4–D4)</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(255,107,157,.6);display:inline-block"></span>Female range (E4–G4)</span>
+      </div>
+      <div class="shruti-grid" id="shruti-grid"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn btn-primary" id="shr-play-btn" onclick="toggleShruti()">▶ Play Sa Reference</button>
+        <button class="btn btn-teal" onclick="playSaPaRef()">▶ Sa + Pa (Fifth)</button>
+        <button class="btn btn-secondary" onclick="stopShruti()">⏹ Stop Shruti</button>
+      </div>
+    </div>
+    <div class="card" style="min-width:140px;text-align:center">
+      <div class="ctrl-lbl">Sa Frequency</div>
+      <div style="font-size:42px;font-weight:700;color:var(--saffron);font-variant-numeric:tabular-nums;line-height:1" id="hz-display">261.6</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:3px" id="hz-note">C4 = Middle Sa</div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text3)">Pa (fifth):</div>
+      <div style="font-size:20px;font-weight:700;color:var(--teal)" id="hz-pa">392.0 Hz</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title">How to Find Your Natural Sa</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.8;background:var(--bg-el);border-radius:8px;padding:12px;margin-top:8px">
+      <strong style="color:var(--saffron-l)">Step 1:</strong> Sing "Aaaaaa" comfortably for 30 seconds without strain.<br>
+      <strong style="color:var(--saffron-l)">Step 2:</strong> Click each pitch button. The note where you feel most relaxed — that's your Sa.<br>
+      <strong style="color:var(--saffron-l)">Step 3:</strong> From your Sa, sing Pa (5th). If comfortable, you've found it. If strained, try a lower Sa.<br>
+      <strong style="color:var(--saffron-l)">Step 4:</strong> Anchor with Tanpura Drone (in the Instrument Lab). Practice 10 min daily.<br><br>
+      <strong>Male voice:</strong> Typically G3, Ab3, A3, or Bb3 · <strong>Female voice:</strong> Typically C4, D4, or E4 (261–330 Hz)
+    </div>
+  </div>
+  <div class="theory-grid">
+    <div class="theory-block"><h3>🎵 Sur — Pitch Mastery</h3><p>Being "besura" (off-pitch) is the first thing an Indian classical teacher corrects. The shruti box (this tool) is essential. Sing Sa daily while listening to the reference — over time your ear internalises the exact pitch. This is called <em>shruti gyan</em> (knowledge of microtones).</p></div>
+    <div class="theory-block"><h3>⏱ Laya — Rhythm Flow</h3><p>Laya is more than tempo — it's the <em>inner pulse</em>. <strong>Vilambit</strong> laya allows space for ornaments and emotion. <strong>Drut</strong> laya demands precision. A common beginner mistake: rushing at faster tempos. Practice with tabla or metronome always.</p></div>
+    <div class="theory-block"><h3>🎼 Taan — Speed Runs</h3><p>Taan are rapid melodic passages through the raaga's notes. Build speed by starting at 50% tempo and gradually increasing. Use the speed control in Play-Along mode. A taan that's accurate at slow speed will naturally become fast with repetition — this takes weeks of daily practice.</p></div>
+    <div class="theory-block"><h3>🥁 Taal — The Time Cycle</h3><p>Taal is the rhythmic cycle. <strong>Sam</strong> (Beat 1, ✕) is sacred — the melody and rhythm must land here together. Missing the sam is a serious error. Start by clapping the taal cycle while listening to tabla, before even touching the instrument. Feel the cycle in your body.</p></div>
+  </div>
+</div>
+
+<!-- ====== ACADEMY ====== -->
+<div class="section" id="academy">
+  <div class="card-title" style="margin-bottom:3px">Academy Journey</div>
+  <div class="card-sub" style="margin-bottom:10px">Hit correct notes in practice and play-along to earn XP and unlock levels.</div>
+  <div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+    <div><div style="font-size:36px;font-weight:700;color:var(--saffron)" id="acad-xp">0</div><div style="font-size:11px;color:var(--text2)">Total XP</div></div>
+    <div style="flex:1;min-width:160px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text2)" id="acad-rank">Novice Shishya</span><span style="font-size:11px;color:var(--saffron)" id="acad-next">Next: 50 XP</span></div>
+      <div style="height:7px;background:var(--bg-el);border-radius:4px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,var(--saffron),var(--rose));border-radius:4px;transition:width .5s" id="acad-bar"></div></div>
+    </div>
+    <div><div style="font-size:32px;font-weight:700;color:var(--teal)" id="acad-lvl">1</div><div style="font-size:11px;color:var(--text2)">Level</div></div>
+  </div>
+  <div id="level-roadmap"></div>
+</div>
+
+<!-- ====== THEORY ====== -->
+<div class="section" id="theory">
+  <div class="card-title" style="margin-bottom:10px">Music Theory — Hindustani Classical</div>
+  <div class="theory-grid">
+    <div class="theory-block"><h3>The 10 Thaats</h3><p>All raagas derive from 10 parent scales. <strong>Bilawal</strong> = pure major. <strong>Kalyan</strong> = F# (Yaman). <strong>Bhairavi</strong> = all komal notes. <strong>Kafi</strong> = komal Ga &amp; Ni. The thaat defines the scale structure; the raaga adds grammar (which notes to emphasize, ornament, or avoid).</p></div>
+    <div class="theory-block"><h3>Comparing This App to Others</h3><p><strong>Riyaz</strong> uses AI pitch detection via microphone. <strong>iTabla Pro</strong> uses real recorded tabla samples. <strong>Tanpura Droid</strong> uses actual tanpura recordings. This app uses <em>FluidR3_GM soundfont samples</em> (same as GarageBand MIDI mode) — real sampled notes, not synthesis.</p></div>
+    <div class="theory-block"><h3>Veena vs Sitar</h3><p><strong>Veena</strong> (Carnatic) is a fretted plucked instrument, deeper and rounder in tone. <strong>Sitar</strong> (Hindustani) has a brighter, more metallic buzz (jawari). In this app: Veena = longer release (3.5s) giving sustained warm resonance. Both use Karplus-Strong physical string modelling.</p></div>
+    <div class="theory-block"><h3>Guitar Types Compared</h3><p><strong>Nylon string</strong>: warm, mellow — classical and Spanish. <strong>Steel string</strong>: brighter, twangy — folk and country. <strong>Electric clean</strong>: pure, sustaining — jazz and blues. <strong>Overdriven</strong>: crunchy, harmonic distortion — rock. <strong>Bass</strong>: deep, low fundamental — backbone of Western rhythm.</p></div>
+    <div class="theory-block"><h3>How to Practise Like a Music Class</h3><p>1) <strong>Start Tanpura</strong> every session. 2) <strong>Sing Sa</strong> to anchor your pitch. 3) <strong>Play aaroh-avaroh</strong> of the raaga up and down slowly. 4) <strong>Learn the song</strong> in Practise mode one note at a time with Guruji correcting you. 5) <strong>Add tabla</strong> rhythm and play the song again. 6) <strong>Play-Along</strong> mode tests your timing and accuracy. This is the authentic shishya-guru learning cycle — riyaz (daily practice) is the key.</p></div>
+    <div class="theory-block"><h3>Other Music Apps to Explore</h3><p><strong>Riyaz</strong> (iOS/Android) — AI pitch detection; sings back your notes and scores your sur. <strong>iTabla Pro</strong> — real recorded tabla samples, full taal library. <strong>Tanpura Droid</strong> — authentic tanpura drone recordings. <strong>Ragabot</strong> — raaga identification and ear training. <strong>Yousician</strong> — gamified Western instrument learning with real-time feedback. <strong>Simply Piano</strong> — piano learning with live feedback. For deepening theory: <strong>Bhatkhande Sangit</strong> textbooks online.</p></div>
+    <div class="theory-block"><h3>Ornaments — Gamak &amp; Meend</h3><p><strong>Meend</strong> = smooth glide between notes. <strong>Gamak</strong> = oscillating heavy ornament. <strong>Kan</strong> = grace note. <strong>Murki</strong> = quick ornament cluster. <strong>Andolan</strong> = gentle sway on specific notes. These ornaments are what separate a mechanical note-player from a true musician — they carry the <em>bhav</em> (emotional expression).</p></div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+// ============================================================
+// AUDIO — FluidR3_GM Real Samples via Tone.Sampler
+// ============================================================
+const SF = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+const SAMPLE_DEFS = {
+  // Indian Classical — best available GM soundfont approximations
+  harmonium:   {d:'reed_organ-mp3',              ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4','C5'],              rel:0.6},  // reed_organ = closest to harmonium bellows
+  sitar:       {d:'sitar-mp3',                   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4','C5'],              rel:3.0},  // actual sitar sample — longer decay for jawari buzz
+  veena:       {d:'sitar-mp3',                   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4','C5'],              rel:4.5},  // longer release than sitar = deeper, warmer Carnatic tone
+  sarod:       {d:'acoustic_guitar_steel-mp3',   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4'],                  rel:2.5},  // steel string = metallic pluck, close to sarod's skin+metal body
+  shehnai:     {d:'oboe-mp3',                    ns:['A3','C4','Ds4','Fs4','A4','C5','Ds5'],                              rel:0.8},  // double reed woodwind — closest to shehnai's nasal buzz
+  flute:       {d:'flute-mp3',                   ns:['A4','C5','Ds5','Fs5','A5','C6'],                                    rel:1.2},  // flute sample — bansuri is breathy, raise release for fade
+  violin:      {d:'violin-mp3',                  ns:['A3','C4','Ds4','Fs4','A4','C5','Ds5'],                              rel:0.8},  // bowed string — Indian violin same technique
+  // Guitars
+  guitar_nylon:{d:'acoustic_guitar_nylon-mp3',   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4'],                  rel:2.2},
+  guitar_steel:{d:'acoustic_guitar_steel-mp3',   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4'],                  rel:1.8},
+  guitar_clean:{d:'electric_guitar_clean-mp3',   ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4'],                  rel:2.5},
+  guitar_dist: {d:'overdriven_guitar-mp3',       ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4'],                       rel:1.5},
+  bass:        {d:'electric_bass_finger-mp3',    ns:['A1','C2','Ds2','Fs2','A2','C3','Ds3','Fs3','A3'],                  rel:2.0},
+  // Keyboards
+  piano:       {d:'acoustic_grand_piano-mp3',    ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4','C5','Ds5','Fs5'],rel:1.5},
+  organ:       {d:'church_organ-mp3',            ns:['A2','C3','Ds3','Fs3','A3','C4','Ds4','Fs4','A4','C5'],              rel:0.3},
+};
+
+let samplers={}, fx={}, instrSet={};
+let toneReady=false, currentInstrument='harmonium', tempoVal=90;
+let tanpTimer=null, tanpStep=0;
+let taalRepeatId=null, currentTaalType='none', taalState='stopped', taalBeat=0;
+let autoPlayTimer=null, activeSongIdx=-1, stepPointer=0;
+let shrutiOscs=[], activeShruti=null, shrutiPlaying=false;
+
+// Play-Along state
+let paActive=false, paPaused=false, paSongNotes=[], paStart=0, paMsPerBeat=750;
+let paHits=0, paMisses=0, paCurrentIdx=0, paTotalNotes=0, paSpeedMult=1;
+let paTimer=null, paAnimFrame=null;
+
+let loadedCount=0;
+const totalLoad=Object.keys(SAMPLE_DEFS).length+1;
+
+function updateLoadProgress(msg){
+  loadedCount++;
+  const pct=Math.min(100,(loadedCount/totalLoad)*100);
+  document.getElementById('su-prog').style.width=pct+'%';
+  document.getElementById('su-txt').textContent=msg;
+  if(loadedCount>=totalLoad){
+    document.getElementById('start-btn').classList.add('ready');
+    document.getElementById('su-txt').textContent='✓ All '+Object.keys(SAMPLE_DEFS).length+' instruments ready!';
+  }
+}
+
+// ── FX CHAIN ─────────────────────────────────────────────────
+// Samplers → vol → comp → master(dry) → destination
+//        ↘ send → reverb(wet) ──────→ master → destination
+async function buildFX(){
+  fx.master  = new Tone.Gain(0.88).toDestination();
+  fx.analyser= new Tone.Analyser('waveform',512);
+  fx.master.connect(fx.analyser); fx.analyser.toDestination();
+  fx.comp=new Tone.Compressor({threshold:-18,ratio:3,attack:.005,release:.15});
+  fx.comp.connect(fx.master);
+  fx.vol=new Tone.Volume(0); fx.vol.connect(fx.comp);
+  // Reverb as parallel send
+  fx.reverb=new Tone.Reverb({decay:2.0,wet:1.0}); await fx.reverb.generate();
+  fx.wetGain=new Tone.Gain(0.07); fx.reverb.connect(fx.wetGain); fx.wetGain.connect(fx.master);
+  fx.send=new Tone.Gain(1); fx.send.connect(fx.reverb);
+}
+
+// ── DRUMS (synthesis — MembraneSynth) ────────────────────────
+function buildDrums(){
+  const out=fx.vol;
+  // ── TABLA ────────────────────────────────────────────────────
+  // Baya (left) — bas̈s, pitch-bent, resonant body
+  instrSet.tablaBaya=new Tone.MembraneSynth({
+    pitchDecay:.22,octaves:4,oscillator:{type:'sine'},
+    envelope:{attack:.001,decay:.60,sustain:0,release:.35},volume:2
+  }).connect(out);
+  // Dayan (right) — higher tuned, sharp attack, quick decay
+  instrSet.tablaDayan=new Tone.MembraneSynth({
+    pitchDecay:.02,octaves:1.0,oscillator:{type:'sine'},
+    envelope:{attack:.001,decay:.18,sustain:0,release:.10},volume:0
+  }).connect(out);
+  // Na / Tin — dayan open ringing tone (less pitched)
+  instrSet.tablaNa=new Tone.MembraneSynth({
+    pitchDecay:.01,octaves:0.5,oscillator:{type:'triangle'},
+    envelope:{attack:.001,decay:.10,sustain:0,release:.06},volume:-1
+  }).connect(out);
+  // ── WESTERN DRUMS ────────────────────────────────────────────
+  instrSet.kick=new Tone.MembraneSynth({
+    pitchDecay:.09,octaves:10,oscillator:{type:'sine'},
+    envelope:{attack:.001,decay:.38,sustain:0,release:.18},volume:3
+  }).connect(out);
+  instrSet.snare=new Tone.NoiseSynth({
+    noise:{type:'white'},envelope:{attack:.001,decay:.13,sustain:0,release:.04},volume:-5
+  }).connect(out);
+  instrSet.tomHi  =new Tone.MembraneSynth({pitchDecay:.04,octaves:4,oscillator:{type:'sine'},envelope:{attack:.001,decay:.20,sustain:0,release:.12},volume:-2}).connect(out);
+  instrSet.tomMid =new Tone.MembraneSynth({pitchDecay:.05,octaves:5,oscillator:{type:'sine'},envelope:{attack:.001,decay:.26,sustain:0,release:.16},volume:-1}).connect(out);
+  instrSet.tomFloor=new Tone.MembraneSynth({pitchDecay:.07,octaves:6,oscillator:{type:'sine'},envelope:{attack:.001,decay:.32,sustain:0,release:.20},volume:0}).connect(out);
+  const hhF=new Tone.Filter({type:'highpass',frequency:9000,Q:1});hhF.connect(out);
+  instrSet.hihat    =new Tone.NoiseSynth({noise:{type:'pink'},envelope:{attack:.001,decay:.035,sustain:0,release:.012},volume:-20}).connect(hhF);
+  instrSet.hihatOpen=new Tone.NoiseSynth({noise:{type:'pink'},envelope:{attack:.001,decay:.28,sustain:.01,release:.13},volume:-15}).connect(hhF);
+  const crF=new Tone.Filter({type:'bandpass',frequency:4800,Q:0.4});crF.connect(out);
+  instrSet.crash=new Tone.NoiseSynth({noise:{type:'white'},envelope:{attack:.001,decay:.85,sustain:.01,release:.55},volume:-13}).connect(crF);
+  const riF=new Tone.Filter({type:'bandpass',frequency:6200,Q:1.8});riF.connect(out);
+  instrSet.ride=new Tone.NoiseSynth({noise:{type:'pink'},envelope:{attack:.001,decay:.30,sustain:.04,release:.22},volume:-17}).connect(riF);
+  // ── TANPURA DRONE ────────────────────────────────────────────
+  instrSet.tanpura=new Tone.PluckSynth({attackNoise:.05,dampening:14000,resonance:.9998,volume:-5}).connect(out);
+}
+
+// ── LOAD ALL SAMPLERS ─────────────────────────────────────────
+async function loadAllSamplers(){
+  const out = fx.vol;   // dry path: vol → comp → master
+  const promises=Object.entries(SAMPLE_DEFS).map(([name,cfg])=>
+    new Promise(resolve=>{
+      const urls={};
+      cfg.ns.forEach(n=>{
+        const toneNote = n.replace('s', '#');
+        urls[toneNote] = SF+cfg.d+'/'+n+'.mp3';
+      });
+      samplers[name]=new Tone.Sampler({urls,release:cfg.rel,
+        onload:()=>{updateLoadProgress('✓ '+name+' ready');resolve();},
+        onerror:()=>{updateLoadProgress('⚠ '+name+' (fallback)');resolve();}
+      }).connect(out);
+    })
+  );
+  buildDrums();
+  updateLoadProgress('✓ Tabla & drum kit ready');
+  await Promise.all(promises);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+let appInitialized = false;
+async function startApp(){
+  if (appInitialized) {
+    document.getElementById('startup-overlay').style.display='none';
+    document.getElementById('app-root').style.display='block';
+    return;
+  }
+  const btn = document.getElementById('start-btn');
+  btn.style.pointerEvents = 'none';
+  btn.innerHTML = 'Loading Audio...';
+  
+  try{
+    await Tone.start();
+    await buildFX();
+    await loadAllSamplers();
+    toneReady=true;
+    buildAllKeys();buildOctopad();buildDrumKit();
+    buildRaagaGrid();renderSongs();renderAcademy();buildShrutiGrid();
+    buildTaalDisplay('none');updateTransportUI();positionNeedle(90);
+    requestAnimationFrame(drawWaveform);
+    // Restore saved XP
+    const savedXP=parseInt(localStorage.getItem('raagaStudioXP'))||0;
+    if(savedXP>0){totalXP=0;awardXP(savedXP,null);}
+    
+    appInitialized = true;
+    document.getElementById('startup-overlay').style.display='none';
+    document.getElementById('app-root').style.display='block';
+    // Set default Keherva taal and start tanpura after 1s hint
+    setTimeout(()=>{
+      const tm=document.getElementById('teacher-msg');
+      if(tm)tm.innerHTML='<b>Guruji says:</b> Welcome to your music class! 🙏 First, <b>turn on Tanpura Drone</b> (top right) — it gives you the Sa reference note. Then pick a raaga from the highlight dropdown and play only the green keys. Your ear will learn the raaga naturally. Shall we begin with <b>Shivaranjani</b>? It has only 5 notes!';
+    },800);
+  }catch(e){
+    const el=document.getElementById('audio-err');
+    el.style.display='block';
+    el.innerHTML='⚠ Audio initialization failed. Make sure you are using Google Chrome. Error: '+e.message;
+    btn.innerHTML = '▶ Continue Without Audio';
+    btn.style.pointerEvents = 'auto';
+    btn.onclick = () => {
+      document.getElementById('startup-overlay').style.display='none';
+      document.getElementById('app-root').style.display='block';
+    };
+  }
+}
+
+// ============================================================
+// NOTE PLAYBACK
+// ============================================================
+const BASE_MIDI=60,MIDI_N=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SEMITONES={S:0,r:1,R:2,g:3,G:4,M:5,m:6,P:7,d:8,D:9,n:10,N:11,S2:12};
+const SWAR_NAMES={S:'Sa',r:'Re♭',R:'Re',g:'Ga♭',G:'Ga',M:'Ma',m:'Ma#',P:'Pa',d:'Dha♭',D:'Dha',n:'Ni♭',N:'Ni',S2:"Sa'"};
+function midi2note(m){return MIDI_N[m%12]+(Math.floor(m/12)-1);}
+
+function playNote(semi,octOff=0,instrOverride=null){
+  if(!toneReady)return;
+  const instr=instrOverride||currentInstrument;
+  const midiNote=BASE_MIDI+semi+octOff*12;
+  const noteName=midi2note(midiNote);
+  const s=samplers[instr];
+  if(s&&s.loaded){
+    try{s.triggerAttackRelease(noteName,'4n');flashInstrPlaying();}catch(e){console.warn(e);}
+  }
+}
+function changeInstrument(v){
+  currentInstrument=v;
+  // Update playing indicator badge
+  const badge=document.getElementById('instr-playing-badge');
+  if(badge)badge.textContent=v.replace(/_/g,' ');
+}
+function flashInstrPlaying(){
+  const ind=document.getElementById('instr-indicator');
+  if(!ind)return;
+  ind.style.display='inline-flex';
+  ind.classList.add('active');
+  const badge=document.getElementById('instr-playing-badge');
+  if(badge)badge.textContent=currentInstrument.replace(/_/g,' ');
+  clearTimeout(ind._t);
+  ind._t=setTimeout(()=>ind.classList.remove('active'),400);
+}
+
+// ── TAAL ──────────────────────────────────────────────────────
+const TAAL_DEFS={
+  // ── Hindustani taals ─────────────────────────────────────────
+  teental: {beats:16,label:'Teental (16)',desc:'Most common classical taal. 4 vibhags × 4 beats. Sam on 1, Khali on 9.',
+    seq:[{b:'Dha',sam:true},{b:'Dhin'},{b:'Dhin'},{b:'Dha'},{b:'Dha'},{b:'Dhin'},{b:'Dhin'},{b:'Dha'},{b:'Na',khali:true},{b:'Tin'},{b:'Tin'},{b:'Na'},{b:'Dha'},{b:'Dhin'},{b:'Dhin'},{b:'Dha'}]},
+  keherva: {beats:8,label:'Keherva (8)',desc:'Most common in Bollywood & folk. 2 vibhags × 4 beats. Very singable!',
+    seq:[{b:'Dha',sam:true},{b:'Ge'},{b:'Na'},{b:'Tin'},{b:'Na',khali:true},{b:'Ge'},{b:'Dhin'},{b:'Na'}]},
+  dadra:   {beats:6,label:'Dadra (6)',desc:'Light, lilting 6-beat taal used in thumri and romantic songs.',
+    seq:[{b:'Dha',sam:true},{b:'Dhin'},{b:'Na'},{b:'Na',khali:true},{b:'Tin'},{b:'Na'}]},
+  rupak:   {beats:7,label:'Rupak (7)',desc:'Unique: Sam falls on a khali beat. Creates a pulled, floating feel.',
+    seq:[{b:'Tin',khali:true},{b:'Tin'},{b:'Na'},{b:'Dhin',sam:true},{b:'Dhin'},{b:'Dha'},{b:'Dhin'}]},
+  jhaptal: {beats:10,label:'Jhaptal (10)',desc:'5+2+3 grouping. Often used for slower classical compositions.',
+    seq:[{b:'Dhi',sam:true},{b:'Na'},{b:'Dhi'},{b:'Dhi'},{b:'Na'},{b:'Ti',khali:true},{b:'Na'},{b:'Dhi'},{b:'Dhi'},{b:'Na'}]},
+  ektaal:  {beats:12,label:'Ektaal (12)',desc:'12-beat taal for vilambit (slow) khyal. Meditative, spacious.',
+    seq:[{b:'Dhin',sam:true},{b:'Dhin'},{b:'Na',khali:true},{b:'Tin'},{b:'Tin'},{b:'Na'},{b:'Dhin'},{b:'Dhin'},{b:'Na',khali:true},{b:'Tin'},{b:'Tin'},{b:'Na'}]},
+  // ── Carnatic / South Indian ──────────────────────────────────
+  adi:     {beats:8,label:'Adi Talam (8)',desc:'Most common Carnatic talam. 4+2+2 = 8 beats. Used in Tamil film music.',
+    seq:[{b:'Dha',sam:true},{b:'Dhin'},{b:'Dhin'},{b:'Dha'},{b:'Tin'},{b:'Tin'},{b:'Na'},{b:'Na',khali:true}]},
+  roopakam:{beats:6,label:'Roopakam (6)',desc:'Carnatic 6-beat talam. Often in devotional and Tamil classical songs.',
+    seq:[{b:'Tin',khali:true},{b:'Tin'},{b:'Dha',sam:true},{b:'Dhin'},{b:'Dha'},{b:'Dhin'}]},
+  // ── Western ──────────────────────────────────────────────────
+  drums:   {beats:8,label:'Western 4/4',desc:'Standard rock/pop beat. Kick on 1&3, snare on 2&4.',
+    seq:[{b:'kick',sam:true},{b:'hat'},{b:'snare'},{b:'hat'},{b:'kick'},{b:'hat'},{b:'snare'},{b:'hatO'}]},
+  bossa:   {beats:8,label:'Bossa Nova',desc:'Brazilian jazz pattern. Syncopated, light and smooth.',
+    seq:[{b:'kick',sam:true},{b:'rim'},{b:'hat'},{b:'kick'},{b:'rim'},{b:'snare'},{b:'hat'},{b:'rim'}]},
+};
+
+// Tabla bol pitches (dayan frequency varies by bol)
+const TABLA_PITCHES={Dha:'C4',Dhin:'C4',Na:'E4',Tin:'D4',Ti:'D4',Ge:'F2',Re:'C4',Kat:'G4',Dhi:'C4'};
+const BAYA_PITCHES  ={Dha:'G2',Dhin:'G2',Ge:'F2',Dhi:'G2',Dha2:'Ab2'};
+function playBol(bol,time){
+  if(!toneReady)return;
+  const t=time||Tone.now();
+  try{switch(bol){
+    // ── Dha = baya + dayan together (both drums) ──
+    case 'Dha': instrSet.tablaBaya.triggerAttackRelease('G2','8n',t);
+                instrSet.tablaDayan.triggerAttackRelease('C4','8n',t);break;
+    // ── Dhin = sustained dayan, resonant baya ──
+    case 'Dhin':instrSet.tablaBaya.triggerAttackRelease('Ab2','8n',t);
+                instrSet.tablaDayan.triggerAttackRelease('C4','4n',t);break;
+    // ── Dhi = similar to Dha but softer ──
+    case 'Dhi': instrSet.tablaBaya.triggerAttackRelease('G2','8n',t);
+                instrSet.tablaDayan.triggerAttackRelease('C4','8n',t);break;
+    // ── Na / Tin / Ti = dayan only, no baya ──
+    case 'Na':  instrSet.tablaNa.triggerAttackRelease('E4','16n',t);break;
+    case 'Tin': instrSet.tablaDayan.triggerAttackRelease('D4','8n',t);break;
+    case 'Ti':  instrSet.tablaDayan.triggerAttackRelease('D4','8n',t);break;
+    // ── Ge = baya only, low resonant stroke ──
+    case 'Ge':  instrSet.tablaBaya.triggerAttackRelease('F2','4n',t);break;
+    // ── Re = soft dayan ──
+    case 'Re':  instrSet.tablaNa.triggerAttackRelease('F4','16n',t);break;
+    // ── Kat = sharp high dayan ──
+    case 'Kat': instrSet.tablaDayan.triggerAttackRelease('G4','16n',t);break;
+    // ── Western drums ──
+    case 'kick':instrSet.kick.triggerAttackRelease('C1','8n',t);break;
+    case 'snare':instrSet.snare.triggerAttackRelease('8n',t);break;
+    case 'hat': instrSet.hihat.triggerAttackRelease('32n',t);break;
+    case 'hatO':instrSet.hihatOpen.triggerAttackRelease('16n',t);break;
+    case 'rim': instrSet.snare.triggerAttackRelease('32n',t);break;
+  }}catch(e){}
+}
+function manualDrum(type){if(!toneReady)return;if(type==='baya')instrSet.tablaBaya.triggerAttackRelease('G2','8n');else instrSet.tablaDayan.triggerAttackRelease('C4','8n');}
+
+function selectTaal(val){currentTaalType=val;buildTaalDisplay(val);}
+function transportPlay(){
+  if(!toneReady||currentTaalType==='none')return;
+  if(taalState==='paused'){Tone.Transport.start();taalState='playing';updateTransportUI();return;}
+  stopTaalInternal();taalBeat=0;
+  const def=TAAL_DEFS[currentTaalType];if(!def)return;
+  Tone.Transport.bpm.value=tempoVal;
+  taalRepeatId=Tone.Transport.scheduleRepeat(time=>{
+    const main=Math.floor(taalBeat/2),isMain=taalBeat%2===0,pat=def.seq[main%def.beats];
+    if(isMain){playBol(pat.b,time);const d=Math.max(0,(time-Tone.context.currentTime)*1000-20);setTimeout(()=>updateBeatDisplay(main%def.beats),d);}
+    else if(currentTaalType==='drums'||currentTaalType==='bossa')playBol('hat',time);
+    taalBeat++;
+  },'8n');
+  if(Tone.Transport.state!=='started')Tone.Transport.start();
+  taalState='playing';updateTransportUI();
+}
+function transportPause(){if(taalState==='playing'){Tone.Transport.pause();taalState='paused';updateTransportUI();}}
+function transportStop(){stopTaalInternal();Tone.Transport.stop();taalBeat=0;taalState='stopped';updateBeatDisplay(-1);updateTransportUI();}
+function stopTaalInternal(){if(taalRepeatId!==null){Tone.Transport.clear(taalRepeatId);taalRepeatId=null;}}
+function updateTransportUI(){
+  const pl=taalState==='playing',pa=taalState==='paused';
+  document.getElementById('btn-play').disabled=pl;document.getElementById('btn-pause').disabled=!pl;
+  document.getElementById('btn-stop').disabled=taalState==='stopped';
+  const dot=document.getElementById('ts-dot'),lbl=document.getElementById('ts-label');
+  dot.className='ts-dot '+taalState;lbl.textContent=pl?'Playing…':pa?'Paused':'Stopped';
+}
+
+const TEMPO_Z=[{max:60,n:'Vilambit (Slow)'},{max:120,n:'Madhya (Medium)'},{max:180,n:'Drut (Fast)'},{max:300,n:'Ati Drut'}];
+function setTempo(v){
+  tempoVal=v;document.getElementById('tempo-sl').value=v;document.getElementById('bpm-big').textContent=v;
+  document.getElementById('tempo-name').textContent=(TEMPO_Z.find(z=>v<=z.max)||TEMPO_Z[3]).n;
+  Tone.Transport.bpm.value=v;positionNeedle(v);
+  document.querySelectorAll('.t-preset').forEach(b=>b.classList.remove('active'));
+  if(v<=60)document.querySelectorAll('.t-preset')[0].classList.add('active');
+  else if(v<=120)document.querySelectorAll('.t-preset')[1].classList.add('active');
+  else document.querySelectorAll('.t-preset')[2].classList.add('active');
+}
+function positionNeedle(v){const n=document.getElementById('tempo-needle');if(n)n.style.left=((v-30)/170*100).toFixed(1)+'%';}
+function updateReverb(v){document.getElementById('reverb-val').textContent=v+'%';if(fx.wetGain)fx.wetGain.gain.value=v/100*0.35;}
+function updateVol(v){document.getElementById('vol-val').textContent=v+'%';if(fx.vol){const db=v<=0?-Infinity:20*Math.log10(Math.max(0.001,v/100));fx.vol.volume.value=db;}}
+function buildTaalDisplay(type){
+  const el=document.getElementById('taal-labels');el.innerHTML='';if(type==='none')return;
+  const def=TAAL_DEFS[type];if(!def)return;
+  // Show taal info
+  const info=document.getElementById('taal-info');
+  if(info&&def.desc)info.textContent=def.label+': '+def.desc;
+  def.seq.forEach((beat,i)=>{const c=document.createElement('div');c.className='beat-cell'+(beat.sam?' is-sam':'')+(beat.khali?' is-khali':'');c.id='bc-'+i;c.innerHTML=`<span class="bnum">${i+1}</span><span class="bname">${beat.b}</span>`;el.appendChild(c);});
+}
+function updateBeatDisplay(idx){document.querySelectorAll('.beat-cell').forEach(c=>c.classList.remove('active-beat'));const el=document.getElementById('bc-'+idx);if(el)el.classList.add('active-beat');}
+
+// ── TANPURA ───────────────────────────────────────────────────
+const TANP_SEQ=['C3','G3','C4','C4'];
+function toggleTanpura(){
+  const btn=document.getElementById('tanpura-btn'),dot=document.getElementById('tanpura-dot');
+  if(tanpTimer){clearInterval(tanpTimer);tanpTimer=null;tanpStep=0;btn.style.borderColor='var(--border)';btn.style.color='var(--text2)';dot.style.animation='';}
+  else{if(!toneReady)return;const pl=()=>{try{instrSet.tanpura.triggerAttack(TANP_SEQ[tanpStep%4]);}catch(e){}tanpStep++;};pl();tanpTimer=setInterval(pl,520);btn.style.borderColor='var(--teal)';btn.style.color='var(--teal)';dot.style.animation='pulse 1s infinite';}
+}
+
+// ── WAVEFORM ──────────────────────────────────────────────────
+function drawWaveform(){
+  const cv=document.getElementById('waveform-canvas');if(!cv){requestAnimationFrame(drawWaveform);return;}
+  const ctx=cv.getContext('2d'),W=cv.width=cv.offsetWidth,H=cv.height=cv.offsetHeight;
+  ctx.clearRect(0,0,W,H);
+  if(fx.analyser){const d=fx.analyser.getValue();ctx.beginPath();ctx.strokeStyle='rgba(255,149,0,.7)';ctx.lineWidth=1.5;d.forEach((v,i)=>{const x=i*W/d.length,y=(.5+v*.45)*H;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();}
+  requestAnimationFrame(drawWaveform);
+}
+
+// ============================================================
+// KEYBOARD LAYOUT
+// ============================================================
+const KEYS_LOW=[
+  {id:'S_low',label:'S',name:'Sa',type:'white',oct:-1,hk:'Z'},{id:'r_low',label:'r',name:'Re♭',type:'black',oct:-1,hk:''},
+  {id:'R_low',label:'R',name:'Re',type:'white',oct:-1,hk:'X'},{id:'g_low',label:'g',name:'Ga♭',type:'black',oct:-1,hk:''},
+  {id:'G_low',label:'G',name:'Ga',type:'white',oct:-1,hk:'C'},{id:'M_low',label:'M',name:'Ma',type:'white',oct:-1,hk:'V'},
+  {id:'m_low',label:'m',name:'Ma#',type:'black',oct:-1,hk:''},{id:'P_low',label:'P',name:'Pa',type:'white',oct:-1,hk:'B'},
+  {id:'d_low',label:'d',name:'Dha♭',type:'black',oct:-1,hk:''},{id:'D_low',label:'D',name:'Dha',type:'white',oct:-1,hk:'N'},
+  {id:'n_low',label:'n',name:'Ni♭',type:'black',oct:-1,hk:''},{id:'N_low',label:'N',name:'Ni',type:'white',oct:-1,hk:'M'},
+];
+const KEYS_MID=[
+  {id:'S',label:'S',name:'Sa',type:'white',oct:0,hk:'A'},{id:'r',label:'r',name:'Re♭',type:'black',oct:0,hk:'W'},
+  {id:'R',label:'R',name:'Re',type:'white',oct:0,hk:'S'},{id:'g',label:'g',name:'Ga♭',type:'black',oct:0,hk:'E'},
+  {id:'G',label:'G',name:'Ga',type:'white',oct:0,hk:'D'},{id:'M',label:'M',name:'Ma',type:'white',oct:0,hk:'F'},
+  {id:'m',label:'m',name:'Ma#',type:'black',oct:0,hk:'T'},{id:'P',label:'P',name:'Pa',type:'white',oct:0,hk:'G'},
+  {id:'d',label:'d',name:'Dha♭',type:'black',oct:0,hk:'Y'},{id:'D',label:'D',name:'Dha',type:'white',oct:0,hk:'H'},
+  {id:'n',label:'n',name:'Ni♭',type:'black',oct:0,hk:'U'},{id:'N',label:'N',name:'Ni',type:'white',oct:0,hk:'J'},
+  {id:'S2',label:'Ṡ',name:"Sa'",type:'white',oct:0,hk:'K'},
+];
+
+function buildKeys(cid,defs,sfx){
+  const c=document.getElementById(cid);if(!c)return;c.innerHTML='';
+  defs.forEach(k=>{
+    const d=document.createElement('div');d.className='key '+k.type;d.id='key_'+k.id+(sfx||'');
+    d.innerHTML=`<span class="swar">${k.label}</span><span class="kname">${k.name}</span><span class="hotkey">${k.hk}</span>`;
+    d.addEventListener('mousedown',()=>triggerKey(k,sfx));
+    d.addEventListener('touchstart',e=>{e.preventDefault();triggerKey(k,sfx);},{passive:false});
+    c.appendChild(d);
+  });
+}
+function buildMobileKB(cid,defs,sfx){
+  const c=document.getElementById(cid);if(!c)return;c.innerHTML='';
+  defs.filter(k=>k.type==='white').forEach(k=>{
+    const d=document.createElement('div');d.className='mob-key';d.textContent=k.label;
+    d.addEventListener('touchstart',e=>{e.preventDefault();triggerKey(k,sfx);},{passive:false});
+    d.addEventListener('mousedown',()=>triggerKey(k,sfx));c.appendChild(d);
+  });
+}
+
+function buildAllKeys(){
+  buildKeys('keys-lower',KEYS_LOW,'_low');buildKeys('keys-mid',KEYS_MID,'');
+  buildKeys('keys-mid-n',KEYS_MID,'_n');buildKeys('keys-mid-pa',KEYS_MID,'_pa');
+  buildMobileKB('mobile-kb',KEYS_MID,'');buildMobileKB('mobile-kb-n',KEYS_MID,'_n');
+  buildMobileKB('mobile-kb-pa',KEYS_MID,'_pa');
+}
+
+const keyMap={};[...KEYS_LOW,...KEYS_MID].forEach(k=>{if(k.hk)keyMap[k.hk.toLowerCase()]=k;});
+document.addEventListener('keydown',e=>{
+  if(e.repeat||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+  if(e.key==='q'||e.key==='Q'){manualDrum('baya');return;}
+  if(e.key==='p'||e.key==='P'){manualDrum('dayan');return;}
+  const num=parseInt(e.key);if(num>=1&&num<=8){hitOctoPad(num-1);return;}
+  const k=keyMap[e.key.toLowerCase()];if(k)triggerKey(k,'');
+});
+
+function triggerKey(k,sfx){
+  const label=k.label==='Ṡ'?'S2':k.label;
+  const semi=SEMITONES[label]||0;
+  const instrToUse=paActive?document.getElementById('pa-your-sel').value:currentInstrument;
+  playNote(semi,k.oct||0,instrToUse);
+  ['key_'+k.id,'key_'+k.id+'_n','key_'+k.id+'_pa','key_'+k.id+(sfx||'')].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.classList.add('pressed');setTimeout(()=>el.classList.remove('pressed'),160);
+  });
+  const freq=(440*Math.pow(2,(BASE_MIDI+semi+(k.oct||0)*12-69)/12)).toFixed(1);
+  document.getElementById('status-txt').textContent=`▶ ${k.name} (${k.label}) · ${freq} Hz · ${instrToUse}`;
+  evaluateNote(k.label,k.oct||0);
+  if(paActive)evaluatePANote(k.label,k.oct||0);
+}
+
+// ============================================================
+// OCTOPAD + DRUM KIT
+// ============================================================
+const OCTOPADS=[
+  {bol:'Dha',dev:'ध',lat:'Dha',desc:'Both',color:'#FF9500',rgb:'255,149,0',key:'1'},
+  {bol:'Dhin',dev:'धिं',lat:'Dhin',desc:'Sustained',color:'#FFB347',rgb:'255,179,71',key:'2'},
+  {bol:'Na',dev:'ना',lat:'Na',desc:'Dayan',color:'#4A90E2',rgb:'74,144,226',key:'3'},
+  {bol:'Tin',dev:'तिं',lat:'Tin',desc:'Open',color:'#00C9A7',rgb:'0,201,167',key:'4'},
+  {bol:'Ge',dev:'गे',lat:'Ge',desc:'Baya',color:'#FF6B9D',rgb:'255,107,157',key:'5'},
+  {bol:'kick',dev:'⬤',lat:'Kick',desc:'',color:'#9B59B6',rgb:'155,89,182',key:'6'},
+  {bol:'snare',dev:'✕',lat:'Snare',desc:'',color:'#E74C3C',rgb:'231,76,60',key:'7'},
+  {bol:'hat',dev:'‥',lat:'Hi-hat',desc:'',color:'#27AE60',rgb:'39,174,96',key:'8'},
+];
+function buildOctopad(){
+  const c=document.getElementById('octopad');
+  OCTOPADS.forEach((pad,i)=>{
+    const d=document.createElement('div');d.className='oct-pad';d.id='opad-'+i;
+    d.style.setProperty('--pad-color',pad.color);d.style.setProperty('--pad-rgb',pad.rgb);
+    d.innerHTML=`<div class="dev-bol">${pad.dev}</div><div class="lat-bol">${pad.lat}</div><div class="bol-desc">${pad.desc}</div><div class="pad-key">${pad.key}</div>`;
+    d.addEventListener('mousedown',()=>hitOctoPad(i));
+    d.addEventListener('touchstart',e=>{e.preventDefault();hitOctoPad(i);},{passive:false});
+    c.appendChild(d);
+  });
+}
+function hitOctoPad(i){if(!toneReady)return;playBol(OCTOPADS[i].bol);const el=document.getElementById('opad-'+i);if(el){el.classList.add('pad-hit');setTimeout(()=>el.classList.remove('pad-hit'),150);}}
+
+const DRUM_PADS=[
+  {name:'Crash',fn:()=>instrSet.crash.triggerAttackRelease('8n'),color:'#F39C12',rgb:'243,156,18'},
+  {name:'Ride',fn:()=>instrSet.ride.triggerAttackRelease('8n'),color:'#E67E22',rgb:'230,126,34'},
+  {name:'Hi-Hat (closed)',fn:()=>instrSet.hihat.triggerAttackRelease('32n'),color:'#27AE60',rgb:'39,174,96'},
+  {name:'Hi-Hat (open)',fn:()=>instrSet.hihatOpen.triggerAttackRelease('16n'),color:'#2ECC71',rgb:'46,204,113'},
+  {name:'Hi Tom',fn:()=>instrSet.tomHi.triggerAttackRelease('F4','8n'),color:'#3498DB',rgb:'52,152,219'},
+  {name:'Mid Tom',fn:()=>instrSet.tomMid.triggerAttackRelease('D4','8n'),color:'#2980B9',rgb:'41,128,185'},
+  {name:'Floor Tom',fn:()=>instrSet.tomFloor.triggerAttackRelease('B3','8n'),color:'#1A5276',rgb:'26,82,118'},
+  {name:'Snare',fn:()=>instrSet.snare.triggerAttackRelease('8n'),color:'#E74C3C',rgb:'231,76,60'},
+  {name:'Kick',fn:()=>instrSet.kick.triggerAttackRelease('C1','8n'),color:'#9B59B6',rgb:'155,89,182'},
+];
+function buildDrumKit(){
+  const c=document.getElementById('drum-kit');if(!c)return;
+  DRUM_PADS.forEach((pad,i)=>{
+    const d=document.createElement('div');d.className='drum-pad';d.id='dp-'+i;
+    d.style.setProperty('--dp-color',pad.color);d.style.setProperty('--dp-rgb',pad.rgb);
+    d.innerHTML=`<div class="dp-name">${pad.name}</div>`;
+    const hit=()=>{if(!toneReady)return;pad.fn();d.classList.add('drum-hit');setTimeout(()=>d.classList.remove('drum-hit'),120);};
+    d.addEventListener('mousedown',hit);
+    d.addEventListener('touchstart',e=>{e.preventDefault();hit();},{passive:false});
+    c.appendChild(d);
+  });
+}
+
+// ============================================================
+// PLAY-ALONG ENGINE
+// ============================================================
+function setSpeed(mult,el){
+  paSpeedMult=mult;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+}
+
+function goPlayAlong(){
+  if(activeSongIdx<0){showTab('songs');return;}
+  showTab('playalong');loadPASong(activeSongIdx);
+}
+
+function loadPASong(idx){
+  activeSongIdx=idx;
+  const song=SONGS[idx];
+  document.getElementById('pa-song-name').textContent=song.title+' · '+song.film;
+  document.getElementById('pa-song-meta').textContent='Raaga: '+song.raaga+' · '+song.diff+' · '+song.swar_seq.length+' notes';
+  document.getElementById('pa-bpm-info').textContent='Original BPM: '+song.bpm;
+  paTotalNotes=song.swar_seq.length;
+  buildPANoteStrip(song);
+  buildPABeatDots(song.swar_seq.length);
+  document.getElementById('pa-status-txt').textContent='Ready! Press ▶ Start Play-Along';
+  resetPAScore();
+}
+
+function buildPANoteStrip(song){
+  const strip=document.getElementById('pa-next-strip');strip.innerHTML='';
+  song.swar_seq.forEach((sw,i)=>{
+    const pill=document.createElement('div');pill.className='pa-note-pill upcoming';pill.id='pn-'+i;
+    const d=sw==='S2'?'Ṡ':sw;pill.textContent=d+(song.oct_seq[i]===-1?'·':'');
+    strip.appendChild(pill);
+  });
+}
+
+function buildPABeatDots(n){
+  const c=document.getElementById('pa-beat-dots');c.innerHTML='';
+  for(let i=0;i<Math.min(n,32);i++){const d=document.createElement('div');d.className='pa-beat-dot';d.id='pbd-'+i;c.appendChild(d);}
+}
+
+function paTickFn(){
+  if(!paActive)return;
+  const elapsed=Date.now()-paStart;
+  // Play backing note
+  if(paCurrentIdx<paSongNotes.length){
+    const note=paSongNotes[paCurrentIdx];
+    if(elapsed>=note.time && !note.played){
+      note.played=true;
+      // Backing plays quietly
+      const backingInstr=document.getElementById('pa-backing-sel').value;
+      const s=samplers[backingInstr];if(s&&s.loaded){
+        const midiNote=BASE_MIDI+(SEMITONES[note.swar]||0)+note.oct*12;
+        try{s.triggerAttackRelease(midi2note(midiNote),'2n');}catch(e){}
+      }
+      updatePAStrip(paCurrentIdx);updatePABeatDot(paCurrentIdx);
+      paCurrentIdx++;
+    }
+  }
+  // Check for missed notes (60% of a beat past due)
+  paSongNotes.forEach((note,i)=>{
+    if(!note.hit&&!note.missed&&note.played&&elapsed>note.time+paMsPerBeat*0.6){
+      note.missed=true;paMisses++;updatePAScore();
+      const pill=document.getElementById('pn-'+i);if(pill)pill.className='pa-note-pill missed';
+    }
+  });
+  if(paSongNotes.length>0&&paCurrentIdx>=paSongNotes.length&&elapsed>paSongNotes[paSongNotes.length-1].time+paMsPerBeat*1.5){
+    endPlayAlong();
+  }
+}
+
+function startPlayAlong(){
+  if(!toneReady)return;
+  if(activeSongIdx<0){document.getElementById('pa-status-txt').textContent='⚠ No song loaded — go to Songs tab first';return;}
+  if(paPaused){resumePlayAlong();return;}
+
+  stopPlayAlong();
+  resetPAScore();
+  const song=SONGS[activeSongIdx];
+  const bpm=song.bpm*paSpeedMult;
+  paMsPerBeat=Math.round(60000/bpm);
+  paSongNotes=song.swar_seq.map((sw,i)=>({swar:sw,oct:song.oct_seq[i],time:i*paMsPerBeat,hit:false,missed:false,played:false}));
+  paCurrentIdx=0;paStart=Date.now();paActive=true;paPaused=false;
+
+  // Start taal rhythm
+  const paTaal=document.getElementById('pa-taal-sel').value;
+  if(paTaal!=='none'){
+    currentTaalType=paTaal;
+    Tone.Transport.bpm.value=bpm;
+    stopTaalInternal();taalBeat=0;
+    const def=TAAL_DEFS[paTaal];if(def){
+      taalRepeatId=Tone.Transport.scheduleRepeat(time=>{
+        const main=Math.floor(taalBeat/2),isMain=taalBeat%2===0,pat=def.seq[main%def.beats];
+        if(isMain)playBol(pat.b,time);
+        else if(paTaal==='drums'||paTaal==='bossa')playBol('hat',time);
+        taalBeat++;
+      },'8n');
+      if(Tone.Transport.state!=='started')Tone.Transport.start();
+    }
+  }
+
+  paTimer=setInterval(paTickFn,50);
+
+  // Note highway animation
+  drawHighway();
+  document.getElementById('pa-btn-play').disabled=true;
+  document.getElementById('pa-btn-pause').disabled=false;
+  document.getElementById('pa-btn-stop').disabled=false;
+  document.getElementById('pa-status-txt').textContent='▶ Playing — hit the highlighted notes!';
+}
+
+function pausePlayAlong(){
+  if(!paActive)return;
+  paPaused=true;paActive=false;
+  clearInterval(paTimer);if(paAnimFrame)cancelAnimationFrame(paAnimFrame);
+  Tone.Transport.pause();
+  document.getElementById('pa-btn-play').disabled=false;document.getElementById('pa-btn-play').textContent='▶ Resume';
+  document.getElementById('pa-status-txt').textContent='⏸ Paused';
+}
+function resumePlayAlong(){
+  if(!paPaused)return;
+  paActive=true;paPaused=false;
+  // Recalculate start so elapsed time accounts for time already passed
+  paStart=Date.now()-(paCurrentIdx*paMsPerBeat);
+  Tone.Transport.start();
+  document.getElementById('pa-btn-play').textContent='▶ Start Play-Along';
+  document.getElementById('pa-btn-play').disabled=true;
+  document.getElementById('pa-btn-pause').disabled=false;
+  document.getElementById('pa-btn-stop').disabled=false;
+  document.getElementById('pa-status-txt').textContent='▶ Resumed — keep playing!';
+  // Restart the scheduler tick only (no score/position reset)
+  if(paTimer)clearInterval(paTimer);
+  paTimer=setInterval(paTickFn,50);
+  drawHighway();
+}
+function stopPlayAlong(){
+  paActive=false;paPaused=false;
+  clearInterval(paTimer);paTimer=null;
+  if(paAnimFrame)cancelAnimationFrame(paAnimFrame);paAnimFrame=null;
+  stopTaalInternal();Tone.Transport.stop();
+  document.getElementById('pa-btn-play').disabled=false;document.getElementById('pa-btn-play').textContent='▶ Start Play-Along';
+  document.getElementById('pa-btn-pause').disabled=true;document.getElementById('pa-btn-stop').disabled=true;
+  document.getElementById('pa-status-txt').textContent='Stopped';
+  clearHighway();
+}
+function resetPlayAlong(){stopPlayAlong();resetPAScore();if(activeSongIdx>=0){loadPASong(activeSongIdx);}}
+
+function endPlayAlong(){
+  stopPlayAlong();
+  const acc=paTotalNotes>0?Math.round(paHits/paTotalNotes*100):0;
+  document.getElementById('pa-status-txt').textContent='🎉 Complete! Accuracy: '+acc+'%';
+  showPAFeedback('🎉 Song Done! '+acc+'% accurate!','perfect');
+  awardXP(Math.round(acc/3),'Play-Along completed');
+  guruPATip(acc);
+}
+
+function evaluatePANote(label,oct){
+  if(!paActive||paCurrentIdx===0)return;
+  const input=label==='Ṡ'?'S2':label;
+  // Check the most recent played note (current idx - 1)
+  const noteIdx=paCurrentIdx-1;if(noteIdx<0)return;
+  const note=paSongNotes[noteIdx];
+  if(note&&!note.hit&&!note.missed&&note.played){
+    if(input===note.swar&&oct===note.oct){
+      note.hit=true;paHits++;updatePAScore();
+      const pill=document.getElementById('pn-'+noteIdx);if(pill)pill.className='pa-note-pill hit';
+      showPAFeedback('✓ PERFECT!','perfect');awardXP(3,null);
+      // Green flash on keyboard
+      const kid=input==='S2'?'key_S2':(oct===-1?'key_'+input+'_low':'key_'+input);
+      ['key_'+note.swar,'key_'+note.swar+'_pa'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.classList.add('correct-flash');setTimeout(()=>el.classList.remove('correct-flash'),250);});
+    }
+  }
+}
+
+function updatePAScore(){
+  document.getElementById('pa-hits').textContent=paHits;
+  document.getElementById('pa-misses').textContent=paMisses;
+  const total=paHits+paMisses;
+  document.getElementById('pa-acc').textContent=total>0?Math.round(paHits/total*100)+'%':'—';
+  document.getElementById('pa-score').textContent=paHits*10;
+}
+function resetPAScore(){paHits=0;paMisses=0;paCurrentIdx=0;updatePAScore();document.getElementById('pa-feedback').textContent='';}
+function showPAFeedback(msg,cls){const el=document.getElementById('pa-feedback');el.textContent=msg;el.className='pa-feedback-flash '+cls;setTimeout(()=>{el.textContent='';el.className='pa-feedback-flash';},1500);}
+
+function updatePAStrip(idx){
+  const pill=document.getElementById('pn-'+idx);if(!pill)return;
+  if(!paSongNotes[idx].hit&&!paSongNotes[idx].missed)pill.className='pa-note-pill current';
+  // Update target prompt on keyboard
+  document.querySelectorAll('.key').forEach(k=>k.classList.remove('target-prompt'));
+  const note=paSongNotes[idx];if(!note)return;
+  const kid=note.swar==='S2'?'key_S2':(note.oct===-1?'key_'+note.swar+'_low':'key_'+note.swar);
+  ['key_'+note.swar+'_pa',note.swar==='S2'?'key_S2':'key_'+note.swar].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('target-prompt');}});
+}
+
+function updatePABeatDot(idx){
+  document.querySelectorAll('.pa-beat-dot').forEach(d=>d.classList.remove('active'));
+  const d=document.getElementById('pbd-'+Math.min(idx,31));if(d)d.classList.add('active');
+}
+
+// ── NOTE HIGHWAY CANVAS ───────────────────────────────────────
+function drawHighway(){
+  const canvas=document.getElementById('highway-canvas');if(!canvas)return;
+  canvas.width=canvas.offsetWidth||600;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  const HIT_X=W*0.2; // hit zone at 20% from left
+  const AHEAD=paMsPerBeat*7; // show 7 beats ahead
+  const elapsed=paActive?Date.now()-paStart:0;
+
+  ctx.fillStyle='#080812';ctx.fillRect(0,0,W,H);
+  // Grid lines
+  for(let i=0;i<=12;i++){ctx.strokeStyle='rgba(255,255,255,.04)';ctx.beginPath();const y=(i/12)*H;ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // Hit zone line
+  ctx.strokeStyle='rgba(255,149,0,.7)';ctx.lineWidth=2;ctx.setLineDash([6,3]);ctx.beginPath();ctx.moveTo(HIT_X,0);ctx.lineTo(HIT_X,H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,149,0,.15)';ctx.fillRect(0,0,HIT_X,H);
+
+  // Note labels
+  const NOTE_LABELS=['Ṡ','N','n','D','d','P','m','M','G','g','R','r','S'];
+  NOTE_LABELS.forEach((lbl,i)=>{
+    const y=(i/12)*(H-16)+8;ctx.fillStyle='rgba(255,255,255,.15)';ctx.font='8px Inter';ctx.textAlign='left';ctx.fillText(lbl,2,y+3);
+  });
+
+  if(paSongNotes.length>0){
+    paSongNotes.forEach((note,i)=>{
+      const notetime=note.time,timeDiff=notetime-elapsed;
+      if(timeDiff<-paMsPerBeat||timeDiff>AHEAD)return;
+      const progress=(timeDiff+paMsPerBeat)/AHEAD;
+      const x=HIT_X+progress*(W-HIT_X)*(1-(1/7));
+      const semi=SEMITONES[note.swar]||0;
+      const y=H-(semi/12)*(H-16)-8;
+      const nw=36,nh=18;
+      let color=note.hit?'#00C9A7':note.missed?'#FF6B9D':'#FF9500';
+      if(!note.hit&&!note.missed&&timeDiff<paMsPerBeat*.5&&timeDiff>-100){color='#FFB347';}
+      ctx.fillStyle=color;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x-nw/2,y-nh/2,nw,nh,5);else ctx.rect(x-nw/2,y-nh/2,nw,nh);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 11px Inter';ctx.textAlign='center';
+      ctx.fillText(note.swar==='S2'?'Ṡ':note.swar,x,y+4);
+    });
+  }else{
+    ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='12px Inter';ctx.textAlign='center';
+    ctx.fillText('Load a song and press ▶ Start Play-Along',W/2,H/2);
+  }
+  if(paActive){paAnimFrame=requestAnimationFrame(drawHighway);}
+}
+function clearHighway(){const canvas=document.getElementById('highway-canvas');if(!canvas)return;const ctx=canvas.getContext('2d');canvas.width=canvas.offsetWidth||600;ctx.fillStyle='#080812';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='12px Inter';ctx.textAlign='center';ctx.fillText('Press ▶ Start Play-Along to begin',canvas.width/2,canvas.height/2);}
+
+// ============================================================
+// NOTATION TRAINER
+// ============================================================
+function loadSong(idx){
+  if(autoPlayTimer){clearInterval(autoPlayTimer);autoPlayTimer=null;}
+  activeSongIdx=idx;stepPointer=0;
+  const song=SONGS[idx];
+  document.getElementById('guide-title').textContent=song.title+' · '+song.film;
+  document.getElementById('guide-meta').textContent='Raaga: '+song.raaga+' · '+song.diff+' · '+song.swar_seq.length+' notes';
+  document.getElementById('demo-bpm-info').textContent='BPM: '+song.bpm;
+  renderNotation(song);updateStepUI(song);showTab('notation');
+}
+function renderNotation(song){
+  const row=document.getElementById('notation-row');if(!row)return;row.innerHTML='';
+  song.swar_seq.forEach((sw,i)=>{
+    const sp=document.createElement('span');sp.className='nstep pending';sp.id='ns-'+i;
+    let d=sw==='S2'?'Ṡ':sw;if(song.oct_seq[i]===-1)d=d+'.';sp.textContent=d+' ';row.appendChild(sp);
+  });
+}
+function updateStepUI(song){
+  if(!song)return;const total=song.swar_seq.length;
+  song.swar_seq.forEach((_,i)=>{const el=document.getElementById('ns-'+i);if(!el)return;el.className='nstep '+(i<stepPointer?'played':i===stepPointer?'current':'pending');});
+  document.getElementById('step-ctr').textContent=stepPointer+' / '+total;
+  document.getElementById('nprog-fill').style.width=(total>0?stepPointer/total*100:0)+'%';
+  document.querySelectorAll('.key').forEach(k=>k.classList.remove('target-prompt'));
+  if(stepPointer>=total){showFeedback('🎉 Song complete! +30 XP','done');awardXP(30,'Song completed!');guruDone();return;}
+  if(!document.getElementById('hint-tog').checked)return;
+  const sw=song.swar_seq[stepPointer],oct=song.oct_seq[stepPointer];
+  const kid=sw==='S2'?'key_S2':(oct===-1?'key_'+sw+'_low':'key_'+sw);
+  [kid,kid+'_n'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('target-prompt');});
+}
+function evaluateNote(swarLabel,oct){
+  if(activeSongIdx<0||stepPointer>=SONGS[activeSongIdx].swar_seq.length)return;
+  const song=SONGS[activeSongIdx],expected=song.swar_seq[stepPointer],expOct=song.oct_seq[stepPointer];
+  const input=swarLabel==='Ṡ'?'S2':swarLabel;
+  if(input===expected&&oct===expOct){
+    showFeedback('✓ Correct! +5 XP','good');awardXP(5,null);guruCorrect();
+    const kid=expected==='S2'?'key_S2':(expOct===-1?'key_'+expected+'_low':'key_'+expected);
+    [kid,kid+'_n'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.classList.add('correct-flash');setTimeout(()=>el.classList.remove('correct-flash'),250);});
+    if(document.getElementById('auto-adv').checked){stepPointer++;updateStepUI(song);}
+  }else{showFeedback('✗ Expected '+(SWAR_NAMES[expected]||expected)+' — try again','bad');guruWrong(expected);}
+}
+
+const GURU_CORRECT=[
+  "Wah wah! <b>Bilkul sahi!</b> Perfect note! <span class='grade grade-perfect'>✓ Sahi</span>",
+  "Shabash! <b>Bahut achha!</b> Your fingers are learning the path. <span class='grade grade-perfect'>✓ Sahi</span>",
+  "Yes! <b>Ekdum sahi!</b> Feel how that note sits in the raaga. <span class='grade grade-perfect'>✓ Correct</span>",
+  "Very good! <b>Aage badho!</b> Keep that rhythm steady. <span class='grade grade-perfect'>✓ Sahi</span>",
+  "Excellent! You are developing <b>shruti gyan</b> — pitch knowledge. <span class='grade grade-perfect'>✓ Perfect</span>"
+];
+const GURU_WRONG_MAP={
+  S:"Sa is your home note — the root. Return to Sa, feel it firmly, then try again. <span class='grade grade-wrong'>Sa expected</span>",
+  R:"Re is one step above Sa. Press the white key just after Sa. <span class='grade grade-wrong'>Re expected</span>",
+  r:"Komal Re — the flat Re. Press the black key between Sa and Re. <span class='grade grade-wrong'>Komal Re expected</span>",
+  G:"Ga is the third note. In Shivaranjani it is komal — watch carefully! <span class='grade grade-wrong'>Ga expected</span>",
+  g:"Komal Ga — this gives the raaga its melancholic colour. The black key after Re. <span class='grade grade-wrong'>Komal Ga expected</span>",
+  M:"Shuddh Ma — the natural fourth. Avoid it in Yaman; it must be tivra (m) there! <span class='grade grade-wrong'>Ma expected</span>",
+  m:"Tivra Ma — the sharpened fourth, the key note of Raaga Yaman! Press key [T]. <span class='grade grade-wrong'>Tivra Ma expected</span>",
+  P:"Pa is the fifth — as stable as Sa. It never changes in any raaga. <span class='grade grade-wrong'>Pa expected</span>",
+  D:"Shuddh Dha — the sixth. Strong vadi of Shivaranjani! <span class='grade grade-wrong'>Dha expected</span>",
+  d:"Komal Dha — flattened sixth. Used in Bhairav and Bhairavi. <span class='grade grade-wrong'>Komal Dha expected</span>",
+  N:"Shuddh Ni — the leading tone. Close to upper Sa, pull toward it! <span class='grade grade-wrong'>Ni expected</span>",
+  n:"Komal Ni — flattened seventh, gives a folk/romantic colour. <span class='grade grade-wrong'>Komal Ni expected</span>",
+  S2:"Upper Sa — the octave! A milestone. Your fingers now span the full saptak. <span class='grade grade-wrong'>Upper Sa expected</span>"
+};
+const GURU_DONE=[
+  "🎉 <b>Bahut bahut shabash!</b> Song complete! You have walked the entire raaga path. Now try faster tempo!",
+  "🎊 <b>Wah maestro!</b> Every note played. This is how a shishya becomes a musician — patience and practice!",
+  "🏆 <b>Ek dum perfect!</b> Well done. Now try the Play-Along mode and add tabla rhythm!",
+];
+function guruSay(html,type,panel='teacher-msg'){
+  const el=document.getElementById(panel);if(!el)return;
+  el.innerHTML='<b>Guruji says:</b> '+html;
+  el.className='teacher-bubble grade-'+type;
+  setTimeout(()=>{el.className='teacher-bubble';},type==='wrong'?3500:2500);
+}
+function showFeedback(msg,type){
+  const el=document.getElementById('feedback');if(!el)return;
+  el.textContent=msg;el.className='feedback-flash '+type;
+  if(type!=='done')setTimeout(()=>{el.textContent='';el.className='feedback-flash';},2500);
+}
+function guruCorrect(){guruSay(GURU_CORRECT[Math.floor(Math.random()*GURU_CORRECT.length)],'perfect');}
+function guruWrong(expected){
+  const msg=GURU_WRONG_MAP[expected]||('Expected note: <b>'+expected+'</b> — check the highlighted key and try again. <span class="grade grade-wrong">Wrong note</span>');
+  guruSay(msg,'wrong');
+}
+function guruDone(){guruSay(GURU_DONE[Math.floor(Math.random()*GURU_DONE.length)],'perfect');}
+function guruPATip(acc){
+  const tips=['Focus on the <b>sam</b> — beat 1. Let everything else follow from there.','Try <b>50% speed</b> and nail every note before increasing tempo.','Listen to the backing melody first — internalize it before playing along.','In this raaga, the <b>vadi</b> note is most important — emphasise it!','Close your eyes. Feel the taal in your body like a heartbeat.'];
+  guruSay('Accuracy: <b>'+acc+'%</b> — '+tips[Math.floor(Math.random()*tips.length)],'tip','pa-teacher-msg');
+}
+function resetGuided(){stopDemo();stepPointer=0;if(activeSongIdx>=0){renderNotation(SONGS[activeSongIdx]);updateStepUI(SONGS[activeSongIdx]);}showFeedback('↺ Reset','good');}
+function stopDemo(){if(autoPlayTimer){clearInterval(autoPlayTimer);autoPlayTimer=null;}document.getElementById('btn-stop-demo').style.display='none';document.getElementById('btn-play-all').style.display=''; transportStop(); }
+function autoDemo(){if(activeSongIdx<0||stepPointer>=SONGS[activeSongIdx].swar_seq.length)return;const song=SONGS[activeSongIdx];playNote(SEMITONES[song.swar_seq[stepPointer]]||0,song.oct_seq[stepPointer]);stepPointer++;updateStepUI(song);}
+function autoDemoAll(){
+  if(activeSongIdx<0)return;resetGuided();const song=SONGS[activeSongIdx];const ms=Math.round(60000/(song.bpm||80));
+  document.getElementById('btn-stop-demo').style.display='';document.getElementById('btn-play-all').style.display='none';
+  const paTaal = document.getElementById('taal-sel').value;
+  if(paTaal !== 'none') { setTempo(song.bpm || 80); transportPlay(); }
+  function next(){if(stepPointer>=song.swar_seq.length){stopDemo();return;}playNote(SEMITONES[song.swar_seq[stepPointer]]||0,song.oct_seq[stepPointer]);stepPointer++;updateStepUI(song);}
+  next();autoPlayTimer=setInterval(next,ms);
+}
+function demoSong(idx){loadSong(idx);setTimeout(()=>autoDemoAll(),100);}
+function openPlayAlong(idx){loadSong(idx);loadPASong(idx);showTab('playalong');}
+
+// ============================================================
+// SHRUTI BOX
+// ============================================================
+const SHRUTI_NOTES=[
+  {n:'C3',f:130.81,label:'C3',type:''},{n:'C#3',f:138.59,label:'C#3',type:''},{n:'D3',f:146.83,label:'D3',type:''},{n:'Eb3',f:155.56,label:'Eb3',type:''},
+  {n:'E3',f:164.81,label:'E3',type:''},{n:'F3',f:174.61,label:'F3',type:''},{n:'F#3',f:185.00,label:'F#3',type:''},{n:'G3',f:196.00,label:'G3',type:'male'},
+  {n:'Ab3',f:207.65,label:'Ab3',type:'male'},{n:'A3',f:220.00,label:'A3',type:'male'},{n:'Bb3',f:233.08,label:'Bb3',type:'male'},{n:'B3',f:246.94,label:'B3',type:'male'},
+  {n:'C4',f:261.63,label:'C4',type:'both'},{n:'C#4',f:277.18,label:'C#4',type:'both'},{n:'D4',f:293.66,label:'D4',type:'both'},{n:'Eb4',f:311.13,label:'Eb4',type:'female'},
+  {n:'E4',f:329.63,label:'E4',type:'female'},{n:'F4',f:349.23,label:'F4',type:'female'},{n:'F#4',f:369.99,label:'F#4',type:'female'},{n:'G4',f:392.00,label:'G4',type:'female'},
+  {n:'Ab4',f:415.30,label:'Ab4',type:''},{n:'A4',f:440.00,label:'A4',type:''},{n:'Bb4',f:466.16,label:'Bb4',type:''},{n:'B4',f:493.88,label:'B4',type:''},
+];
+function buildShrutiGrid(){
+  const c=document.getElementById('shruti-grid');if(!c)return;c.innerHTML='';
+  SHRUTI_NOTES.forEach(sn=>{
+    const d=document.createElement('div');const cls={male:'male-range',female:'female-range',both:'both-range','':''}[sn.type]||'';
+    d.className='shr-key '+cls;d.id='shr-'+sn.label;d.innerHTML=sn.label.replace(/([0-9]+)/,'<br>$1');
+    d.onclick=()=>selectShruti(sn);c.appendChild(d);
+  });
+}
+function selectShruti(sn){
+  activeShruti=sn;document.querySelectorAll('.shr-key').forEach(k=>k.classList.remove('shr-active'));
+  const el=document.getElementById('shr-'+sn.label);if(el)el.classList.add('shr-active');
+  document.getElementById('hz-display').textContent=sn.f.toFixed(1);
+  document.getElementById('hz-note').textContent=sn.label+' = Sa reference';
+  document.getElementById('hz-pa').textContent=(sn.f*1.5).toFixed(1)+' Hz';
+  if(shrutiPlaying)startShrutiOsc(sn.f);
+}
+function toggleShruti(){if(shrutiPlaying)stopShruti();else{if(!activeShruti)selectShruti(SHRUTI_NOTES[12]);startShrutiOsc(activeShruti.f);}}
+function startShrutiOsc(freq){
+  stopShruti();if(!toneReady)return;shrutiPlaying=true;
+  const sg=new Tone.Gain(.15).connect(fx.reverb);
+  const o1=new Tone.Oscillator({frequency:freq,type:'square'}).connect(sg).start();
+  const o2=new Tone.Oscillator({frequency:freq*2,type:'sine'}).connect(new Tone.Gain(.04).connect(sg)).start();
+  const pgn=new Tone.Gain(.08).connect(fx.reverb);
+  const o3=new Tone.Oscillator({frequency:freq*1.5,type:'sine'}).connect(pgn).start();
+  shrutiOscs=[sg,o1,o2,pgn,o3];document.getElementById('shr-play-btn').textContent='⏹ Stop Shruti';
+}
+function stopShruti(){shrutiOscs.forEach(o=>{try{o.stop?o.stop():null;o.dispose();}catch(e){}});shrutiOscs=[];shrutiPlaying=false;document.getElementById('shr-play-btn').textContent='▶ Play Sa Reference';}
+function playSaPaRef(){if(!activeShruti)selectShruti(SHRUTI_NOTES[12]);startShrutiOsc(activeShruti.f);}
+
+// ============================================================
+// RAAGAS
+// ============================================================
+const RAAGAS=[
+  {name:'Yaman',thaat:'Kalyan',time:'Evening',mood:'Romantic, serene',color:'#1A9E75',notes:['S','R','G','m','P','D','N','S2'],vadi:'G',samvadi:'N',aaroh:'S R G m P D N Ṡ',avaroh:'Ṡ N D P m G R S',films:['Ek Pyar Ka Nagma Hai','Ajeeb Dastan Hai Yeh','Baahon Mein Chale Aao','Roja Janeman (Tamil)']},
+  {name:'Bhairav',thaat:'Bhairav',time:'Early Morning',mood:'Solemn, devotional',color:'#4A90E2',notes:['S','r','G','M','P','d','N','S2'],vadi:'D',samvadi:'R',aaroh:'S r G M P d N Ṡ',avaroh:'Ṡ N d P M G r S',films:['Mohe Panghat Pe','Jo Tum Todo Piya']},
+  {name:'Bhairavi',thaat:'Bhairavi',time:'Morning',mood:'Pathos, longing',color:'#E74C3C',notes:['S','r','g','M','P','d','n','S2'],vadi:'M',samvadi:'S',aaroh:'S r g M P d n Ṡ',avaroh:'Ṡ n d P M g r S',films:['Lag Ja Gale','Kaisi Paheli Zindagani','O Re Piya','Mamma Mia']},
+  {name:'Khamaj',thaat:'Khamaj',time:'Night',mood:'Romantic, playful',color:'#F39C12',notes:['S','R','G','M','P','D','n','N','S2'],vadi:'G',samvadi:'N',aaroh:'S R G M P D n Ṡ',avaroh:'Ṡ N D P M G R S',films:['Aaj Jaane Ki Zid Na Karo','Kuch Kuch Hota Hai','En Anbu Thozha (Tamil)','Chinna Chinna Aasai (Tamil)']},
+  {name:'Shivaranjani',thaat:'Kafi',time:'Any Time',mood:'Yearning, melancholy',color:'#9B59B6',notes:['S','R','g','P','D','S2'],vadi:'g',samvadi:'D',aaroh:'S R g P D Ṡ',avaroh:'Ṡ D P g R S',films:['Pehla Nasha','Tum Hi Ho','Dil Se Re','Kadhal Rojave (Tamil)','Poovizhi Vasalile (Tamil)','Vellai Pookal (Tamil)','Uyire Uyire (Tamil)']},
+  {name:'Sindhubhairavi',thaat:'Bhairavi',time:'Morning / Devotional',mood:'Pathos, devotion, longing (Carnatic)',color:'#C0392B',notes:['S','r','g','M','P','d','n','S2'],vadi:'M',samvadi:'S',aaroh:'S r g M P d n Ṡ',avaroh:'Ṡ n d P M g r S',films:['Malare Mounama (Tamil)','Poo Malai Vaangi (Tamil)','Kurai Ondrum Illai (Tamil)','Sindhubhairavi (Tamil film)']},
+  {name:'Desh',thaat:'Khamaj',time:'Monsoon Night',mood:'Patriotic, nostalgic',color:'#27AE60',notes:['S','R','G','M','P','D','n','N','S2'],vadi:'R',samvadi:'P',aaroh:'S R M G M P N Ṡ',avaroh:'Ṡ N D P M G R S',films:['Vande Mataram','Barso Re Megha']},
+  {name:'Bageshri',thaat:'Kafi',time:'Midnight',mood:'Deep longing',color:'#8E44AD',notes:['S','R','g','M','P','D','n','S2'],vadi:'g',samvadi:'P',aaroh:'S g M D n Ṡ',avaroh:'Ṡ n D P M g R S',films:['Kaahe Chhed Mohe','Jiya Jale','Ennavale Adi Ennavale (Tamil)']},
+  {name:'Hamsadhwani',thaat:'Bilawal',time:'Auspicious',mood:'Bright, celebratory',color:'#E67E22',notes:['S','R','G','P','N','S2'],vadi:'G',samvadi:'N',aaroh:'S R G P N Ṡ',avaroh:'Ṡ N P G R S',films:['Vande Mataram (AR Rahman)','Ninaithale Inikkum (Tamil)','Kannalanae (Tamil)']},
+  {name:'Bilawal',thaat:'Bilawal',time:'Morning',mood:'Pure, serene, bright',color:'#16A085',notes:['S','R','G','M','P','D','N','S2'],vadi:'G',samvadi:'D',aaroh:'S R G M P D N Ṡ',avaroh:'Ṡ N D P M G R S',films:['Dancing Queen (ABBA)','Rivers of Babylon (Boney M)','Mustafa Mustafa (Tamil)']},
+  {name:'Malkauns',thaat:'Bhairavi',time:'Midnight',mood:'Mystical, powerful',color:'#2C3E50',notes:['S','g','M','d','n','S2'],vadi:'M',samvadi:'S',aaroh:'S g M d n Ṡ',avaroh:'Ṡ n d M g S',films:['Man Tarpat Hari Darshan']},
+  {name:'Kafi',thaat:'Kafi',time:'Midnight',mood:'Romantic, folk',color:'#2980B9',notes:['S','R','g','M','P','D','n','S2'],vadi:'g',samvadi:'P',aaroh:'S R g M P D n Ṡ',avaroh:'Ṡ n D P M g R S',films:['Billie Jean (MJ)','Rasputin (Boney M)','Tere Bina Zindagi Se']},
+  {name:'Bihag',thaat:'Bilawal',time:'Night',mood:'Romantic, dreamy',color:'#1A5276',notes:['S','R','G','M','m','P','D','N','S2'],vadi:'G',samvadi:'N',aaroh:'S G M P N Ṡ',avaroh:'Ṡ N D P m G M G R S',films:['Yeh Kahan Aa Gaye Hum']},
+];
+
+// ============================================================
+// SONGS (48 total — Bollywood, Tamil, Western)
+// ============================================================
+const SONGS=[
+  // ── SCALE EXERCISES ─────────────────────────────────────────
+  {title:'Sa Re Ga Ma — Bilawal Scale',film:'Scale Exercise',lang:'Sargam',raaga:'Bilawal',diff:'Beginner',cat:'Bollywood',swar_seq:['S','R','G','M','P','D','N','S2','N','D','P','M','G','R','S'],oct_seq:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],bpm:70},
+  // ── BOLLYWOOD — BEGINNER ────────────────────────────────────
+  {title:'Ek Pyar Ka Nagma Hai',film:'Shor (1972)',lang:'Hindi',raaga:'Yaman',diff:'Beginner',cat:'Bollywood',swar_seq:['G','G','P','m','P','G','R','S'],oct_seq:[0,0,0,0,0,0,0,0],bpm:72},
+  {title:'Pehla Nasha',film:'Jo Jeeta Wohi Sikandar (1992)',lang:'Hindi',raaga:'Shivaranjani',diff:'Beginner',cat:'Bollywood',swar_seq:['g','R','S','D','P','g','R','S'],oct_seq:[0,0,0,-1,-1,0,0,0],bpm:64},
+  {title:'Tum Hi Ho',film:'Aashiqui 2 (2013)',lang:'Hindi',raaga:'Shivaranjani',diff:'Beginner',cat:'Bollywood',swar_seq:['D','N','S','R','g','R','S'],oct_seq:[-1,-1,0,0,0,0,0],bpm:58},
+  {title:'Lag Ja Gale',film:'Woh Kaun Thi (1964)',lang:'Hindi',raaga:'Bhairavi',diff:'Beginner',cat:'Bollywood',swar_seq:['S','G','M','P','n','D','S'],oct_seq:[0,0,0,0,0,-1,0],bpm:55},
+  {title:'Ajeeb Dastan Hai Yeh',film:'Dil Apna Preet Parai (1960)',lang:'Hindi',raaga:'Yaman',diff:'Beginner',cat:'Bollywood',swar_seq:['N','S','R','G','S'],oct_seq:[-1,0,0,0,0],bpm:60},
+  // ── BOLLYWOOD — INTERMEDIATE ─────────────────────────────────
+  {title:'Dil Se Re',film:'Dil Se (1998)',lang:'Hindi',raaga:'Shivaranjani',diff:'Intermediate',cat:'Bollywood',swar_seq:['S','R','g','P','D','S2'],oct_seq:[0,0,0,0,0,0],bpm:96},
+  {title:'Kuch Kuch Hota Hai',film:'Kuch Kuch Hota Hai (1998)',lang:'Hindi',raaga:'Khamaj',diff:'Intermediate',cat:'Bollywood',swar_seq:['G','G','P','D','N','S2','N','P'],oct_seq:[0,0,0,0,0,0,0,0],bpm:82},
+  {title:'Barso Re Megha',film:'Guru (2007)',lang:'Hindi',raaga:'Desh',diff:'Intermediate',cat:'Bollywood',swar_seq:['S','R','G','M','P','D','N','S2'],oct_seq:[0,0,0,0,0,0,0,0],bpm:100},
+  {title:'Jiya Jale',film:'Dil Se (1998)',lang:'Hindi',raaga:'Bageshri',diff:'Intermediate',cat:'Bollywood',swar_seq:['D','N','S','R','g','P'],oct_seq:[-1,-1,0,0,0,0],bpm:88},
+  {title:'Vande Mataram',film:'AR Rahman (1997)',lang:'Sanskrit',raaga:'Hamsadhwani',diff:'Intermediate',cat:'Bollywood',swar_seq:['S','G','R','S','N','S'],oct_seq:[0,0,0,0,-1,0],bpm:80},
+  {title:'Tere Bina Zindagi Se',film:'Aandhi (1975)',lang:'Hindi',raaga:'Kafi',diff:'Intermediate',cat:'Bollywood',swar_seq:['S','R','g','M','P','g','R','S'],oct_seq:[0,0,0,0,0,0,0,0],bpm:68},
+  // ── BOLLYWOOD — ADVANCED ─────────────────────────────────────
+  {title:'Baahon Mein Chale Aao',film:'Anamika (1973)',lang:'Hindi',raaga:'Yaman',diff:'Advanced',cat:'Bollywood',swar_seq:['N','S','G','m','G','R','S'],oct_seq:[-1,0,0,0,0,0,0],bpm:76},
+  {title:'Mohe Panghat Pe',film:'Mughal-E-Azam (1960)',lang:'Hindi',raaga:'Bhairav',diff:'Advanced',cat:'Bollywood',swar_seq:['S','r','G','M','P','d','N','S2'],oct_seq:[0,0,0,0,0,0,0,0],bpm:65},
+  {title:'Man Tarpat Hari Darshan',film:'Baiju Bawra (1952)',lang:'Hindi',raaga:'Malkauns',diff:'Advanced',cat:'Bollywood',swar_seq:['M','g','S','n','d','M'],oct_seq:[0,0,0,-1,-1,0],bpm:58},
+  {title:'Yeh Kahan Aa Gaye Hum',film:'Silsila (1981)',lang:'Hindi',raaga:'Bihag',diff:'Advanced',cat:'Bollywood',swar_seq:['G','M','P','N','D','P','M','G'],oct_seq:[0,0,0,0,0,0,0,0],bpm:72},
+  {title:'Kaahe Chhed Mohe',film:'Devdas (2002)',lang:'Hindi',raaga:'Bageshri',diff:'Advanced',cat:'Bollywood',swar_seq:['g','M','D','n','S2','n','D','M'],oct_seq:[0,0,0,0,0,0,0,0],bpm:78},
+  {title:'Aaj Jaane Ki Zid Na Karo',film:'Khamaj Thumri',lang:'Urdu',raaga:'Khamaj',diff:'Advanced',cat:'Bollywood',swar_seq:['S','R','G','M','P','D','N'],oct_seq:[0,0,0,0,0,0,0],bpm:70},
+  {title:'O Re Piya',film:'Aaja Nachle (2007)',lang:'Hindi',raaga:'Bhairavi',diff:'Advanced',cat:'Bollywood',swar_seq:['M','g','r','S','n','d'],oct_seq:[0,0,0,0,-1,-1],bpm:72},
+  {title:'Kaisi Paheli Zindagani',film:'Parineeta (2005)',lang:'Hindi',raaga:'Bhairavi',diff:'Advanced',cat:'Bollywood',swar_seq:['n','S','r','g','M','P','M','g'],oct_seq:[-1,0,0,0,0,0,0,0],bpm:66},
+  // ── TAMIL — ILAIYARAAJA ──────────────────────────────────────
+  {title:'Kadhal Rojave',film:'Roja (1992)',lang:'Tamil',raaga:'Shivaranjani',diff:'Beginner',cat:'Tamil',swar_seq:['S','R','g','R','S','D','S'],oct_seq:[0,0,0,0,0,-1,0],bpm:68},
+  {title:'Malare Mounama',film:'Karna (1994)',lang:'Tamil',raaga:'Sindhubhairavi',diff:'Intermediate',cat:'Tamil',swar_seq:['n','S','r','g','M','g','r','S'],oct_seq:[-1,0,0,0,0,0,0,0],bpm:60},
+  {title:'Poovizhi Vasalile',film:'Mouna Ragam (1986)',lang:'Tamil',raaga:'Shivaranjani',diff:'Beginner',cat:'Tamil',swar_seq:['D','S','R','g','R','S','D'],oct_seq:[-1,0,0,0,0,0,-1],bpm:72},
+  {title:'Ninaithale Inikkum',film:'Ninaithale Inikkum (1979)',lang:'Tamil',raaga:'Hamsadhwani',diff:'Beginner',cat:'Tamil',swar_seq:['S','R','G','P','N','S2','N','P'],oct_seq:[0,0,0,0,0,0,0,0],bpm:80},
+  {title:'En Anbu Thozha',film:'Payanam (1983)',lang:'Tamil',raaga:'Khamaj',diff:'Intermediate',cat:'Tamil',swar_seq:['G','M','P','D','N','S2','D','P'],oct_seq:[0,0,0,0,0,0,0,0],bpm:76},
+  {title:'Poo Malai Vaangi',film:'Sindhubhairavi (1985)',lang:'Tamil',raaga:'Sindhubhairavi',diff:'Intermediate',cat:'Tamil',swar_seq:['S','r','g','M','P','M','g','r','S'],oct_seq:[0,0,0,0,0,0,0,0,0],bpm:65},
+  {title:'Vellai Pookal',film:'Kannathil Muthamittal (2002)',lang:'Tamil',raaga:'Shivaranjani',diff:'Beginner',cat:'Tamil',swar_seq:['g','R','S','D','P','g','R','S'],oct_seq:[0,0,0,-1,-1,0,0,0],bpm:60},
+  {title:'Kurai Ondrum Illai',film:'Traditional (M.S.Subbulakshmi)',lang:'Tamil',raaga:'Sindhubhairavi',diff:'Intermediate',cat:'Tamil',swar_seq:['S','r','g','M','P','d','n','S2'],oct_seq:[0,0,0,0,0,0,0,0],bpm:55},
+  // ── TAMIL — AR RAHMAN ────────────────────────────────────────
+  {title:'Uyire Uyire',film:'Bombay (1995)',lang:'Tamil',raaga:'Shivaranjani',diff:'Intermediate',cat:'Tamil',swar_seq:['D','N','S','R','g','P','D','S2'],oct_seq:[-1,-1,0,0,0,0,0,0],bpm:74},
+  {title:'Kannalanae',film:'Bombay (1995)',lang:'Tamil',raaga:'Hamsadhwani',diff:'Intermediate',cat:'Tamil',swar_seq:['S','G','P','N','S2','N','P','G'],oct_seq:[0,0,0,0,0,0,0,0],bpm:78},
+  {title:'Roja Janeman',film:'Roja (1992)',lang:'Tamil',raaga:'Yaman',diff:'Intermediate',cat:'Tamil',swar_seq:['N','S','R','m','G','R','S'],oct_seq:[-1,0,0,0,0,0,0],bpm:70},
+  {title:'Mustafa Mustafa',film:'Kadhal Desam (1996)',lang:'Tamil',raaga:'Bilawal',diff:'Beginner',cat:'Tamil',swar_seq:['S','R','G','M','P','D','N','S2'],oct_seq:[0,0,0,0,0,0,0,0],bpm:110},
+  {title:'Chinna Chinna Aasai',film:'Roja (1992)',lang:'Tamil',raaga:'Khamaj',diff:'Intermediate',cat:'Tamil',swar_seq:['G','M','P','D','n','S2','D','P'],oct_seq:[0,0,0,0,0,0,0,0],bpm:88},
+  {title:'Ennavale Adi Ennavale',film:'Kadhalan (1994)',lang:'Tamil',raaga:'Bageshri',diff:'Advanced',cat:'Tamil',swar_seq:['g','M','D','n','S2','D','M','g','R'],oct_seq:[0,0,0,0,0,0,0,0,0],bpm:82},
+  // ── MICHAEL JACKSON ──────────────────────────────────────────
+  {title:'Thriller — Main Melody',film:'Michael Jackson (1982)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','G','P','D','P','G','S'],oct_seq:[0,0,0,0,0,0,0],bpm:104},
+  {title:'Billie Jean — Opening Hook',film:'Michael Jackson (1982)',lang:'Western',raaga:'Kafi',diff:'Beginner',cat:'Western',swar_seq:['S','R','g','M','R','S'],oct_seq:[0,0,0,0,0,0],bpm:117},
+  {title:'Beat It — Chorus',film:'Michael Jackson (1982)',lang:'Western',raaga:'Kafi',diff:'Intermediate',cat:'Western',swar_seq:['P','P','P','m','G','R','S'],oct_seq:[0,0,0,0,0,0,0],bpm:138},
+  // ── ABBA ─────────────────────────────────────────────────────
+  {title:'Dancing Queen — Piano Riff',film:'ABBA (1976)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','R','G','M','P','M','G','R','S'],oct_seq:[0,0,0,0,0,0,0,0,0],bpm:100},
+  {title:'Fernando — Opening',film:'ABBA (1976)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','S','R','G','M','P'],oct_seq:[0,0,0,0,0,0],bpm:80},
+  {title:'Mamma Mia — Verse',film:'ABBA (1975)',lang:'Western',raaga:'Bhairavi',diff:'Intermediate',cat:'Western',swar_seq:['S','R','G','S','n','d','P','M'],oct_seq:[0,0,0,0,0,0,0,0],bpm:136},
+  {title:'Waterloo — Chorus',film:'ABBA (1974)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','P','D','N','S2','N','D','P'],oct_seq:[0,0,0,0,0,0,0,0],bpm:118},
+  // ── BONEY M ──────────────────────────────────────────────────
+  {title:'Rivers of Babylon',film:'Boney M (1978)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','R','G','M','P','G','P','G'],oct_seq:[0,0,0,0,0,0,0,0],bpm:98},
+  {title:'Rasputin — Main Theme',film:'Boney M (1978)',lang:'Western',raaga:'Kafi',diff:'Intermediate',cat:'Western',swar_seq:['S','g','M','P','D','P','M','g'],oct_seq:[0,0,0,0,0,0,0,0],bpm:125},
+  {title:'Brown Girl in the Ring',film:'Boney M (1978)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['P','D','N','S2','D','N','S2','D'],oct_seq:[0,0,0,0,0,0,0,0],bpm:116},
+  {title:'Ma Baker',film:'Boney M (1977)',lang:'Western',raaga:'Kafi',diff:'Intermediate',cat:'Western',swar_seq:['S','g','M','P','g','R','S'],oct_seq:[0,0,0,0,0,0,0],bpm:128},
+  {title:'Sunny',film:'Boney M (1976)',lang:'Western',raaga:'Bilawal',diff:'Advanced',cat:'Western',swar_seq:['G','M','P','D','N','S2','N','D','P'],oct_seq:[0,0,0,0,0,0,0,0,0],bpm:112},
+  {title:'Hooray! Hooray!',film:'Boney M (1979)',lang:'Western',raaga:'Bilawal',diff:'Beginner',cat:'Western',swar_seq:['S','R','G','P','D','P','G','S'],oct_seq:[0,0,0,0,0,0,0,0],bpm:120},
+];
+
+// ============================================================
+// SONGS GRID & RAAGAS
+// ============================================================
+let activeFilter='all';
+function filterSongs(f,btn){activeFilter=f;document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderSongs();}
+function renderSongs(){
+  const grid=document.getElementById('songs-grid');if(!grid)return;grid.innerHTML='';
+  const filtered=activeFilter==='all'?SONGS:SONGS.filter(s=>s.cat===activeFilter||s.diff===activeFilter);
+  filtered.forEach(s=>{
+    const idx=SONGS.indexOf(s);const c=document.createElement('div');c.className='song-card';c.id='sc-'+idx;
+    const catCls=s.cat==='Western'?'t-western':s.cat==='Tamil'?'t-tamil':'t-bollywood';
+    c.innerHTML=`<h4>${s.title}</h4><div class="film">${s.film}</div>
+      <div class="tags"><span class="tag ${catCls}">${s.cat}</span><span class="tag t-raaga">${s.raaga}</span><span class="tag t-diff-${s.diff}">${s.diff}</span></div>
+      <div class="song-btns">
+        <button class="s-btn s-btn-p" onclick="loadSong(${idx})">🎵 Practice</button>
+        <button class="s-btn s-btn-d" onclick="demoSong(${idx})">▶ Demo</button>
+        <button class="s-btn s-btn-pa" onclick="openPlayAlong(${idx})">🎮</button>
+      </div>`;
+    grid.appendChild(c);
+  });
+}
+
+function buildRaagaGrid(){
+  const grid=document.getElementById('raaga-grid'),sel=document.getElementById('raaga-hl-sel');if(!grid)return;
+  RAAGAS.forEach((r,i)=>{
+    const c=document.createElement('div');c.className='raaga-card';c.style.setProperty('--rc',r.color);
+    c.innerHTML=`<h4>${r.name}</h4><div class="raaga-meta">🎼 ${r.thaat} · 🕐 ${r.time}</div><div class="raaga-mood">${r.mood}</div>`;
+    c.onclick=()=>selectRaaga(i,c);grid.appendChild(c);
+    const o=document.createElement('option');o.value=r.name;o.textContent=r.name;sel.appendChild(o);
+  });
+}
+function selectRaaga(i,el){
+  document.querySelectorAll('.raaga-card').forEach(c=>c.classList.remove('active'));el.classList.add('active');
+  const r=RAAGAS[i];const det=document.getElementById('raaga-detail');det.style.display='block';
+  const pills=r.notes.map(n=>`<span class="swar-pill${n===r.vadi?' vadi':n===r.samvadi?' samvadi':''}">${n}</span>`).join(' ');
+  const films=r.films.map(f=>`<li style="font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)">🎬 ${f}</li>`).join('');
+  const linked=SONGS.filter(s=>s.raaga===r.name);
+  const slinks=linked.length?linked.map(s=>{const idx=SONGS.indexOf(s);return`<button class="s-btn s-btn-p" style="width:auto;margin:2px 3px 2px 0;font-size:10px" onclick="openPlayAlong(${idx})">🎮 ${s.title}</button>`;}).join(''):'<span style="color:var(--text3);font-size:11px">No songs yet</span>';
+  det.innerHTML=`<div style="background:var(--bg-card2);border:1px solid var(--border-g);border-radius:var(--r);padding:14px;animation:fadeIn .2s ease">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:9px;margin-bottom:9px">
+      <div><div style="font-family:Playfair Display,serif;font-size:19px;background:linear-gradient(135deg,var(--saffron-l),var(--saffron));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Raaga ${r.name}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${r.mood}</div></div>
+      <div><button class="btn btn-secondary" style="font-size:10px;padding:5px 10px" onclick="highlightOnKB('${r.name}')">🎹 Show on keyboard</button></div>
+    </div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">${pills}</div>
+    <div style="font-size:9px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px">↑ AAROH</div>
+    <div class="scale-line">${r.aaroh}</div>
+    <div style="font-size:9px;color:var(--text3);margin:5px 0 3px;text-transform:uppercase;letter-spacing:.5px">↓ AVAROH</div>
+    <div class="scale-line">${r.avaroh}</div>
+    <div style="margin-top:9px"><div style="font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">🎬 Famous Songs</div><ul style="list-style:none">${films}</ul></div>
+    <div style="margin-top:9px"><div style="font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">🎮 Practice & Play-Along</div>${slinks}</div>
+  </div>`;
+}
+function highlightOnKB(name){document.getElementById('raaga-hl-sel').value=name;applyRaagaHighlight();showTab('keyboard');}
+function applyRaagaHighlight(){
+  const name=document.getElementById('raaga-hl-sel').value;
+  document.querySelectorAll('.key').forEach(k=>k.classList.remove('raaga-hl'));if(!name)return;
+  const r=RAAGAS.find(x=>x.name===name);if(!r)return;
+  r.notes.forEach(n=>['key_'+n,'key_'+n+'_low','key_'+n+'_n','key_'+n+'_pa'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('raaga-hl');}));
+}
+
+// ============================================================
+// XP & ACADEMY
+// ============================================================
+let totalXP=0;
+const RANKS=[{name:'Novice Shishya',min:0,max:50},{name:'Shagird (Student)',min:50,max:130},{name:'Abhyasi (Practitioner)',min:130,max:250},{name:'Tayyar (Prepared)',min:250,max:400},{name:'Ustadji (Master)',min:400,max:600},{name:'Sangeet Ratna',min:600,max:999}];
+const LEVELS=[
+  {id:1,title:'Level 1 — Bilawal Scale Basics',color:'var(--teal)',desc:'Master all 7 shuddh swars.',songIdx:0,reqXP:0},
+  {id:2,title:'Level 2 — Yaman Evening Raaga',color:'var(--saffron)',desc:'Tivra Ma (F#) — the gateway raaga.',songIdx:1,reqXP:50},
+  {id:3,title:'Level 3 — Shivaranjani Pentatonic',color:'var(--violet)',desc:'5-note scale of yearning.',songIdx:2,reqXP:130},
+  {id:4,title:'Level 4 — World Music Connections',color:'var(--blue)',desc:'ABBA & Boney M in Bilawal scale!',songIdx:24,reqXP:250},
+  {id:5,title:'Level 5 — Advanced Raagas',color:'var(--rose)',desc:'Bhairavi, Malkauns, Bihag.',songIdx:14,reqXP:400},
+];
+function getRank(){let r=RANKS[0];RANKS.forEach(x=>{if(totalXP>=x.min)r=x;});return r;}
+function awardXP(amt,reason){
+  totalXP+=amt;
+  localStorage.setItem('raagaStudioXP', totalXP);
+  ['xp-display','acad-xp'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=totalXP;});
+  const rank=getRank();const pct=Math.min(100,((totalXP-rank.min)/(rank.max-rank.min))*100);
+  ['rank-txt','acad-rank'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=rank.name;});
+  const mfEl=document.getElementById('xp-mini-fill');if(mfEl)mfEl.style.width=pct+'%';
+  const next=RANKS.find(r=>r.min>totalXP);
+  const anEl=document.getElementById('acad-next');if(anEl)anEl.textContent=next?'Next: '+next.name+' at '+next.min+' XP':'🏆 Max!';
+  const abEl=document.getElementById('acad-bar');if(abEl)abEl.style.width=pct+'%';
+  let lvl=1;LEVELS.forEach(l=>{if(totalXP>=l.reqXP)lvl=l.id;});
+  const alEl=document.getElementById('acad-lvl');if(alEl)alEl.textContent=lvl;
+  renderAcademy();if(reason)showXPToast('+'+amt+' XP — '+reason);
+}
+function showXPToast(msg){const old=document.querySelector('.xp-toast');if(old)old.remove();const t=document.createElement('div');t.className='xp-toast';t.textContent='🏆 '+msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+function renderAcademy(){
+  const c=document.getElementById('level-roadmap');if(!c)return;c.innerHTML='';
+  LEVELS.forEach(lvl=>{
+    const locked=totalXP<lvl.reqXP,done=totalXP>=lvl.reqXP+50;
+    const card=document.createElement('div');card.className='level-card '+(locked?'locked':'');card.style.setProperty('--lc',lvl.color);
+    card.innerHTML=`<div class="level-info"><h4>${lvl.title} ${locked?'🔒':done?'✅':'🔓'}</h4><p>${lvl.desc}</p><small>Song: ${SONGS[lvl.songIdx].title}</small></div>
+    <div style="display:flex;align-items:center;gap:7px;flex-shrink:0"><span class="level-badge ${locked?'b-locked':done?'b-done':'b-unlock'}">${locked?'Need '+lvl.reqXP+' XP':done?'Done':'Unlocked'}</span>${!locked?`<button class="btn btn-primary" onclick="openPlayAlong(${lvl.songIdx})" style="font-size:11px;padding:6px 11px">🎮 Play</button>`:''}</div>`;
+    c.appendChild(card);
+  });
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+const TABS=['keyboard','notation','playalong','raagas','songs','shruti','academy','theory'];
+function showTab(id){TABS.forEach(t=>{document.getElementById(t).classList.toggle('active',t===id);const b=document.getElementById('tab-'+t);if(b)b.classList.toggle('active',t===id);});if(id==='playalong')clearHighway();}
+</script>
+</body>
+</html>

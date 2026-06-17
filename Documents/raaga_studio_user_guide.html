@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — User Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c14;--bg2:#13131e;--bg3:#1a1a2a;--bdr:rgba(255,255,255,.08);--saf:#FF9500;--safl:#FFB347;--teal:#00C9A7;--rose:#FF6B9D;--vio:#9B59B6;--tx:#EDE8D8;--tx2:#8A8A9A;--tx3:#4A4A5E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);padding:24px;font-size:12px;max-width:980px;margin:0 auto}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(255,149,0,.04),transparent 60%)}
+h1{font-family:'Playfair Display',serif;font-size:24px;background:linear-gradient(135deg,var(--safl),var(--saf));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px}
+h2{font-family:'Playfair Display',serif;font-size:17px;color:var(--safl);margin:22px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+h3{font-size:13px;font-weight:700;color:var(--teal);margin:14px 0 7px}
+.subtitle{font-size:11px;color:var(--tx3);margin-bottom:20px}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:15px;margin-bottom:12px}
+.card h3{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+p{font-size:12px;color:var(--tx2);line-height:1.75;margin-bottom:8px}
+ul,ol{padding-left:18px}
+li{padding:4px 0;font-size:12px;color:var(--tx2);line-height:1.65}
+li b{color:var(--tx)}
+li::marker{color:var(--saf)}
+.step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--saf),#ff6b00);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.step-content h4{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.step-content p{font-size:11px;color:var(--tx2);line-height:1.6;margin:0}
+.kp{display:inline-block;background:var(--bg3);border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:10px;color:var(--tx)}
+.tip{background:rgba(0,201,167,.07);border:1px solid rgba(0,201,167,.2);border-radius:7px;padding:9px 12px;font-size:11px;color:var(--tx2);line-height:1.7;margin:8px 0}
+.tip b{color:var(--teal)}
+.warn{background:rgba(255,149,0,.07);border:1px solid rgba(255,149,0,.2);border-radius:7px;padding:9px 12px;font-size:11px;color:var(--tx2);line-height:1.7;margin:8px 0}
+.warn b{color:var(--safl)}
+.week{background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:8px;border-left:3px solid var(--saf)}
+.week h4{font-size:12px;font-weight:700;color:var(--safl);margin-bottom:5px}
+.week ul{padding-left:14px}
+.week li{font-size:11px}
+.tab-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tab-pill{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx2);cursor:default}
+.tab-pill.active{background:linear-gradient(135deg,var(--saf),#ff6b00);border-color:transparent;color:#fff}
+</style>
+</head>
+<body>
+<h1>Raaga Studio Pro — User Guide</h1>
+<div class="subtitle">Complete guide for students of Indian classical and world music · Works on desktop, tablet and mobile</div>
+
+<h2>Getting Started</h2>
+<div class="card">
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content"><h4>Download &amp; Open</h4><p>Download <b>raaga_studio_v4.html</b> to your computer. Double-click it — it opens in your browser. No installation, no login, no internet needed after download. Works in Chrome, Edge, Safari and Firefox.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content"><h4>Click ▶ Start Playing</h4><p>You must click this button first — browsers require a user action before any audio can play. The app loads instantly (no spinner, no CDN downloads). All sounds are generated live in your browser.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content"><h4>Turn on Tanpura Drone</h4><p>Click the <b>Tanpura Drone</b> button in the Instrument section. This plays a continuous Sa drone (like a tambura/shruti box). <b>Always keep it on while practising</b> — it trains your ear to stay in tune with the root note.</p></div>
+</div>
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content"><h4>Play your first note</h4><p>Press <span class="kp">A</span> on your keyboard — you'll hear Sa (the root note, C4). Try the scale: <span class="kp">A</span><span class="kp">S</span><span class="kp">D</span><span class="kp">F</span><span class="kp">G</span><span class="kp">H</span><span class="kp">J</span><span class="kp">K</span> = Sa Re Ga Ma Pa Dha Ni Sa'. On mobile: tap directly on the piano keys.</p></div>
+</div>
+</div>
+
+<h2>The 8 Tabs</h2>
+<div class="tab-row">
+<span class="tab-pill active">🎹 Instruments</span>
+<span class="tab-pill">📖 Practise</span>
+<span class="tab-pill">🎮 Play-Along</span>
+<span class="tab-pill">🎼 Raagas</span>
+<span class="tab-pill">🎬 Songs</span>
+<span class="tab-pill">🎤 Sur &amp; Shruti</span>
+<span class="tab-pill">🎓 Academy</span>
+<span class="tab-pill">📖 Theory</span>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3>🎹 Instruments Tab</h3>
+<p>Your main playing screen. The top section has 6 collapsible panels — click any label (INSTRUMENT, TAAL/RHYTHM etc) to expand or collapse it. All start collapsed so the keyboard is prominent on screen.</p>
+<ul>
+<li><b>Instrument</b> — choose your sound. Start with Harmonium for Indian music.</li>
+<li><b>Raaga Highlight</b> — select a raaga to colour its notes green on the keyboard. Play only green keys to stay in the raaga.</li>
+<li><b>Taal / Rhythm</b> — select a rhythm cycle (try Keherva first). Press ▶ Play to start.</li>
+<li><b>Tabla Octopad</b> — 8 pads for tabla bols. Keys 1–8 on keyboard.</li>
+<li><b>Tempo</b> — drag slider or click Vilambit/Madhya/Drut presets.</li>
+<li><b>Western Drum Kit</b> — 9 drum pads, touch-friendly.</li>
+<li><b>Piano Keyboard</b> — 3 octaves. Taar (upper), Madhya (middle), Mandra (lower).</li>
+</ul>
+<div class="tip"><b>New feature:</b> The upper octave (Taar Saptak) is now shown above the main keyboard — same size as other octaves, play it by touching or clicking.</div>
+</div>
+<div class="card">
+<h3>📖 Practise Tab</h3>
+<p>Guided note-by-note learning with Guruji (AI music teacher). Load a song from the Songs tab first — then Guruji highlights each note in turn and corrects you immediately if you play wrong.</p>
+<ul>
+<li>The current note glows orange on the keyboard — play it!</li>
+<li>Correct note → Guruji praises you in Hindi (<em>"Wah wah! Bilkul sahi!"</em>)</li>
+<li>Wrong note → Guruji names the expected note and explains its role in the raaga</li>
+<li><b>Auto-advance</b> checkbox — automatically moves to next note when you're correct</li>
+<li><b>▶▶ Play Song</b> — hear the whole melody automatically (demo mode)</li>
+<li><b>Sargam Reference</b> — horizontal table at the bottom showing all 12 notes</li>
+</ul>
+<div class="tip"><b>Best practice:</b> Load a Beginner song, set Auto-advance ON, keep Tanpura on, and play each note as highlighted. Repeat the song 3–4 times before moving to Play-Along.</div>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3>🎮 Play-Along Tab</h3>
+<p>Karaoke-style mode — the backing melody plays automatically while you match each note in time. Your accuracy is scored.</p>
+<ul>
+<li><b>Load song inline</b> — use the dropdown at the top of this tab (no need to go to Songs tab)</li>
+<li><b>Speed</b> — always start at 🐢 25% or 🐌 50%. Master slow before going faster.</li>
+<li><b>Taal Backing</b> — adds tabla rhythm. Keherva for Bollywood, Adi Talam for Tamil songs.</li>
+<li><b>Hits/Misses/Accuracy</b> — updated in real time as you play</li>
+<li><b>Note strip</b> — upcoming notes shown as pills: orange = current, teal = hit, rose = missed</li>
+<li><b>Pause without losing score</b> — press ⏸ and resume exactly where you stopped</li>
+</ul>
+<div class="warn"><b>BPM &amp; Speed:</b> BPM = Beats Per Minute — how fast the song plays. At 25% of 80 BPM you get 20 BPM — very slow, giving you plenty of time to find each note. Increase speed only when you can play at current speed with 80%+ accuracy.</div>
+</div>
+<div class="card">
+<h3>🎼 Raagas Tab</h3>
+<p>Explore all 13 raagas used in Indian classical and film music.</p>
+<ul>
+<li>Click any raaga card to see its full profile</li>
+<li><b>Aaroh/Avaroh</b> — ascending and descending scale (can differ!)</li>
+<li><b>Vadi</b> (green pill) — most important note, emphasise it often</li>
+<li><b>Samvadi</b> (rose pill) — second most important, consonant with vadi</li>
+<li><b>▶ Play Scale</b> — hear the raaga's aaroh played on harmonium</li>
+<li>Film songs listed — great for recognising raagas you already know</li>
+</ul>
+<div class="tip"><b>Start with Shivaranjani</b> — only 5 notes (S R g P D). Select it in Raaga Highlight and play only green keys. You are playing a real raaga!</div>
+
+<h3 style="margin-top:12px">🎬 Songs Tab</h3>
+<p>Browse 47 songs across Bollywood (20), Tamil (14) and Western (13). Filter by language or difficulty. Each song card has three actions:</p>
+<ul>
+<li><b>🎵 Practise</b> — guided mode with Guruji</li>
+<li><b>▶ Demo</b> — auto-plays the melody so you can hear it</li>
+<li><b>🎮 Play-Along</b> — goes directly to Play-Along mode</li>
+</ul>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3>🎤 Sur &amp; Shruti Tab</h3>
+<p>Find your natural Sa pitch and understand the fundamentals of pitch, rhythm and speed.</p>
+<ul>
+<li><b>Shruti Grid</b> — click each pitch button to hear it. Blue = male range (G3–B3), violet = both (C4–D4), rose = female range (E4–G4)</li>
+<li><b>Sa Frequency</b> — shows Hz of selected Sa and its Pa (fifth)</li>
+<li><b>How to find your Sa:</b> Hum "Aaa" comfortably, click pitches, the one where you feel most relaxed = your Sa</li>
+<li><b>▶ Sa + Pa</b> — hear the fifth interval as a reference</li>
+</ul>
+<p style="margin-top:8px"><b style="color:var(--safl)">Sur (Pitch), Laya (Rhythm), Taan (Speed Run), Taal (Meter)</b> — theory blocks below the shruti grid explain each concept with examples.</p>
+</div>
+<div class="card">
+<h3>🎓 Academy Tab</h3>
+<p>Track your progress and test your ear.</p>
+<ul>
+<li><b>XP Bar</b> — earns from correct notes (5 XP), completed songs (30 XP), Play-Along accuracy, and Raaga Quiz (20 XP)</li>
+<li><b>Ranks:</b> Novice Shishya → Shagird → Abhyasi → Tayyar → Ustadji → Sangeet Ratna</li>
+<li><b>Level Roadmap</b> — levels unlock as XP grows. Each level focuses on a different raaga.</li>
+<li><b>↺ Unlock to Revise</b> — any locked level can be manually unlocked for revision without losing progress</li>
+</ul>
+<h4 style="color:var(--vio);margin:10px 0 5px">🎯 Raaga Ear Quiz</h4>
+<p>Click <b>▶ Play Scale</b> — a raaga scale plays on harmonium. Choose from 4 options which raaga it is. Correct = +20 XP + explanation. Wrong = shows the raaga's aaroh and vadi to help you learn.</p>
+</div>
+</div>
+
+<h2>Recommended Learning Path</h2>
+<div class="week">
+<h4>Week 1 — First Steps</h4>
+<ul>
+<li>Turn on Tanpura. Press A–K to play the major scale (Sa Re Ga Ma Pa Dha Ni Sa')</li>
+<li>Select <b>Shivaranjani</b> in Raaga Highlight. Play only green keys for 10 minutes.</li>
+<li>Songs tab → <b>Sa Re Ga Ma Scale</b> → 🎵 Practise with Guruji</li>
+<li>Try the Raaga Ear Quiz in Academy — even getting it wrong teaches you</li>
+</ul>
+</div>
+<div class="week">
+<h4>Week 2 — First Song</h4>
+<ul>
+<li>Songs tab → <b>Pehla Nasha</b> (Beginner, Shivaranjani) → 🎵 Practise</li>
+<li>Follow Guruji note by note. Repeat until you can play it from memory.</li>
+<li>Play-Along tab → Pehla Nasha → 🐢 25% speed → ▶ Start</li>
+<li>Aim for 60% accuracy before increasing to 50%</li>
+</ul>
+</div>
+<div class="week">
+<h4>Week 3–4 — Add Rhythm</h4>
+<ul>
+<li>Instruments tab → Taal/Rhythm → Keherva (8 beats) → ▶ Play</li>
+<li>Listen to Keherva for 2 minutes before touching the keyboard. Feel the beat cycle.</li>
+<li>Play-Along with Keherva taal backing → Pehla Nasha at 50% speed</li>
+<li>Learn second song: <b>Tum Hi Ho</b> (also Shivaranjani)</li>
+</ul>
+</div>
+<div class="week" style="border-left-color:var(--teal)">
+<h4>Month 2 — New Raaga</h4>
+<ul>
+<li>Raagas tab → click <b>Yaman</b> → note the Tivra Ma (F# — key T). That's what makes Yaman.</li>
+<li>Songs → <b>Ek Pyar Ka Nagma Hai</b> (Yaman, Beginner) → practise</li>
+<li>Tamil songs: <b>Kadhal Rojave</b> (Shivaranjani) → use Adi Talam backing</li>
+<li>Academy quiz → try to identify Shivaranjani vs Yaman by ear</li>
+</ul>
+</div>
+<div class="week" style="border-left-color:var(--vio)">
+<h4>Month 3+ — Improvise</h4>
+<ul>
+<li>Pick any raaga → Raaga Highlight → play only green keys freely</li>
+<li>Start on Sa, emphasise the Vadi note, end phrases on Sa — that's real raaga improvisation</li>
+<li>Try upper octave (Taar Saptak) for ascending phrases — tap those smaller keys above the main keyboard</li>
+<li>Western songs: <b>Billie Jean</b> uses Kafi raaga — same scale as Dorian mode in Western music</li>
+</ul>
+</div>
+
+<h2>Tips &amp; Troubleshooting</h2>
+<div class="grid2">
+<div class="card">
+<h3>Common Questions</h3>
+<ul>
+<li><b>No sound?</b> — Check the browser tab isn't muted (right-click tab → Unmute). Try Chrome if using another browser. Make sure you clicked ▶ Start Playing first.</li>
+<li><b>Keyboard not responding?</b> — Click anywhere on the page first (browser focus must be on the page, not another app).</li>
+<li><b>What does Tanpura sound like?</b> — A soft cycling drone: C3 → G3 → C4 → C4, repeating every 550ms. Like a tambura in the background.</li>
+<li><b>Why can't I play the top octave with keyboard?</b> — The Taar Saptak (upper octave) is touch/mouse only. The A–K keys play the middle octave; Z–M plays the lower octave.</li>
+<li><b>My score resets when I pause</b> — It shouldn't in this build. If it does, use ↺ Restart instead of Stop.</li>
+<li><b>XP not saving?</b> — The app uses browser localStorage. Make sure you're not in Incognito/Private mode.</li>
+</ul>
+</div>
+<div class="card">
+<h3>Mobile &amp; Touch Tips</h3>
+<ul>
+<li>All controls work by touch — keys, octopad, drum pads, sliders, collapsible headers</li>
+<li>Landscape orientation recommended for the full keyboard</li>
+<li>Scroll horizontally on the keyboard to reach all keys</li>
+<li>Collapsible sections help save screen space on phones — collapse what you don't need</li>
+<li>On iOS Safari: works in Safari only (Chrome on iOS uses WebKit but may have Web Audio quirks)</li>
+<li>On Android: Chrome recommended</li>
+<li>Pinch-to-zoom is allowed — use it to zoom in on the keyboard if needed</li>
+</ul>
+<h3 style="margin-top:12px">Other Apps to Try Alongside</h3>
+<ul>
+<li><b>Riyaz</b> — sings back your notes, AI pitch scoring</li>
+<li><b>iTabla Pro</b> — real tabla recordings, full taal library</li>
+<li><b>Tanpura Droid</b> — authentic tanpura recordings</li>
+<li><b>Ragabot</b> — raaga ear training</li>
+</ul>
+</div>
+</div>
+
+<div style="text-align:right;font-size:10px;color:var(--tx3);margin-top:20px">Raaga Studio Pro v4 · User Guide · Frozen build · 159KB · raaga_studio_v4.html</div>
+</body>
+</html>

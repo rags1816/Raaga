@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — Test Report & User Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1614;--ink2:#4a4540;--ink3:#8a857e;
+  --paper:#faf8f4;--paper2:#f2ede5;--paper3:#e8e0d4;
+  --saffron:#c47d00;--saffron-l:#f0a500;--saffron-bg:#fff8eb;
+  --teal:#0a6e5c;--teal-bg:#edf7f4;
+  --rose:#a82848;--rose-bg:#fdf0f3;
+  --pass:#1d6a2e;--pass-bg:#edf7f0;
+  --warn:#8a5200;--warn-bg:#fff5e0;
+  --fail:#a82020;--fail-bg:#fdeaea;
+  --border:#d8d0c4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7}
+.page{max-width:860px;margin:0 auto;padding:3rem 2rem 4rem}
+
+/* HEADER */
+.hero{text-align:center;padding:3rem 0 2.5rem;border-bottom:2px solid var(--border);margin-bottom:3rem}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:.5rem}
+.hero h1 span{color:var(--saffron)}
+.hero-sub{font-size:14px;color:var(--ink2);margin-top:.75rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;margin-top:1.5rem;padding:8px 18px;border-radius:30px;background:var(--pass-bg);border:1px solid #b0ddb8;font-size:13px;font-weight:500;color:var(--pass)}
+
+/* SECTION HEADERS */
+.section-hdr{display:flex;align-items:center;gap:12px;margin:2.5rem 0 1.2rem}
+.section-hdr h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--ink)}
+.section-num{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* TEST RESULTS */
+.test-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.summary-card{padding:1rem 1.25rem;border-radius:10px;text-align:center}
+.summary-card .num{font-size:2rem;font-weight:700;line-height:1}
+.summary-card .lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.sc-pass{background:var(--pass-bg);border:1px solid #b0ddb8;color:var(--pass)}
+.sc-warn{background:var(--warn-bg);border:1px solid #e8c370;color:var(--warn)}
+.sc-fail{background:var(--fail-bg);border:1px solid #e8b0b0;color:var(--fail)}
+
+.test-category{margin-bottom:1.5rem}
+.test-category h3{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.test-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--paper3);font-size:13px}
+.test-row:last-child{border-bottom:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.5px;flex-shrink:0;margin-top:2px}
+.badge-pass{background:var(--pass-bg);color:var(--pass)}
+.badge-warn{background:var(--warn-bg);color:var(--warn)}
+.badge-fail{background:var(--fail-bg);color:var(--fail)}
+.test-name{flex:1;color:var(--ink)}
+.test-detail{font-size:12px;color:var(--ink2);margin-top:2px}
+
+/* IMPROVEMENTS */
+.improvement-card{background:var(--paper2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:12px}
+.improvement-card.priority-high{border-left:3px solid var(--rose)}
+.improvement-card.priority-med{border-left:3px solid var(--saffron)}
+.improvement-card.priority-low{border-left:3px solid var(--teal)}
+.improvement-card h4{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.priority-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.pt-high{background:var(--rose-bg);color:var(--rose)}
+.pt-med{background:var(--saffron-bg);color:var(--saffron)}
+.pt-low{background:var(--teal-bg);color:var(--teal)}
+.improvement-card p{font-size:13px;color:var(--ink2);margin-bottom:8px}
+.code-fix{font-family:monospace;font-size:11px;background:var(--paper3);padding:8px 10px;border-radius:6px;color:var(--ink);line-height:1.6;white-space:pre-wrap;border-left:2px solid var(--border)}
+
+/* USER GUIDE */
+.guide-tab{background:var(--paper2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.guide-tab-header{padding:1rem 1.25rem;display:flex;align-items:center;gap:12px}
+.tab-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ti-keyboard{background:#fff5e0}
+.ti-notation{background:var(--teal-bg)}
+.ti-playalong{background:#f0eeff}
+.ti-raagas{background:#fff0f5}
+.ti-songs{background:#f0f7ff}
+.ti-shruti{background:#f5fff0}
+.guide-tab-header h3{font-size:14px;font-weight:600;color:var(--ink)}
+.guide-tab-header p{font-size:12px;color:var(--ink2);margin-top:2px}
+.guide-tab-body{padding:.25rem 1.25rem 1.25rem;border-top:1px solid var(--border)}
+.step-list{list-style:none;padding:0}
+.step-list li{padding:7px 0;font-size:13px;color:var(--ink2);border-bottom:1px solid var(--paper3);display:flex;gap:10px}
+.step-list li:last-child{border-bottom:none}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.key-pill{display:inline-block;font-family:monospace;font-size:11px;background:var(--paper3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--ink);font-weight:600}
+.hotkeys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin:10px 0}
+.hk-item{background:var(--paper3);border-radius:6px;padding:7px 10px;font-size:12px}
+.hk-item .hk-key{font-family:monospace;font-weight:700;color:var(--ink);font-size:14px}
+.hk-item .hk-name{color:var(--ink2);font-size:11px;margin-top:1px}
+.callout{padding:10px 14px;border-radius:8px;font-size:13px;margin:10px 0}
+.callout-tip{background:var(--teal-bg);border-left:3px solid var(--teal);color:var(--teal)}
+.callout-note{background:var(--saffron-bg);border-left:3px solid var(--saffron-l);color:var(--warn)}
+
+/* LEARNING PATH */
+.path-card{display:flex;gap:14px;padding:12px;background:var(--paper2);border-radius:10px;border:1px solid var(--border);margin-bottom:10px;align-items:flex-start}
+.path-step{width:32px;height:32px;border-radius:50%;background:var(--saffron);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.path-card h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.path-card p{font-size:12px;color:var(--ink2)}
+
+footer{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-size:12px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-label">Raaga Studio Pro</div>
+  <h1>Test Report &amp; <span>User Guide</span></h1>
+  <div class="hero-sub">Automated structural analysis · Bug findings · Complete beginner guide</div>
+  <div class="hero-badge">✅ 63 tests passed · 0 failures · 5 warnings — App is working</div>
+</div>
+
+<!-- TEST RESULTS -->
+<div class="section-hdr">
+  <div class="section-num">1</div>
+  <h2>Test Results Summary</h2>
+</div>
+
+<div class="test-summary">
+  <div class="summary-card sc-pass"><div class="num">63</div><div class="lbl">Passed</div></div>
+  <div class="summary-card sc-warn"><div class="num">5</div><div class="lbl">Warnings</div></div>
+  <div class="summary-card sc-fail"><div class="num">0</div><div class="lbl">Failed</div></div>
+</div>
+
+<div class="test-category">
+  <h3>App Structure &amp; Sections</h3>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">HTML structure — DOCTYPE, startup overlay, app-root</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">All 8 tab sections present</div><div class="test-detail">keyboard · notation · playalong · raagas · songs · shruti · academy · theory</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">All core DOM elements found</div><div class="test-detail">keys-lower, keys-mid, octopad, drum-kit, highway-canvas, waveform-canvas</div></div></div>
+</div>
+
+<div class="test-category">
+  <h3>Content Data</h3>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">34 songs loaded across Bollywood, Tamil, and Western</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">12 raagas defined with full aaroh/avaroh/vadi/samvadi</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Sargam reference table with komal/tivra note mappings</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">SHRUTI_NOTES defined for the shruti box</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">SEMITONES map for frequency calculations</div></div></div>
+</div>
+
+<div class="test-category">
+  <h3>Core Functions (24 tested)</h3>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">All 24 core functions present and defined</div><div class="test-detail">playNote, triggerKey, buildAllKeys, transportPlay/Pause/Stop, startPlayAlong, stopPlayAlong, evaluatePANote, awardXP, showTab, loadSong, autoDemo, autoDemoAll, toggleTanpura, buildShrutiGrid, applyRaagaHighlight, drawWaveform, setTempo + more</div></div></div>
+</div>
+
+<div class="test-category">
+  <h3>Audio Engine</h3>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Tone.js v14.8.49 loaded and version-pinned</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">loadAllSamplers and buildFX present</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Tone Analyser for live waveform display</div></div></div>
+</div>
+
+<div class="test-category">
+  <h3>Input &amp; Events</h3>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Keyboard hotkeys via keydown listener</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Touch events (touchstart) for mobile</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Mobile keyboard breakpoint at 640px</div></div></div>
+  <div class="test-row"><span class="badge badge-pass">PASS</span><div><div class="test-name">Horizontal scroll on keyboard for small screens</div></div></div>
+</div>
+
+<div class="test-category">
+  <h3>Warnings (not blocking, but worth fixing)</h3>
+  <div class="test-row"><span class="badge badge-warn">WARN</span><div><div class="test-name">Resume bug — Pause/Resume resets score</div><div class="test-detail">resumePlayAlong() calls startPlayAlong() which resets score and note position</div></div></div>
+  <div class="test-row"><span class="badge badge-warn">WARN</span><div><div class="test-name">setSpeed() uses implicit event.target</div><div class="test-detail">Not passed as a parameter — can throw if called programmatically</div></div></div>
+  <div class="test-row"><span class="badge badge-warn">WARN</span><div><div class="test-name">No XP persistence — progress resets on refresh</div><div class="test-detail">localStorage not used; Academy XP lost when browser tab closes</div></div></div>
+  <div class="test-row"><span class="badge badge-warn">WARN</span><div><div class="test-name">backdrop-filter not supported in Firefox</div><div class="test-detail">Startup overlay glassmorphism effect degrades gracefully but looks plain</div></div></div>
+  <div class="test-row"><span class="badge badge-warn">WARN</span><div><div class="test-name">user-scalable=no on mobile</div><div class="test-detail">Prevents pinch-zoom — accessibility concern; could be removed</div></div></div>
+</div>
+
+<!-- IMPROVEMENTS -->
+<div class="section-hdr">
+  <div class="section-num">2</div>
+  <h2>Suggested Improvements</h2>
+</div>
+
+<div class="improvement-card priority-high">
+  <h4>Fix pause/resume in Play-Along <span class="priority-tag pt-high">HIGH</span></h4>
+  <p>When you pause and resume a song, the score resets to zero because <code>resumePlayAlong()</code> calls <code>startPlayAlong()</code> again from the top. The fix is to track elapsed time properly.</p>
+  <div class="code-fix">// CURRENT (broken):
+function resumePlayAlong(){
+  paActive=true; paPaused=false;
+  paStart=Date.now()-paCurrentIdx*paMsPerBeat;
+  startPlayAlong(); // ← this resets everything!
+}
+
+// FIX: restart the interval from current position only
+function resumePlayAlong(){
+  paActive=true; paPaused=false;
+  paStart=Date.now()-paCurrentIdx*paMsPerBeat;
+  Tone.Transport.start();
+  document.getElementById('pa-btn-play').disabled=true;
+  document.getElementById('pa-status-txt').textContent='▶ Resumed!';
+  paTimer=setInterval(paTickFn, 50); // reuse existing tick
+}</div>
+</div>
+
+<div class="improvement-card priority-high">
+  <h4>Save XP &amp; progress to localStorage <span class="priority-tag pt-high">HIGH</span></h4>
+  <p>All practice XP and Academy level progress is lost when you close the browser. A simple localStorage save would make learning feel progressive and motivating.</p>
+  <div class="code-fix">// Add to awardXP() after updating totalXP:
+localStorage.setItem('raagaStudioXP', totalXP);
+
+// Add to app startup (after buildAllKeys etc.):
+const savedXP = parseInt(localStorage.getItem('raagaStudioXP')) || 0;
+if(savedXP > 0) awardXP(savedXP, null);</div>
+</div>
+
+<div class="improvement-card priority-med">
+  <h4>Fix setSpeed() event.target reference <span class="priority-tag pt-med">MEDIUM</span></h4>
+  <p>The speed buttons pass no argument to setSpeed(), relying on an implicit global <code>event</code>. This is fragile — pass the element directly instead.</p>
+  <div class="code-fix">// HTML: change onclick to pass 'this'
+onclick="setSpeed(0.5, this)"
+
+// JS: accept el as second parameter
+function setSpeed(mult, el){
+  paSpeedMult=mult;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+}</div>
+</div>
+
+<div class="improvement-card priority-med">
+  <h4>Add more Tamil film songs <span class="priority-tag pt-med">MEDIUM</span></h4>
+  <p>The app has great Bollywood coverage but only 1–2 Tamil songs (Kadhal Rojave, Malare Mounama). Adding Ilaiyaraaja and AR Rahman Tamil classics would make it more complete for Tamil learners. Suggestions: <em>Poovizhi Vasalile</em> (Kaamraj), <em>Poo Malai Vaangi</em> (Sindhubhairavi), <em>Uyire Uyire</em> (Bombay), <em>Kannalanae</em> (Bombay).</p>
+</div>
+
+<div class="improvement-card priority-med">
+  <h4>Show notation alongside keyboard highlighting <span class="priority-tag pt-med">MEDIUM</span></h4>
+  <p>When a raaga is highlighted on the keyboard, also show a small aaroh/avaroh strip above the keys. This reinforces the connection between the visual keys and written notation simultaneously.</p>
+</div>
+
+<div class="improvement-card priority-low">
+  <h4>Allow pinch-zoom on mobile <span class="priority-tag pt-low">LOW</span></h4>
+  <p>Remove <code>user-scalable=no</code> from the viewport meta tag. The keyboard already has horizontal scroll, so zoom is not harmful and helps accessibility.</p>
+  <div class="code-fix">&lt;meta name="viewport" content="width=device-width,initial-scale=1.0"&gt;</div>
+</div>
+
+<div class="improvement-card priority-low">
+  <h4>Add a "slow practice" speed to Play-Along <span class="priority-tag pt-low">LOW</span></h4>
+  <p>Currently speeds are 0.5×, 0.75×, 1×. Adding a 0.25× "super slow" option would help beginners in the first few days of learning a song.</p>
+</div>
+
+<!-- USER GUIDE -->
+<div class="section-hdr">
+  <div class="section-num">3</div>
+  <h2>User Guide — Getting Started</h2>
+</div>
+
+<p style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem">Open the app in <strong>Google Chrome</strong> (recommended — uses Tone.js audio which works best there). Click the glowing <strong>Start</strong> button to initialise audio, then choose your tab.</p>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-keyboard">🎹</div>
+    <div><h3>Keyboard Tab — Free Play</h3><p>Play any note using your computer keyboard, mouse, or touchscreen</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <div class="hotkeys-grid">
+      <div class="hk-item"><div class="hk-key">A</div><div class="hk-name">Sa (S)</div></div>
+      <div class="hk-item"><div class="hk-key">W</div><div class="hk-name">Komal Re (r)</div></div>
+      <div class="hk-item"><div class="hk-key">S</div><div class="hk-name">Re (R)</div></div>
+      <div class="hk-item"><div class="hk-key">E</div><div class="hk-name">Komal Ga (g)</div></div>
+      <div class="hk-item"><div class="hk-key">D</div><div class="hk-name">Ga (G)</div></div>
+      <div class="hk-item"><div class="hk-key">F</div><div class="hk-name">Ma (M)</div></div>
+      <div class="hk-item"><div class="hk-key">T</div><div class="hk-name">Tivra Ma (m)</div></div>
+      <div class="hk-item"><div class="hk-key">G</div><div class="hk-name">Pa (P)</div></div>
+      <div class="hk-item"><div class="hk-key">Y</div><div class="hk-name">Komal Dha (d)</div></div>
+      <div class="hk-item"><div class="hk-key">H</div><div class="hk-name">Dha (D)</div></div>
+      <div class="hk-item"><div class="hk-key">U</div><div class="hk-name">Komal Ni (n)</div></div>
+      <div class="hk-item"><div class="hk-key">J</div><div class="hk-name">Ni (N)</div></div>
+      <div class="hk-item"><div class="hk-key">K</div><div class="hk-name">Upper Sa (Ṡ)</div></div>
+      <div class="hk-item"><div class="hk-key">Q</div><div class="hk-name">Tabla Baya</div></div>
+      <div class="hk-item"><div class="hk-key">P</div><div class="hk-name">Tabla Dayan</div></div>
+      <div class="hk-item"><div class="hk-key">1–8</div><div class="hk-name">Tabla Octopad bols</div></div>
+    </div>
+    <ul class="step-list">
+      <li><span class="step-num">1</span>Pick an <strong>instrument</strong> from the top dropdown — Harmonium is a great starting point for Indian music.</li>
+      <li><span class="step-num">2</span>Select a <strong>raaga</strong> from the highlight dropdown to colour-code that raaga's notes on the keyboard in green — play only those keys to stay in the raaga.</li>
+      <li><span class="step-num">3</span>Use the <strong>Tabla Octopad</strong> below the keyboard (keys 1–8) to add rhythm while you play.</li>
+      <li><span class="step-num">4</span>Toggle the <strong>Tanpura</strong> drone for a continuous Sa reference note in the background.</li>
+    </ul>
+    <div class="callout callout-tip">Beginner tip: Set raaga to Shivaranjani (only 5 notes) and play only the green keys. Everything you play will sound melodic.</div>
+  </div>
+</div>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-notation">📖</div>
+    <div><h3>Notation Tab — Guided Practice</h3><p>Learn songs note by note with the guided notation trainer</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <ul class="step-list">
+      <li><span class="step-num">1</span>First go to the <strong>Songs tab</strong> and click <em>Practice</em> on any song. This loads it into the Notation trainer.</li>
+      <li><span class="step-num">2</span>The current note to play is <strong>highlighted in pink</strong> on the mini keyboard. Match it on your computer keyboard or click it.</li>
+      <li><span class="step-num">3</span>Press <strong>▶ Next Note</strong> to step through manually, or <strong>▶▶ Play Song</strong> to auto-advance at the song's tempo.</li>
+      <li><span class="step-num">4</span>The <strong>sargam notation</strong> scrolls across the top — uppercase = natural (shuddh), lowercase = flat (komal), <em>m</em> = tivra (sharp Ma only).</li>
+      <li><span class="step-num">5</span>Use <strong>Show key hints</strong> to see which keyboard letter matches each note. Uncheck it once you start memorising.</li>
+    </ul>
+    <div class="callout callout-note">The sargam row: S = Sa · r = Komal Re · R = Re · g = Komal Ga · G = Ga · M = Ma · m = Tivra Ma · P = Pa · d = Komal Dha · D = Dha · n = Komal Ni · N = Ni · Ṡ = Upper Sa</div>
+  </div>
+</div>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-playalong">🎮</div>
+    <div><h3>Play-Along Tab — Karaoke Mode</h3><p>Test your speed and accuracy — hit notes as they fall</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <ul class="step-list">
+      <li><span class="step-num">1</span>Select a song from the <strong>Songs tab</strong> and click the 🎮 button — or click 🎮 Play-Along from the Notation tab.</li>
+      <li><span class="step-num">2</span>The <strong>note strip</strong> at the top shows upcoming notes. The current note glows orange and scales up.</li>
+      <li><span class="step-num">3</span>Set <strong>speed</strong> to 0.5× while learning — the notes come at half the original tempo.</li>
+      <li><span class="step-num">4</span>Choose a <strong>taal (rhythm cycle)</strong> — Keherwa (8 beats) is the most common in Bollywood songs. This adds tabla accompaniment while you play.</li>
+      <li><span class="step-num">5</span>After the song ends, your <strong>accuracy %</strong> is shown and XP is awarded. Aim for 80%+ before moving to the next song.</li>
+    </ul>
+    <div class="callout callout-tip">The highway canvas shows notes scrolling down — pink = current target, teal = hit, red = missed.</div>
+  </div>
+</div>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-raagas">🎼</div>
+    <div><h3>Raagas Tab — Learn the Scales</h3><p>Explore 12 raagas used in Bollywood and Tamil cinema</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <ul class="step-list">
+      <li><span class="step-num">1</span>Click any raaga card to open its full profile — notes, aaroh (ascending), avaroh (descending), vadi, samvadi, and famous songs.</li>
+      <li><span class="step-num">2</span>The <strong>vadi</strong> (green pill) is the most important note — emphasise it when improvising. The <strong>samvadi</strong> (red pill) is the second most important.</li>
+      <li><span class="step-num">3</span>Click <strong>🎹 Show on keyboard</strong> to highlight that raaga's notes on the Keyboard tab and hear how the scale sounds.</li>
+      <li><span class="step-num">4</span>Click any 🎮 song button in the raaga panel to jump directly into Play-Along for that song.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-songs">🎬</div>
+    <div><h3>Songs Tab — Browse &amp; Play</h3><p>34 songs — Bollywood, Tamil, Michael Jackson, ABBA, Boney M</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <ul class="step-list">
+      <li><span class="step-num">1</span>Filter songs by <strong>Bollywood / Western / Beginner / Intermediate / Advanced</strong> using the filter buttons.</li>
+      <li><span class="step-num">2</span>Each card shows the raaga, difficulty, and category. Start with <strong>Beginner + Bollywood</strong>.</li>
+      <li><span class="step-num">3</span><strong>🎵 Practice</strong> loads the song into the Notation trainer. <strong>▶ Demo</strong> plays it automatically so you can hear it first. <strong>🎮</strong> goes straight to Play-Along.</li>
+    </ul>
+    <div class="callout callout-tip">Recommended first songs: <em>Pehla Nasha</em> or <em>Tum Hi Ho</em> (both Shivaranjani — only 5 notes). Then try <em>Ek Pyar Ka Nagma Hai</em> (Yaman).</div>
+  </div>
+</div>
+
+<div class="guide-tab">
+  <div class="guide-tab-header">
+    <div class="tab-icon ti-shruti">🔔</div>
+    <div><h3>Shruti Box Tab — Tune Your Ear</h3><p>A continuous drone reference for ear training</p></div>
+  </div>
+  <div class="guide-tab-body">
+    <ul class="step-list">
+      <li><span class="step-num">1</span>Select any note from the grid — this sets your <strong>Sa (root)</strong>. Default is C4.</li>
+      <li><span class="step-num">2</span>Click <strong>▶ Play Sa Reference</strong> to hear a sustained tanpura-style drone.</li>
+      <li><span class="step-num">3</span>Sing or hum along to train your ear to recognise Sa. Then try humming Re, Ga, etc. above it.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- LEARNING PATH -->
+<div class="section-hdr">
+  <div class="section-num">4</div>
+  <h2>Recommended Learning Path</h2>
+</div>
+
+<div class="path-card">
+  <div class="path-step">1</div>
+  <div><h4>Week 1 — Read the notation, play Sa Re Ga Ma</h4><p>Go to Notation tab reference. Memorise: A=Sa, S=Re, D=Ga, F=Ma, G=Pa, H=Dha, J=Ni, K=upper Sa. Play the Bilawal Scale exercise song up and down.</p></div>
+</div>
+<div class="path-card">
+  <div class="path-step">2</div>
+  <div><h4>Week 2 — Shivaranjani pentatonic (5 notes only)</h4><p>Highlight Shivaranjani on the keyboard. The 5 notes are S R g P D. Practise <em>Pehla Nasha</em> and <em>Tum Hi Ho</em> in Notation mode at 0.5× speed.</p></div>
+</div>
+<div class="path-card">
+  <div class="path-step">3</div>
+  <div><h4>Week 3 — Play-Along your first song</h4><p>Load <em>Pehla Nasha</em> in Play-Along at 0.5×. Aim for 60% accuracy first time, then 80%+ after repeating. Collect XP to unlock Academy levels.</p></div>
+</div>
+<div class="path-card">
+  <div class="path-step">4</div>
+  <div><h4>Week 4 — Yaman (7 notes, tivra Ma)</h4><p>The characteristic note of Yaman is tivra Ma (key T). Learn <em>Ek Pyar Ka Nagma Hai</em> and <em>Ajeeb Dastan Hai Yeh</em>. Read the Raagas tab for its aaroh/avaroh.</p></div>
+</div>
+<div class="path-card">
+  <div class="path-step">5</div>
+  <div><h4>Ongoing — Explore at full speed + try Tamil songs</h4><p>Once you've done Shivaranjani and Yaman, explore Bhairavi and Khamaj. Try <em>Kadhal Rojave</em> (Shivaranjani) and the Malkauns songs. Use the Shruti box to practise singing.</p></div>
+</div>
+
+<footer>Raaga Studio Pro · Test Report &amp; User Guide · Generated June 2026</footer>
+
+</div>
+</body>
+</html>

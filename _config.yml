@@ -1,0 +1,20 @@
+# GitHub Pages configuration for Raaga
+# Repo: github.com/yourusername/raaga
+# Live URL: https://yourusername.github.io/raaga/
+
+title: Raaga
+description: Indian Classical Music Studio — 18 Real Instruments · AI · Play-Along
+theme: null
+
+# Serve index.html at root
+include:
+  - index.html
+  - sounds/
+
+# Don't process the HTML as Jekyll template
+exclude:
+  - raaga_studio_v5.html
+  - CONTRIBUTING.md
+  - CHANGELOG.md
+  - SOUNDS_MANIFEST.md
+  - docs/

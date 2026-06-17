@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — Quick Reference Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c14;--bg2:#13131e;--bg3:#1a1a2a;--bdr:rgba(255,255,255,.08);--saf:#FF9500;--safl:#FFB347;--teal:#00C9A7;--rose:#FF6B9D;--vio:#9B59B6;--blu:#4A90E2;--grn:#2ECC71;--tx:#EDE8D8;--tx2:#8A8A9A;--tx3:#4A4A5E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);padding:20px;font-size:12px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(255,149,0,.05),transparent 60%),radial-gradient(ellipse 50% 40% at 85% 80%,rgba(0,201,167,.04),transparent 60%)}
+h1{font-family:'Playfair Display',serif;font-size:22px;background:linear-gradient(135deg,var(--safl),var(--saf));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px}
+.subtitle{font-size:11px;color:var(--tx3);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:14px}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:13px}
+.card h2{font-family:'Playfair Display',serif;font-size:13px;color:var(--safl);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse}
+th{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3);text-align:left;padding:4px 6px;border-bottom:1px solid var(--bdr)}
+td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--tx2)}
+td:first-child{font-family:'JetBrains Mono',monospace;color:var(--saf);font-weight:600;font-size:11px}
+.kp{display:inline-block;background:var(--bg3);border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx)}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;margin:1px}
+.p-teal{background:rgba(0,201,167,.12);color:var(--teal)}
+.p-saf{background:rgba(255,149,0,.12);color:var(--saf)}
+.p-rose{background:rgba(255,107,157,.12);color:var(--rose)}
+.p-vio{background:rgba(155,89,182,.12);color:var(--vio)}
+.p-grn{background:rgba(46,204,113,.12);color:var(--grn)}
+.p-blu{background:rgba(74,144,226,.12);color:var(--blu)}
+ul{list-style:none;padding:0}
+li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);color:var(--tx2);font-size:11px;display:flex;gap:6px;align-items:flex-start}
+li::before{content:'›';color:var(--tx3);flex-shrink:0}
+li:last-child{border-bottom:none}
+.kbd-row{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.key-w{background:linear-gradient(180deg,#e8e4d8,#d4c4a0);border-radius:0 0 5px 5px;padding:6px 4px 4px;text-align:center;font-size:10px;color:#2a2820;min-width:30px;border:1px solid #b8a880}
+.key-b{background:linear-gradient(180deg,#1e1828,#120e1c);border-radius:0 0 4px 4px;padding:4px 3px 3px;text-align:center;font-size:9px;color:#9080a0;min-width:22px;border:1px solid #2e2640}
+.key-w .swr{font-size:11px;font-weight:700;color:#3a2c18;display:block}
+.key-w .hk{font-size:8px;color:#888;display:block}
+.key-b .swr{font-size:9px;font-weight:700;display:block}
+.key-b .hk{font-size:7px;color:#666;display:block}
+.tag{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;font-weight:600;margin-left:4px;vertical-align:middle}
+.tag-b{background:rgba(46,204,113,.15);color:var(--grn)}
+.tag-i{background:rgba(255,149,0,.15);color:var(--saf)}
+.tag-a{background:rgba(255,107,157,.15);color:var(--rose)}
+.tag-t{background:rgba(46,204,113,.1);color:var(--teal);font-size:8px}
+.tag-bb{background:rgba(74,144,226,.1);color:var(--blu);font-size:8px}
+.tag-ta{background:rgba(255,107,157,.1);color:var(--rose);font-size:8px}
+.tag-w{background:rgba(155,89,182,.1);color:var(--vio);font-size:8px}
+.ver{text-align:right;font-size:9px;color:var(--tx3);margin-top:16px}
+</style>
+</head>
+<body>
+<h1>Raaga Studio Pro — Quick Reference Card</h1>
+<div class="subtitle">Frozen version · 159KB · 47 songs · 13 raagas · 10 taals · 3 octaves · 14 instruments</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>🎹 Keyboard Hotkeys</h2>
+<div class="kbd-row">
+  <div class="key-w"><span class="swr">S</span><span class="hk">A</span></div>
+  <div class="key-b"><span class="swr">r</span><span class="hk">W</span></div>
+  <div class="key-w"><span class="swr">R</span><span class="hk">S</span></div>
+  <div class="key-b"><span class="swr">g</span><span class="hk">E</span></div>
+  <div class="key-w"><span class="swr">G</span><span class="hk">D</span></div>
+  <div class="key-w"><span class="swr">M</span><span class="hk">F</span></div>
+  <div class="key-b"><span class="swr">m</span><span class="hk">T</span></div>
+  <div class="key-w"><span class="swr">P</span><span class="hk">G</span></div>
+  <div class="key-b"><span class="swr">d</span><span class="hk">Y</span></div>
+  <div class="key-w"><span class="swr">D</span><span class="hk">H</span></div>
+  <div class="key-b"><span class="swr">n</span><span class="hk">U</span></div>
+  <div class="key-w"><span class="swr">N</span><span class="hk">J</span></div>
+  <div class="key-w"><span class="swr">Ṡ</span><span class="hk">K</span></div>
+</div>
+<table><tr><th>Octave</th><th>Keys</th><th>Notes</th></tr>
+<tr><td>Taar (Upper)</td><td style="color:var(--tx3)">Mouse/Touch only</td><td style="color:var(--tx3)">½-size top row</td></tr>
+<tr><td>Madhya (Mid)</td><td><span class="kp">A</span>–<span class="kp">K</span> + <span class="kp">W E T Y U</span></td><td>Main range</td></tr>
+<tr><td>Mandra (Low)</td><td><span class="kp">Z X C V B N M</span></td><td>Lower octave</td></tr>
+</table>
+<table style="margin-top:8px"><tr><th>Key</th><th>Function</th></tr>
+<tr><td><span class="kp">Q</span></td><td>Tabla Baya stroke (Ge)</td></tr>
+<tr><td><span class="kp">P</span></td><td>Tabla Dayan stroke (Na)</td></tr>
+<tr><td><span class="kp">1</span>–<span class="kp">8</span></td><td>Tabla Octopad (Dha Dhin Na Tin Ge Kick Snare Hat)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>🎼 Sargam Reference (Horizontal)</h2>
+<table><tr><th>Symbol</th><th>S</th><th>r</th><th>R</th><th>g</th><th>G</th><th>M</th><th>m</th><th>P</th><th>d</th><th>D</th><th>n</th><th>N</th><th>Ṡ</th></tr>
+<tr><td>Swar</td><td>Sa</td><td>Ko.Re</td><td>Re</td><td>Ko.Ga</td><td>Ga</td><td>Ma</td><td>Ti.Ma</td><td>Pa</td><td>Ko.Dha</td><td>Dha</td><td>Ko.Ni</td><td>Ni</td><td>Sa'</td></tr>
+<tr><td>Western</td><td>C</td><td>C#</td><td>D</td><td>E♭</td><td>E</td><td>F</td><td>F#</td><td>G</td><td>A♭</td><td>A</td><td>B♭</td><td>B</td><td>C5</td></tr>
+<tr><td>Hotkey</td><td style="color:var(--teal);font-weight:700">A</td><td style="color:var(--rose)">W</td><td style="color:var(--teal);font-weight:700">S</td><td style="color:var(--rose)">E</td><td style="color:var(--teal);font-weight:700">D</td><td style="color:var(--teal);font-weight:700">F</td><td style="color:var(--rose)">T</td><td style="color:var(--teal);font-weight:700">G</td><td style="color:var(--rose)">Y</td><td style="color:var(--teal);font-weight:700">H</td><td style="color:var(--rose)">U</td><td style="color:var(--teal);font-weight:700">J</td><td style="color:var(--teal);font-weight:700">K</td></tr>
+<tr><td>Type</td><td>Root</td><td style="color:var(--rose)">Komal</td><td>Shuddh</td><td style="color:var(--rose)">Komal</td><td>Shuddh</td><td>Shuddh</td><td style="color:var(--rose)">Tivra</td><td>Fixed</td><td style="color:var(--rose)">Komal</td><td>Shuddh</td><td style="color:var(--rose)">Komal</td><td>Shuddh</td><td>Octave</td></tr>
+</table>
+<div style="margin-top:6px;font-size:10px;display:flex;gap:12px">
+<span style="color:var(--teal)">■ White keys = Shuddh</span>
+<span style="color:var(--rose)">■ Black keys = Komal/Tivra</span>
+<span style="color:var(--tx3)">Sa &amp; Pa never change</span>
+</div>
+</div>
+
+<div class="card">
+<h2>🎵 13 Raagas</h2>
+<table><tr><th>Raaga</th><th>Notes</th><th>Mood / Film</th></tr>
+<tr><td>Shivaranjani ★</td><td><span class="pill p-grn">S R g P D</span></td><td>Melancholy · Pehla Nasha</td></tr>
+<tr><td>Yaman</td><td><span class="pill p-saf">S R G m P D N</span></td><td>Evening/Romantic · Ek Pyar Ka</td></tr>
+<tr><td>Bhairav</td><td><span class="pill p-blu">S r G M P d N</span></td><td>Morning solemn</td></tr>
+<tr><td>Bhairavi</td><td><span class="pill p-rose">S r g M P d n</span></td><td>Pathos · Lag Ja Gale</td></tr>
+<tr><td>Khamaj</td><td><span class="pill p-saf">S R G M P D n N</span></td><td>Romantic night</td></tr>
+<tr><td>Sindhubhairavi</td><td><span class="pill p-rose">S r g M P d n</span></td><td>Tamil devotional · Malare</td></tr>
+<tr><td>Hamsadhwani</td><td><span class="pill p-teal">S R G P N</span></td><td>Auspicious · Vande Mataram</td></tr>
+<tr><td>Desh</td><td><span class="pill p-grn">S R G M P D n N</span></td><td>Monsoon/Patriotic</td></tr>
+<tr><td>Bageshri</td><td><span class="pill p-vio">S R g M P D n</span></td><td>Midnight longing</td></tr>
+<tr><td>Bilawal</td><td><span class="pill p-teal">S R G M P D N</span></td><td>Pure major · Morning</td></tr>
+<tr><td>Malkauns</td><td><span class="pill p-vio">S g M d n</span></td><td>Midnight mystical</td></tr>
+<tr><td>Kafi</td><td><span class="pill p-blu">S R g M P D n</span></td><td>Folk/Romantic</td></tr>
+<tr><td>Bihag</td><td><span class="pill p-grn">S R G M m P D N</span></td><td>Night romantic</td></tr>
+</table>
+<div style="margin-top:5px;font-size:10px;color:var(--tx3)">★ Recommended first raaga — 5 notes only</div>
+</div>
+
+<div class="card">
+<h2>🥁 10 Taals</h2>
+<table><tr><th>Taal</th><th>Beats</th><th>Style</th></tr>
+<tr><td>Keherva ★</td><td>8</td><td>Bollywood/Folk standard</td></tr>
+<tr><td>Dadra</td><td>6</td><td>Light romantic</td></tr>
+<tr><td>Teental</td><td>16</td><td>Classical standard</td></tr>
+<tr><td>Jhaptal</td><td>10</td><td>Slow compositions</td></tr>
+<tr><td>Rupak</td><td>7</td><td>Floating feel</td></tr>
+<tr><td>Ektaal</td><td>12</td><td>Vilambit khyal</td></tr>
+<tr><td>Adi Talam ★</td><td>8</td><td>Tamil/Carnatic standard</td></tr>
+<tr><td>Roopakam</td><td>6</td><td>Carnatic devotional</td></tr>
+<tr><td>4/4 Rock</td><td>8</td><td>Western beat</td></tr>
+<tr><td>Bossa Nova</td><td>8</td><td>Western syncopated</td></tr>
+</table>
+<div style="margin-top:5px;font-size:10px;color:var(--tx3)">★ Best for beginners · Sam = Beat 1 (always strongest)</div>
+<div style="margin-top:6px;font-size:10px;color:var(--tx2)"><b>BPM:</b> Vilambit (slow) = 30–60 · Madhya = 60–120 · Drut (fast) = 120–200</div>
+</div>
+
+<div class="card">
+<h2>🎬 47 Songs by Category</h2>
+<div style="margin-bottom:6px;display:flex;gap:6px">
+  <span class="pill p-saf">Bollywood 20</span>
+  <span class="pill p-grn">Tamil 14</span>
+  <span class="pill p-vio">Western 13</span>
+</div>
+<table><tr><th>Song</th><th>Raaga</th><th></th></tr>
+<tr><td>Pehla Nasha</td><td>Shivaranjani</td><td><span class="tag tag-b">B</span><span class="tag tag-bb">HI</span></td></tr>
+<tr><td>Tum Hi Ho</td><td>Shivaranjani</td><td><span class="tag tag-b">B</span><span class="tag tag-bb">BO</span></td></tr>
+<tr><td>Ek Pyar Ka Nagma</td><td>Yaman</td><td><span class="tag tag-b">B</span><span class="tag tag-bb">BO</span></td></tr>
+<tr><td>Lag Ja Gale</td><td>Bhairavi</td><td><span class="tag tag-b">B</span><span class="tag tag-bb">BO</span></td></tr>
+<tr><td>Kadhal Rojave</td><td>Shivaranjani</td><td><span class="tag tag-b">B</span><span class="tag tag-ta">TA</span></td></tr>
+<tr><td>Malare Mounama</td><td>Sindhubhairavi</td><td><span class="tag tag-i">I</span><span class="tag tag-ta">TA</span></td></tr>
+<tr><td>Vande Mataram</td><td>Hamsadhwani</td><td><span class="tag tag-i">I</span><span class="tag tag-bb">BO</span></td></tr>
+<tr><td>Dancing Queen</td><td>Bilawal</td><td><span class="tag tag-b">B</span><span class="tag tag-w">WE</span></td></tr>
+<tr><td>Billie Jean</td><td>Kafi</td><td><span class="tag tag-b">B</span><span class="tag tag-w">WE</span></td></tr>
+<tr><td>+ 38 more…</td><td colspan="2"><span style="color:var(--tx3)">See Songs tab for full list</span></td></tr>
+</table>
+<div style="margin-top:5px;font-size:10px;display:flex;gap:8px"><span><span class="tag tag-b">B</span> Beginner</span><span><span class="tag tag-i">I</span> Intermediate</span><span><span class="tag tag-bb">BO</span> Bollywood</span><span><span class="tag tag-ta">TA</span> Tamil</span><span><span class="tag tag-w">WE</span> Western</span></div>
+</div>
+
+<div class="card">
+<h2>🎭 8 Tabs — What Each Does</h2>
+<ul>
+<li><b style="color:var(--saf)">🎹 Instruments</b> — Play keys, set taal/tempo, use octopad &amp; drum kit. All sections collapsible.</li>
+<li><b style="color:var(--saf)">📖 Practise</b> — Guided note-by-note practice. Guruji corrects every wrong note.</li>
+<li><b style="color:var(--saf)">🎮 Play-Along</b> — Karaoke mode. Load song inline, backing melody plays, you match notes.</li>
+<li><b style="color:var(--saf)">🎼 Raagas</b> — Explore all 13 raagas. Hear scale, see notes, aaroh/avaroh.</li>
+<li><b style="color:var(--saf)">🎬 Songs</b> — Browse 47 songs. Filter by language/difficulty. Click to Practise, Demo or Play-Along.</li>
+<li><b style="color:var(--saf)">🎤 Sur &amp; Shruti</b> — Find your Sa pitch. Shruti box + Sur/Laya/Taan/Taal theory.</li>
+<li><b style="color:var(--saf)">🎓 Academy</b> — XP levels, unlock system, Raaga Ear Quiz (+20 XP per correct answer).</li>
+<li><b style="color:var(--saf)">📖 Theory</b> — 11 theory blocks: Thaats, Ornaments, BPM/Laya, Sargam, Veena vs Sitar, Guitar types, How to practise.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🏆 Academy Ranks</h2>
+<table><tr><th>XP</th><th>Rank</th></tr>
+<tr><td>0</td><td>Novice Shishya</td></tr>
+<tr><td>50</td><td>Shagird (Student)</td></tr>
+<tr><td>130</td><td>Abhyasi (Practitioner)</td></tr>
+<tr><td>250</td><td>Tayyar (Prepared)</td></tr>
+<tr><td>400</td><td>Ustadji (Master)</td></tr>
+<tr><td>600</td><td>Sangeet Ratna</td></tr>
+</table>
+<div style="margin-top:8px"><b style="color:var(--safl)">XP Sources:</b></div>
+<ul style="margin-top:4px">
+<li>Correct note in Practise mode — +5 XP</li>
+<li>Song completed in Practise — +30 XP</li>
+<li>Play-Along accuracy bonus — up to +33 XP</li>
+<li>Raaga Ear Quiz correct — +20 XP</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🚀 Quick Start Guide</h2>
+<ul>
+<li>Download <b>raaga_studio_v4.html</b> → open in Chrome</li>
+<li>Click <b>▶ Start Playing</b> — audio starts instantly (Web Audio, no CDN)</li>
+<li>Turn on <b>Tanpura Drone</b> — keeps you in tune while playing</li>
+<li>Select <b>Shivaranjani</b> in Raaga Highlight → only 5 green keys</li>
+<li>Play only green keys → you're in the raaga!</li>
+<li>Songs tab → <b>Pehla Nasha</b> → <b>🎵 Practise</b> → Guruji guides you</li>
+<li>Play-Along tab → pick song → set 50% speed → <b>▶ Start</b></li>
+<li>Academy tab → <b>▶ Play Scale</b> → guess the raaga → earn XP</li>
+</ul>
+<div style="margin-top:8px;padding:8px;background:rgba(255,149,0,.07);border-radius:6px;border:1px solid rgba(255,149,0,.2);font-size:10px;color:var(--tx2)">
+<b style="color:var(--safl)">No sound?</b> Check tab isn't muted (right-click tab → Unmute). Needs Chrome/Edge/Safari. Headphones recommended for tabla detail.
+</div>
+</div>
+
+<div class="card">
+<h2>🎛 14 Instruments</h2>
+<table><tr><th>Instrument</th><th>Type</th><th>Release</th></tr>
+<tr><td>🪗 Harmonium ★</td><td>Reed organ</td><td>0.7s</td></tr>
+<tr><td>🪕 Sitar</td><td>Plucked string</td><td>2.8s</td></tr>
+<tr><td>🪈 Veena</td><td>Plucked string</td><td>4.5s</td></tr>
+<tr><td>🎸 Sarod</td><td>Bowed metal</td><td>2.0s</td></tr>
+<tr><td>📯 Shehnai</td><td>Double reed wind</td><td>0.8s</td></tr>
+<tr><td>🎷 Bansuri Flute</td><td>Breath flute</td><td>1.0s</td></tr>
+<tr><td>🎻 Violin</td><td>Bowed string</td><td>0.9s</td></tr>
+<tr><td>🎸 Nylon Guitar</td><td>Classical guitar</td><td>2.2s</td></tr>
+<tr><td>🎸 Steel Guitar</td><td>Folk guitar</td><td>2.0s</td></tr>
+<tr><td>⚡ Electric Clean</td><td>Electric guitar</td><td>2.8s</td></tr>
+<tr><td>🔥 Overdrive</td><td>Distorted guitar</td><td>1.5s</td></tr>
+<tr><td>🎸 Bass</td><td>Bass guitar</td><td>1.8s</td></tr>
+<tr><td>🎹 Grand Piano</td><td>Keyboard</td><td>1.8s</td></tr>
+<tr><td>🎹 Church Organ</td><td>Keyboard</td><td>0.8s</td></tr>
+</table>
+<div style="margin-top:5px;font-size:10px;color:var(--tx3)">★ Recommended for Indian raaga practice · All synthesised with Web Audio API — no samples needed</div>
+</div>
+
+</div>
+<div class="ver">Raaga Studio Pro v4 · Frozen build · 159KB · SHA256: 766a058f5cbdfb12... · All audio: Web Audio API synthesis only · No CDN dependencies · Works offline</div>
+</body>
+</html>

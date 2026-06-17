@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raaga Studio Pro — Technical Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c14;--bg2:#13131e;--bg3:#1a1a2a;--bg4:#222238;--bdr:rgba(255,255,255,.08);--saf:#FF9500;--safl:#FFB347;--teal:#00C9A7;--rose:#FF6B9D;--vio:#9B59B6;--blu:#4A90E2;--tx:#EDE8D8;--tx2:#8A8A9A;--tx3:#4A4A5E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);padding:24px;font-size:12px;max-width:1100px;margin:0 auto}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(255,149,0,.04),transparent 60%)}
+h1{font-family:'Playfair Display',serif;font-size:24px;background:linear-gradient(135deg,var(--safl),var(--saf));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px}
+h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--safl);margin:20px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+h3{font-size:12px;font-weight:700;color:var(--teal);margin:12px 0 5px}
+.subtitle{font-size:11px;color:var(--tx3);margin-bottom:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:14px}
+.card h3{color:var(--safl);margin-top:0}
+pre{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);overflow-x:auto;margin:6px 0;line-height:1.6;white-space:pre-wrap}
+code{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--safl)}
+table{width:100%;border-collapse:collapse;margin:6px 0}
+th{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3);text-align:left;padding:5px 8px;border-bottom:1px solid var(--bdr)}
+td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--tx2);vertical-align:top}
+td:first-child{font-family:'JetBrains Mono',monospace;color:var(--saf);font-size:10px;white-space:nowrap}
+ul,ol{padding-left:16px}
+li{padding:3px 0;font-size:11px;color:var(--tx2);line-height:1.6}
+li b{color:var(--tx)}
+.tag{display:inline-block;padding:1px 7px;border-radius:8px;font-size:9px;font-weight:600;margin:1px}
+.t-teal{background:rgba(0,201,167,.12);color:var(--teal)}
+.t-saf{background:rgba(255,149,0,.12);color:var(--saf)}
+.t-rose{background:rgba(255,107,157,.12);color:var(--rose)}
+.t-vio{background:rgba(155,89,182,.12);color:var(--vio)}
+.note{background:rgba(255,149,0,.07);border:1px solid rgba(255,149,0,.2);border-radius:7px;padding:9px 12px;font-size:11px;color:var(--tx2);line-height:1.7;margin:8px 0}
+.note b{color:var(--safl)}
+.arch-box{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+.arch-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--bdr)}
+.arch-row.r-saf{border-left-color:var(--saf)}.arch-row.r-teal{border-left-color:var(--teal)}.arch-row.r-rose{border-left-color:var(--rose)}.arch-row.r-vio{border-left-color:var(--vio)}.arch-row.r-blu{border-left-color:var(--blu)}
+.arch-lbl{font-size:10px;font-weight:700;min-width:140px;color:var(--tx)}
+.arch-val{font-size:10px;color:var(--tx2);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<h1>Raaga Studio Pro — Technical Guide</h1>
+<div class="subtitle">Frozen build · raaga_studio_v4.html · 159KB · Single file · Zero dependencies · Web Audio API synthesis</div>
+
+<h2>Architecture Overview</h2>
+<div class="arch-box">
+<div class="arch-row r-saf"><span class="arch-lbl">File</span><span class="arch-val">raaga_studio_v4.html — single self-contained file, 159KB, works offline</span></div>
+<div class="arch-row r-teal"><span class="arch-lbl">Audio Engine</span><span class="arch-val">Pure Web Audio API — no Tone.js, no CDN, no samples, instant start</span></div>
+<div class="arch-row r-rose"><span class="arch-lbl">Dependencies</span><span class="arch-val">Google Fonts (Inter + Playfair Display) — gracefully degrades offline</span></div>
+<div class="arch-row r-vio"><span class="arch-lbl">Storage</span><span class="arch-val">localStorage for XP/progress — no server, no account needed</span></div>
+<div class="arch-row r-blu"><span class="arch-lbl">Browser support</span><span class="arch-val">Chrome 66+ · Edge 79+ · Safari 14+ · Firefox 76+ · Android Chrome · iOS Safari</span></div>
+</div>
+
+<h2>Audio Signal Chain</h2>
+<pre>
+Instrument Synths (14)  ──┐
+Tabla Baya/Dayan        ──┼──► dryGain ──────────────────────────────► masterGain ──► analyserNode ──► destination
+Drum Kit (9 pads)       ──┘    │                                          ▲
+                               └──► reverbNode (ConvolverNode) ──► wetGain ──┘
+                                    (synthetic IR, makeImpulseResponse)
+</pre>
+<div class="grid2">
+<div class="card">
+<h3>Audio Context Init</h3>
+<pre>function initAC(){
+  AC = new(window.AudioContext||
+           window.webkitAudioContext)();
+  masterGain = AC.createGain();
+  analyserNode = AC.createAnalyser();
+  analyserNode.fftSize = 512;
+  masterGain.connect(analyserNode);
+  analyserNode.connect(AC.destination);
+  reverbNode = AC.createConvolver();
+  reverbNode.buffer = makeImpulseResponse(AC,1.2,2.0);
+  // ...reverb routing...
+}</pre>
+<div class="note"><b>Key:</b> AudioContext created only on user gesture (startApp click) to satisfy browser autoplay policy. Checks AC.state==='suspended' and calls AC.resume() before every note.</div>
+</div>
+<div class="card">
+<h3>Instrument Synthesis Pattern</h3>
+<pre>// Each synth follows this pattern:
+function synthHarmonium(freq){
+  const t = AC.currentTime, dur = 0.7;
+  const g = AC.createGain();
+  // Attack + Decay envelope
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.22, t+0.015);
+  g.gain.exponentialRampToValueAtTime(0.001, t+dur);
+  // Oscillators (sawtooth with detuning)
+  [0,4,-3].forEach(detune => {
+    const o = AC.createOscillator();
+    o.type = 'sawtooth';
+    o.frequency.value = freq * pow(2, detune/1200);
+    o.connect(bp); // bandpass filter
+    o.start(t); o.stop(t+dur+0.05);
+  });
+  connect(g); // routes to dry+reverb
+}</pre>
+</div>
+</div>
+
+<h2>All Functions Reference</h2>
+<div class="grid2">
+<div class="card">
+<h3>Core Audio (always present after startApp)</h3>
+<table><tr><th>Function</th><th>Purpose</th></tr>
+<tr><td>initAC()</td><td>Create AudioContext, gains, reverb, analyser</td></tr>
+<tr><td>makeImpulseResponse(AC,dur,dec)</td><td>Generate synthetic reverb buffer in-browser</td></tr>
+<tr><td>connect(node)</td><td>Route node → dryGain + reverbNode in parallel</td></tr>
+<tr><td>playNote(semi,octOff,instrOvr)</td><td>Play a semitone offset on current or override instrument</td></tr>
+<tr><td>changeInstrument(v)</td><td>Set currentInstrument, update indicator badge</td></tr>
+<tr><td>updateVol(v)</td><td>Set masterGain.gain.value from 0–100 input</td></tr>
+<tr><td>updateReverb(v)</td><td>Set wetGain.gain.value from 0–40 input</td></tr>
+<tr><td>flashInstrPlaying()</td><td>Pulse the instrument indicator for 400ms</td></tr>
+<tr><td>drawWaveform()</td><td>requestAnimationFrame loop drawing analyserNode data</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>Instrument Synths</h3>
+<table><tr><th>Function</th><th>Technique</th><th>Release</th></tr>
+<tr><td>synthHarmonium(freq)</td><td>3× sawtooth + bandpass, slight detune</td><td>0.7s</td></tr>
+<tr><td>synthSitar(freq,rel)</td><td>6 harmonics + noise burst (jawari)</td><td>2.8s</td></tr>
+<tr><td>synthSarod(freq)</td><td>5 harmonics, sawtooth</td><td>2.0s</td></tr>
+<tr><td>synthShehnai(freq)</td><td>Sawtooth + LFO vibrato + bandpass</td><td>0.8s</td></tr>
+<tr><td>synthFlute(freq)</td><td>2 sine + noise (breath), LFO vibrato</td><td>1.0s</td></tr>
+<tr><td>synthViolin(freq)</td><td>6 harmonics + LFO vibrato, sawtooth</td><td>0.9s</td></tr>
+<tr><td>synthGuitar(freq,type)</td><td>Harmonics; dist type adds WaveShaper</td><td>2.2s</td></tr>
+<tr><td>synthBass(freq)</td><td>3 harmonics + lowpass filter</td><td>1.8s</td></tr>
+<tr><td>synthPiano(freq)</td><td>5 partials: triangle + sines</td><td>1.8s</td></tr>
+<tr><td>synthOrgan(freq)</td><td>4 sine harmonics, sustained envelope</td><td>0.8s</td></tr>
+</table>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3>Tabla &amp; Percussion</h3>
+<table><tr><th>Function</th><th>Purpose</th></tr>
+<tr><td>tabla_baya(t,pitch)</td><td>Low baya drum — oscillator with fast pitch drop</td></tr>
+<tr><td>tabla_dayan(t,pitch,bolType)</td><td>High dayan — oscillator + noise burst, 6 bol configs</td></tr>
+<tr><td>playBol(bol)</td><td>Dispatch bol string to correct tabla/drum synth</td></tr>
+<tr><td>drum_kick(t)</td><td>Sine 160→45Hz sweep, 0.35s</td></tr>
+<tr><td>drum_snare(t)</td><td>White noise + highpass 1200Hz, 0.18s</td></tr>
+<tr><td>drum_hat(t,open)</td><td>White noise + highpass 9000Hz, 0.04s/0.25s</td></tr>
+<tr><td>makeNoiseBuffer(ctx,dur)</td><td>Create white noise AudioBuffer</td></tr>
+</table>
+<h3 style="margin-top:10px">Tanpura &amp; Shruti</h3>
+<table><tr><th>Function</th><th>Purpose</th></tr>
+<tr><td>toggleTanpura()</td><td>Start/stop C3→G3→C4 cycling drone at 550ms intervals</td></tr>
+<tr><td>toggleShruti()</td><td>Start/stop Sa reference drone at selected pitch</td></tr>
+<tr><td>playSaPaRef()</td><td>Play Sa+Pa (fifth) together as reference</td></tr>
+<tr><td>selectShruti(sn,el)</td><td>Set activeShruti, update hz-display/hz-note/hz-pa</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>Taal Engine</h3>
+<table><tr><th>Function / Variable</th><th>Purpose</th></tr>
+<tr><td>TAAL_DEFS</td><td>Object: 10 taals with beats, desc, seq[] of bols</td></tr>
+<tr><td>selectTaal(val)</td><td>Set currentTaalType, call buildTaalDisplay</td></tr>
+<tr><td>transportPlay()</td><td>Start setInterval-based taal loop at tempoVal BPM</td></tr>
+<tr><td>transportPause()</td><td>Clear interval, preserve taalBeat position</td></tr>
+<tr><td>transportStop()</td><td>Clear interval, reset taalBeat=0</td></tr>
+<tr><td>setTempo(v)</td><td>Set tempoVal, update BPM display + needle + restart if playing</td></tr>
+<tr><td>positionNeedle(v)</td><td>Move tempo-needle left% = (v-30)/170*100</td></tr>
+<tr><td>taalIntervalId</td><td>setInterval handle — NOT Tone.Transport</td></tr>
+<tr><td>buildTaalDisplay(type)</td><td>Render beat cells with sam/khali styling</td></tr>
+<tr><td>updateBeatDisplay(idx)</td><td>Add .active-beat class to current beat cell</td></tr>
+</table>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3>Keyboard &amp; Octaves</h3>
+<table><tr><th>Array / Function</th><th>Purpose</th></tr>
+<tr><td>KEYS_UPPER[]</td><td>Taar Saptak — 12 keys, oct:+1, rendered mini (½ size)</td></tr>
+<tr><td>KEYS_MID[]</td><td>Madhya Saptak — 13 keys, oct:0, hotkeys A–K+WETYU</td></tr>
+<tr><td>KEYS_LOW[]</td><td>Mandra Saptak — 12 keys, oct:-1, hotkeys Z–M</td></tr>
+<tr><td>buildAllKeys()</td><td>Calls buildKeys for all 3 octaves + all keyboard instances</td></tr>
+<tr><td>buildKeys(cid,defs,sfx,mini)</td><td>Create key elements; mini=true → adds .mini class</td></tr>
+<tr><td>triggerKey(k,sfx)</td><td>playNote + press animation + evaluateNote + evaluatePANote</td></tr>
+<tr><td>applyRaagaHighlight()</td><td>Add .raaga-hl to keys matching selected raaga.notes[] across all instances</td></tr>
+<tr><td>keyMap{}</td><td>hk→key def map for keyboard hotkey dispatch</td></tr>
+</table>
+<div class="note"><b>New in this build:</b> KEYS_UPPER (Taar Saptak) added above KEYS_MID. buildKeys(cid,defs,sfx,<b>mini=true</b>) renders at half height via <code>.key.mini{opacity:.85}</code>. Upper octave raaga highlights use suffix <code>_up</code>.</div>
+</div>
+<div class="card">
+<h3>Play-Along Engine</h3>
+<table><tr><th>Variable</th><th>Purpose</th></tr>
+<tr><td>paActive</td><td>Boolean — song currently playing</td></tr>
+<tr><td>paPaused</td><td>Boolean — paused mid-song</td></tr>
+<tr><td>paSongNotes[]</td><td>Array of {swar,oct,time,hit,missed,played} objects</td></tr>
+<tr><td>paStart</td><td>Date.now() at start, recalculated on resume</td></tr>
+<tr><td>paMsPerBeat</td><td>60000/bpm * paSpeedMult — ms per note slot</td></tr>
+<tr><td>paCurrentIdx</td><td>Index of next note to auto-play in backing</td></tr>
+<tr><td>paSpeedMult</td><td>0.25/0.5/0.75/1/1.25 — set by setSpeed()</td></tr>
+</table>
+<table style="margin-top:8px"><tr><th>Function</th><th>Purpose</th></tr>
+<tr><td>startPlayAlong()</td><td>Build paSongNotes, start setInterval paTickFn(50ms)</td></tr>
+<tr><td>paTickFn()</td><td>Check elapsed time, auto-play backing, detect missed notes</td></tr>
+<tr><td>evaluatePANote(label,oct)</td><td>Match player keypress to current window of notes</td></tr>
+<tr><td>endPlayAlong()</td><td>Stop, show accuracy, awardXP, guruPATip</td></tr>
+<tr><td>resumePlayAlong()</td><td>Recalculate paStart without resetting score</td></tr>
+<tr><td>buildPASongPicker()</td><td>Populate inline song dropdown in Play-Along tab</td></tr>
+<tr><td>loadPASongFromPicker()</td><td>Load selected song without leaving Play-Along tab</td></tr>
+</table>
+</div>
+</div>
+
+<h2>Data Structures</h2>
+<div class="grid2">
+<div class="card">
+<h3>Song Object</h3>
+<pre>{
+  title: 'Pehla Nasha',
+  film:  'Jo Jeeta Wohi Sikandar (1992)',
+  lang:  'Hindi',
+  raaga: 'Shivaranjani',
+  diff:  'Beginner',         // Beginner|Intermediate|Advanced
+  cat:   'Bollywood',        // Bollywood|Tamil|Western
+  swar_seq: ['g','R','S','D','P','g','R','S'], // 47 songs
+  oct_seq:  [0,0,0,-1,-1,0,0,0],  // octave offset per note
+  bpm:   64                  // original tempo
+}</pre>
+<h3 style="margin-top:10px">Raaga Object</h3>
+<pre>{
+  name:    'Shivaranjani',
+  thaat:   'Kafi',
+  time:    'Any Time',
+  mood:    'Yearning, melancholy',
+  color:   '#9B59B6',
+  notes:   ['S','R','g','P','D','S2'], // for keyboard highlight
+  vadi:    'g',
+  samvadi: 'D',
+  aaroh:   'S R g P D Ṡ',
+  avaroh:  'Ṡ D P g R S',
+  films:   ['Pehla Nasha','Tum Hi Ho','Kadhal Rojave',...]
+}</pre>
+</div>
+<div class="card">
+<h3>Taal Object</h3>
+<pre>{
+  teental: {
+    beats: 16,
+    label: 'Teental (16)',
+    desc:  'Most common classical taal...',
+    seq: [
+      {b:'Dha', sam:true},  // sam = beat 1
+      {b:'Dhin'},
+      ...
+      {b:'Na',  khali:true}, // khali = empty beat
+      ...
+    ]
+  }
+}</pre>
+<h3 style="margin-top:10px">Global State Variables</h3>
+<pre>let AC = null;           // AudioContext
+let masterGain, reverbNode, dryGain, wetGain, analyserNode;
+let toneReady = false;   // true after startApp()
+let currentInstrument = 'harmonium';
+let tempoVal = 90;
+let taalIntervalId = null; // setInterval handle
+let taalState = 'stopped'; // stopped|playing|paused
+let taalBeat = 0;
+let totalXP = 0;         // single declaration (not duplicated)
+let activeSongIdx = -1;
+let paActive = false;
+let paPaused = false;</pre>
+</div>
+</div>
+
+<h2>UI Architecture</h2>
+<div class="card">
+<h3>Instruments Tab — Collapsible Layout</h3>
+<pre>
+&lt;div id="keyboard"&gt;
+  status-bar + waveform-wrap (always visible)
+  &lt;div class="ctrl-panel"&gt;   ← CSS grid, 3 columns (auto-fit minmax 200px)
+    &lt;div class="ctrl-group"&gt;  ← Col 1: Instrument + Raaga Highlight
+      .ctrl-lbl-toggle onclick="toggleICT('ict-instr','chev-instr')"   ← § INSTRUMENT
+      &lt;div id="ict-instr" style="display:none"&gt; instr-sel, sliders, tanpura &lt;/div&gt;
+      .ctrl-lbl-toggle onclick="toggleICT('ict-raaga','chev-raaga')"   ← § RAAGA HIGHLIGHT
+      &lt;div id="ict-raaga" style="display:none"&gt; raaga-hl-sel &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="ctrl-group"&gt;  ← Col 2: Taal + Octopad
+      .ctrl-lbl-toggle onclick="toggleICT('ict-taal','chev-taal')"     ← § TAAL/RHYTHM
+      &lt;div id="ict-taal" style="display:none"&gt; taal-sel, transport, beat-cells &lt;/div&gt;
+      .ctrl-lbl-toggle onclick="toggleICT('ict-octo','chev-octo')"     ← § TABLA OCTOPAD
+      &lt;div id="ict-octo" style="display:none"&gt; octopad-compact &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="ctrl-group" style="grid-column:span 2"&gt;  ← Col 3: Tempo + Drums
+      .ctrl-lbl-toggle onclick="toggleICT('ict-tempo','chev-tempo')"   ← § TEMPO
+      &lt;div id="ict-tempo" style="display:none"&gt; bpm-big, ruler, presets &lt;/div&gt;
+      .ctrl-lbl-toggle onclick="toggleICT('ict-drums','chev-drums')"   ← § DRUM KIT
+      &lt;div id="ict-drums" style="display:none"&gt; drum-kit-2row &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  .ctrl-lbl-toggle onclick="toggleICT('ict-keys','chev-keys')"         ← § PIANO KB (open)
+  &lt;div id="ict-keys" class="ict-body open"&gt;
+    keys-upper (Taar) + keys-mid (Madhya) + keys-lower (Mandra)
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+<div class="note"><b>toggleICT(bodyId, chevId)</b> — flips body display:none/block and adds/removes .open on chevron. Default state: all 6 sections collapsed, piano keyboard open.</div>
+</div>
+
+<h2>Known Constraints &amp; Notes</h2>
+<ul style="margin-bottom:16px">
+<li><b>File size:</b> 159KB — too large for Claude's artifact inline viewer (~100KB limit). Must be downloaded and opened locally in a browser.</li>
+<li><b>Audio synthesis:</b> All instruments are synthesised in real-time using Web Audio API oscillators. No sample files or external audio CDN.</li>
+<li><b>Tone.js:</b> Completely removed. The old codebase used Tone.js which caused silent failures due to CDN loading issues. Current build uses native Web Audio API only.</li>
+<li><b>totalXP:</b> Must be declared exactly once with <code>let</code>. A second <code>let totalXP</code> declaration anywhere in the same script scope causes a fatal SyntaxError in strict mode, preventing the entire app from loading.</li>
+<li><b>Taar Saptak:</b> Playable by mouse/touch only — no keyboard hotkeys assigned to upper octave (would conflict with browser shortcuts). Rendered at same physical size as other octaves via equal CSS dimensions, distinguished by slight <code>opacity:.85</code>.</li>
+<li><b>setInterval taal:</b> Rhythm uses setInterval (not Tone.Transport or Web Audio scheduler). Drift at very high BPM is acceptable for practice purposes.</li>
+<li><b>localStorage:</b> Stores <code>raagaStudioXP</code> as a string integer. No other data is persisted.</li>
+<li><b>Touch support:</b> All interactive elements have <code>touch-action:manipulation</code> to eliminate 300ms tap delay. <code>touchstart</code> with <code>passive:false</code> + <code>preventDefault()</code> used for keys and pads to prevent scroll interference.</li>
+</ul>
+<div style="text-align:right;font-size:10px;color:var(--tx3);margin-top:16px">Raaga Studio Pro v4 · Technical Guide · Frozen build · SHA256: 766a058f5cbdfb12...</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+# Raaga Studio Pro — .gitignore
+# Rename this file to .gitignore in your repo root
+
+# ── NEVER commit these ──────────────────────────
+# If you ever create a config file with API keys
+config.local.js
+*.env
+.env
+secrets.js
+api_keys.txt
+
+# ── OS files ────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor files ────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Sound files (too large for GitHub free tier) ─
+# Uncomment if your sounds/ folder is large:
+# sounds/
+
+# ── Node / build (if you ever add a build step) ──
+node_modules/
+dist/
+.cache/
+
+# ────────────────────────────────────────────────
+# NOTE: API keys in Raaga Studio Pro are stored in
+# browser localStorage at runtime via the Admin Panel.
+# The HTML file itself contains ZERO keys.
+# It is safe to commit raaga_studio_v5.html publicly.
+# ────────────────────────────────────────────────
